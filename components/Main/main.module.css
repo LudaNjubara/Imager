@@ -1,0 +1,5 @@
+#suggestedTagsWrapper {
+  display: flex;
+  flex-direction: column;
+  padding: var(--padding-primary-900);
+}

@@ -1,18 +1,38 @@
-import './globals.css'
+"use client";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+import { Provider } from "react-redux";
+
+import Head from "./head";
+import Sidebar from "../components/Sidebar/Index";
+
+import { store } from "../redux/store";
+
+import { Poppins } from "@next/font/google";
+
+import "./globals.css";
+
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
+  fallback: ["system-ui", "arial"],
+});
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      {/*
-        <head /> will contain the components returned by the nearest parent
-        head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
-      */}
-      <head />
-      <body>{children}</body>
+      <Head />
+
+      <body className={poppins.className}>
+        <div id="pageWrapper">
+          {
+            <Provider store={store}>
+              <Sidebar />
+
+              {children}
+            </Provider>
+          }
+        </div>
+      </body>
     </html>
-  )
+  );
 }

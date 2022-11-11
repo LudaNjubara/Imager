@@ -1,18 +1,289 @@
+:root {
+  /* Colors */
+  --color-primary-100: #b3edf3;
+  --color-primary-200: #82e2ec;
+  --color-primary-300: #4fd5e4;
+  --color-primary-400: #28ccdd;
+  --color-primary-500: #00c2d8;
+  --color-primary-600: #00b2c5;
+  --color-primary-700: #009cab;
+  --color-primary-800: #008993;
+  --color-primary-900: #006568;
+
+  --color-primary-hover-100: #b3edf31a;
+  --color-primary-hover-200: #b3edf32e;
+  --color-primary-hover-300: #b3edf33d;
+  --color-primary-hover-400: #b3edf34d;
+  --color-primary-hover-500: #b3edf35c;
+  --color-primary-hover-600: #b3edf36b;
+  --color-primary-hover-700: #b3edf37b;
+  --color-primary-hover-800: #b3edf38a;
+  --color-primary-hover-900: #b3edf399;
+
+  --color-secondary-100: #ffccce;
+  --color-secondary-200: #ffb3b6;
+  --color-secondary-300: #ff999d;
+  --color-secondary-400: #ff8085;
+  --color-secondary-500: #ff666c;
+  --color-secondary-600: #e65a60;
+  --color-secondary-700: #cc4d54;
+  --color-secondary-800: #b34148;
+  --color-secondary-900: #99263c;
+
+  --color-secondary-hover-100: #ffccce1a;
+  --color-secondary-hover-200: #ffccce2e;
+  --color-secondary-hover-300: #ffccce3d;
+  --color-secondary-hover-400: #ffccce4d;
+  --color-secondary-hover-500: #ffccce5c;
+  --color-secondary-hover-600: #ffccce6b;
+  --color-secondary-hover-700: #ffccce7b;
+  --color-secondary-hover-800: #ffccce8a;
+  --color-secondary-hover-900: #ffccce99;
+
+  --color-neutral-100: #f7f7f7;
+  --color-neutral-200: #eeeeee;
+  --color-neutral-300: #e0e0e0;
+  --color-neutral-400: #bdbdbd;
+  --color-neutral-500: #979797;
+  --color-neutral-600: #5c5c5c;
+  --color-neutral-700: #444444;
+  --color-neutral-800: #272727;
+  --color-neutral-900: #181818;
+
+  --color-neutral-hover-100: #f7f7f71a;
+  --color-neutral-hover-200: #f7f7f72e;
+  --color-neutral-hover-300: #f7f7f73d;
+  --color-neutral-hover-400: #f7f7f74d;
+  --color-neutral-hover-500: #f7f7f75c;
+  --color-neutral-hover-600: #f7f7f76b;
+  --color-neutral-hover-700: #f7f7f77b;
+  --color-neutral-hover-800: #f7f7f78a;
+  --color-neutral-hover-900: #f7f7f799;
+
+  --color-success-100: #c2e8ca;
+  --color-success-200: #9ad9a8;
+  --color-success-300: #6eca85;
+  --color-success-400: #49bf6b;
+  --color-success-500: #17b350;
+  --color-success-600: #08a447;
+  --color-success-700: #00923b;
+  --color-success-800: #008130;
+  --color-success-900: #00611b;
+
+  --color-success-hover-100: #c2e8ca1a;
+  --color-success-hover-200: #c2e8ca2e;
+  --color-success-hover-300: #c2e8ca3d;
+  --color-success-hover-400: #c2e8ca4d;
+  --color-success-hover-500: #c2e8ca5c;
+  --color-success-hover-600: #c2e8ca6b;
+  --color-success-hover-700: #c2e8ca7b;
+  --color-success-hover-800: #c2e8ca8a;
+  --color-success-hover-900: #c2e8ca99;
+
+  --color-warning-100: #fefac2;
+  --color-warning-200: #fdf799;
+  --color-warning-300: #fbf26f;
+  --color-warning-400: #f9ee4b;
+  --color-warning-500: #f6e920;
+  --color-warning-600: #ffdf27;
+  --color-warning-700: #fec61c;
+  --color-warning-800: #fead0f;
+  --color-warning-900: #fd8300;
+
+  --color-warning-hover-100: #fefac21a;
+  --color-warning-hover-200: #fefac22e;
+  --color-warning-hover-300: #fefac23d;
+  --color-warning-hover-400: #fefac24d;
+  --color-warning-hover-500: #fefac25c;
+  --color-warning-hover-600: #fefac26b;
+  --color-warning-hover-700: #fefac27b;
+  --color-warning-hover-800: #fefac28a;
+  --color-warning-hover-900: #fefac299;
+
+  --color-danger-100: #ffcbd1;
+  --color-danger-200: #f39697;
+  --color-danger-300: #ea6c6e;
+  --color-danger-400: #f5474a;
+  --color-danger-500: #fa312d;
+  --color-danger-600: #eb242d;
+  --color-danger-700: #d91527;
+  --color-danger-800: #cc0720;
+  --color-danger-900: #be0012;
+
+  --color-danger-hover-100: #ffcbd11a;
+  --color-danger-hover-200: #ffcbd12e;
+  --color-danger-hover-300: #ffcbd13d;
+  --color-danger-hover-400: #ffcbd14d;
+  --color-danger-hover-500: #ffcbd15c;
+  --color-danger-hover-600: #ffcbd16b;
+  --color-danger-hover-700: #ffcbd17b;
+  --color-danger-hover-800: #ffcbd18a;
+  --color-danger-hover-900: #ffcbd199;
+
+  /* Padding */
+  --padding-primary-100: 0.3rem;
+  --padding-primary-200: 0.6rem;
+  --padding-primary-300: 0.9rem;
+  --padding-primary-400: 1.2rem;
+  --padding-primary-500: 1.5rem;
+  --padding-primary-600: 1.8rem;
+  --padding-primary-700: 2.1rem;
+  --padding-primary-800: 2.4rem;
+  --padding-primary-900: 2.7rem;
+
+  --padding-secondary-100: 0.2rem;
+  --padding-secondary-200: 0.4rem;
+  --padding-secondary-300: 0.6rem;
+  --padding-secondary-400: 0.8rem;
+  --padding-secondary-500: 1rem;
+  --padding-secondary-600: 1.2rem;
+  --padding-secondary-700: 1.4rem;
+  --padding-secondary-800: 1.6rem;
+  --padding-secondary-900: 1.8rem;
+
+  /* Margin */
+  --margin-primary-100: 0.3rem;
+  --margin-primary-200: 0.6rem;
+  --margin-primary-300: 0.9rem;
+  --margin-primary-400: 1.2rem;
+  --margin-primary-500: 1.5rem;
+  --margin-primary-600: 1.8rem;
+  --margin-primary-700: 2.1rem;
+  --margin-primary-800: 2.4rem;
+  --margin-primary-900: 2.7rem;
+
+  --margin-secondary-100: 0.2rem;
+  --margin-secondary-200: 0.4rem;
+  --margin-secondary-300: 0.6rem;
+  --margin-secondary-400: 0.8rem;
+  --margin-secondary-500: 1rem;
+  --margin-secondary-600: 1.2rem;
+  --margin-secondary-700: 1.4rem;
+  --margin-secondary-800: 1.6rem;
+  --margin-secondary-900: 1.8rem;
+
+  /* Border radius */
+  --border-radius-100: 0.2rem;
+  --border-radius-200: 0.4rem;
+  --border-radius-300: 0.6rem;
+  --border-radius-400: 0.8rem;
+  --border-radius-500: 1rem;
+  --border-radius-600: 1.2rem;
+  --border-radius-700: 1.4rem;
+  --border-radius-800: 1.6rem;
+  --border-radius-900: 1.8rem;
+
+  /* Font size */
+  --font-size-50: 0.6rem;
+  --font-size-100: 0.8rem;
+  --font-size-150: 1rem;
+  --font-size-200: 1.2rem;
+  --font-size-250: 1.4rem;
+  --font-size-300: 1.6rem;
+  --font-size-350: 1.8rem;
+  --font-size-400: 2rem;
+  --font-size-450: 2.2rem;
+  --font-size-500: 2.4rem;
+  --font-size-550: 2.6rem;
+  --font-size-600: 2.8rem;
+  --font-size-650: 3rem;
+  --font-size-700: 3.2rem;
+  --font-size-750: 3.4rem;
+  --font-size-800: 3.6rem;
+  --font-size-850: 3.8rem;
+  --font-size-900: 4rem;
+
+  /* Font weight */
+  --font-weight-100: 100;
+  --font-weight-200: 200;
+  --font-weight-300: 300;
+  --font-weight-400: 400;
+  --font-weight-500: 500;
+  --font-weight-600: 600;
+  --font-weight-700: 700;
+  --font-weight-800: 800;
+  --font-weight-900: 900;
+
+  /* Page */
+  --max-page-width: 2200px;
+}
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+  outline: none;
 }
 
-* {
-  box-sizing: border-box;
+button:focus {
+  outline: 1px solid var(--color-primary-300) !important;
+}
+
+image {
+  max-width: 100%;
+  display: block;
+}
+
+svg {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style-type: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+h1 {
+  font-size: var(--font-size-650);
+}
+
+h2 {
+  font-size: var(--font-size-550);
+}
+
+h3 {
+  font-size: var(--font-size-450);
+}
+
+h4 {
+  font-size: var(--font-size-350);
+}
+
+h5 {
+  font-size: var(--font-size-250);
+}
+
+h6 {
+  font-size: var(--font-size-150);
+}
+
+#pageWrapper {
+  display: flex;
+  max-width: var(--max-page-width);
+  margin: 0 auto;
+}
+
+#main {
+  flex-grow: 1;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,7 +291,7 @@ a {
     color-scheme: dark;
   }
   body {
-    color: white;
-    background: black;
+    color: var(--color-neutral-100);
+    background-color: var(--color-neutral-800);
   }
 }

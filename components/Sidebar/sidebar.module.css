@@ -1,0 +1,119 @@
+#sidebar {
+  display: flex;
+  flex-direction: column;
+  column-gap: 30px;
+  flex-basis: 300px;
+  height: 100vh;
+  padding: var(--padding-primary-400) var(--padding-primary-500);
+  background: linear-gradient(180deg, var(--color-primary-900) 0%, var(--color-primary-800) 100%);
+  box-shadow: 5px 0 10px var(--color-neutral-900);
+}
+
+.navList {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.navItem__link,
+.userProfile__link {
+  display: flex;
+  align-items: center;
+  column-gap: 20px;
+  padding: var(--padding-secondary-300) var(--padding-secondary-500);
+  border-radius: var(--border-radius-900);
+  color: var(--color-primary-100);
+  font-size: var(--font-size-150);
+  background: var(--color-primary-hover-100);
+  transition: background 0.1s ease-in-out;
+}
+
+.navItem__icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* if there is user logged in - show userProfileWrapper */
+.userProfileWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.userProfile__link {
+  column-gap: 10px;
+  color: var(--color-neutral-100);
+}
+
+.userProfile__image {
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary-hover-400);
+}
+
+.userProfile__username {
+  line-height: 1.3;
+}
+
+.logoutButton {
+  display: grid;
+  place-items: center;
+  background: var(--color-danger-800);
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  box-shadow: 2px 3px 8px var(--color-neutral-700);
+  cursor: pointer;
+  transition: background 0.1s ease-in-out;
+}
+
+.logoutButton:hover {
+  background: var(--color-danger-700);
+}
+
+.logoutIcon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-neutral-100);
+}
+
+/* if there is no user logged in - show loginOrRegisterWrapper */
+.loginOrRegisterWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.loginOrRegister__link {
+  text-align: center;
+  padding: var(--padding-secondary-300) var(--padding-secondary-500);
+  border-radius: var(--border-radius-900);
+  color: var(--color-primary-100);
+  font-size: var(--font-size-150);
+  background: var(--color-primary-hover-100);
+  transition: background 0.1s ease-in-out;
+}
+
+/* Active states */
+.navItem__link.active,
+.userProfile__link.active,
+.loginOrRegister__link.active {
+  color: var(--color-neutral-100);
+  font-weight: var(--font-weight-400);
+  background: var(--color-primary-hover-300);
+}
+
+/* Hover/focus states */
+.navItem__link:hover,
+.userProfile__link:hover,
+.navItem__link:focus,
+.userProfile__link:focus,
+.loginOrRegister__link:hover,
+.loginOrRegister__link:focus {
+  background: var(--color-primary-hover-200);
+}
