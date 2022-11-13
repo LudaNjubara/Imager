@@ -1,13 +1,11 @@
 "use client";
 
+import { Poppins } from "@next/font/google";
 import { Provider } from "react-redux";
 
 import Head from "./head";
 import Sidebar from "../components/Sidebar/Index";
-
-import { store } from "../redux/store";
-
-import { Poppins } from "@next/font/google";
+import store from "../redux/store";
 
 import "./globals.css";
 
@@ -23,15 +21,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <Head />
 
       <body className={poppins.className}>
-        <div id="pageWrapper">
-          {
-            <Provider store={store}>
-              <Sidebar />
-
-              {children}
-            </Provider>
-          }
-        </div>
+        <Provider store={store}>
+          <div id="pageWrapper">
+            <Sidebar />
+            {children}
+          </div>
+        </Provider>
       </body>
     </html>
   );
