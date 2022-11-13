@@ -36,7 +36,7 @@ function Sidebar() {
     <aside id={styles.sidebar}>
       {loading ? (
         <p>Loading...</p>
-      ) : user && !user.isAnonymous ? (
+      ) : user ? (
         <>
           <div className={styles.logoWrapper}>
             <Logo />
@@ -44,61 +44,96 @@ function Sidebar() {
 
           <nav className={styles.nav}>
             <ul className={styles.navList}>
-              <li className={styles.navItem}>
-                <Link
-                  href="/"
-                  className={`${styles.navItem__link} ${activeLink === "" && styles.active}`}
-                  onClick={() => handleActiveLinkChange("")}
-                >
-                  <BsHouse className={styles.navItem__icon} />
-                  <span className={styles.navItem__text}>Home</span>
-                </Link>
-              </li>
+              {user.isAnonymous ? (
+                <li className={styles.navItem}>
+                  <Link
+                    href="/browse"
+                    className={`${styles.navItem__link} ${activeLink === "browse" && styles.active}`}
+                    onClick={() => handleActiveLinkChange("browse")}
+                  >
+                    <BsSearch className={styles.navItem__icon} />
+                    <span className={styles.navItem__text}>Browse</span>
+                  </Link>
+                </li>
+              ) : (
+                <>
+                  <li className={styles.navItem}>
+                    <Link
+                      href="/"
+                      className={`${styles.navItem__link} ${activeLink === "" && styles.active}`}
+                      onClick={() => handleActiveLinkChange("")}
+                    >
+                      <BsHouse className={styles.navItem__icon} />
+                      <span className={styles.navItem__text}>Home</span>
+                    </Link>
+                  </li>
 
-              <li className={styles.navItem}>
-                <Link
-                  href="/browse"
-                  className={`${styles.navItem__link} ${activeLink === "browse" && styles.active}`}
-                  onClick={() => handleActiveLinkChange("browse")}
-                >
-                  <BsSearch className={styles.navItem__icon} />
-                  <span className={styles.navItem__text}>Browse</span>
-                </Link>
-              </li>
+                  <li className={styles.navItem}>
+                    <Link
+                      href="/browse"
+                      className={`${styles.navItem__link} ${activeLink === "browse" && styles.active}`}
+                      onClick={() => handleActiveLinkChange("browse")}
+                    >
+                      <BsSearch className={styles.navItem__icon} />
+                      <span className={styles.navItem__text}>Browse</span>
+                    </Link>
+                  </li>
 
-              <li className={styles.navItem}>
-                <Link
-                  href="/about"
-                  className={`${styles.navItem__link} ${activeLink === "about" && styles.active}`}
-                  onClick={() => handleActiveLinkChange("about")}
-                >
-                  <BsSearch className={styles.navItem__icon} />
-                  <span className={styles.navItem__text}>About</span>
-                </Link>
-              </li>
+                  <li className={styles.navItem}>
+                    <Link
+                      href="/about"
+                      className={`${styles.navItem__link} ${activeLink === "about" && styles.active}`}
+                      onClick={() => handleActiveLinkChange("about")}
+                    >
+                      <BsSearch className={styles.navItem__icon} />
+                      <span className={styles.navItem__text}>About</span>
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </nav>
 
-          <div className={styles.userProfileWrapper}>
-            <Link
-              href="/profile"
-              className={`${styles.userProfile__link} ${activeLink === "profile" && styles.active}`}
-              onClick={() => handleActiveLinkChange("profile")}
-            >
-              <Image
-                className={styles.userProfile__image}
-                src="/images/imagerLogo_small.png"
-                alt="User profile"
-                width={35}
-                height={35}
-              />
-              <span className={styles.userProfile__username}>{user.uid}</span>
-            </Link>
+          {user.isAnonymous ? (
+            <div className={styles.loginOrRegisterWrapper}>
+              <Link
+                href="/login"
+                className={`${styles.loginOrRegister__link} ${activeLink === "login" && styles.active}`}
+                onClick={() => handleActiveLinkChange("login")}
+              >
+                <span className={styles.loginOrRegister__text}>Login</span>
+              </Link>
 
-            <button type="button" className={styles.logoutButton} onClick={signOut}>
-              <BsBoxArrowLeft className={styles.logoutIcon} />
-            </button>
-          </div>
+              <Link
+                href="/register"
+                className={`${styles.loginOrRegister__link} ${activeLink === "register" && styles.active}`}
+                onClick={() => handleActiveLinkChange("register")}
+              >
+                <span className={styles.loginOrRegister__text}>Register</span>
+              </Link>
+            </div>
+          ) : (
+            <div className={styles.userProfileWrapper}>
+              <Link
+                href="/profile"
+                className={`${styles.userProfile__link} ${activeLink === "profile" && styles.active}`}
+                onClick={() => handleActiveLinkChange("profile")}
+              >
+                <Image
+                  className={styles.userProfile__image}
+                  src="/images/imagerLogo_small.png"
+                  alt="User profile"
+                  width={35}
+                  height={35}
+                />
+                <span className={styles.userProfile__username}>{user.uid}</span>
+              </Link>
+
+              <button type="button" className={styles.logoutButton} onClick={signOut}>
+                <BsBoxArrowLeft className={styles.logoutIcon} />
+              </button>
+            </div>
+          )}
         </>
       ) : (
         <div className={styles.loginOrRegisterWrapper}>
