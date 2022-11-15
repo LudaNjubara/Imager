@@ -8,11 +8,11 @@ type TUser = {
     displayName?: string | null,
     email?: string | null,
     photoURL?: string | null,
-    emailVerified: boolean
+    readonly emailVerified: boolean
     readonly isAnonymous: boolean,
     metadata: userMetadata,
     phoneNumber?: string | null,
-    providerId: string
+    readonly providerId: string
 }
 
 export type { TUser }

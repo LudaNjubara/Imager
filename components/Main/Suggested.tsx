@@ -5,9 +5,9 @@ function Suggested() {
   const reduxUser = useAppSelector((state) => state.user);
   return (
     <div>
-      <span>Redux state</span>
+      <p>Redux state</p>
       <br />
-      <span>{reduxUser.uid}</span>
+      <p>{reduxUser.uid}</p>
     </div>
   );
 }
