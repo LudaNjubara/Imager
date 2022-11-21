@@ -3,9 +3,11 @@
 import { Poppins } from "@next/font/google";
 import { Provider } from "react-redux";
 
-import Head from "./head";
-import Sidebar from "../components/Sidebar/Index";
 import store from "../redux/store";
+
+import Head from "./head";
+import ImageUpload from "../components/ImageUpload/ImageUpload";
+import Sidebar from "../components/Sidebar/Index";
 
 import "./globals.css";
 
@@ -24,7 +26,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Provider store={store}>
           <div id="pageWrapper">
             <Sidebar />
-            {children}
+            <ImageUpload />
+            <main id="main">{children}</main>
           </div>
         </Provider>
       </body>

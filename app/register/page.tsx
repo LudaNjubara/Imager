@@ -1,5 +1,9 @@
+"use client";
+
+import RegisterForm from "../../components/Register/Index";
+
 function Register() {
-  return <div>Register</div>;
+  return <RegisterForm />;
 }
 
 export default Register;

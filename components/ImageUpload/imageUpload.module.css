@@ -1,0 +1,53 @@
+/* Image upload modal toggler */
+#imageUpload__modalOpenButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: grid;
+  place-items: center;
+  background-color: var(--color-primary-700);
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  box-shadow: 2px 3px 8px var(--color-neutral-900);
+  transition: all 0.2s ease-out;
+  z-index: 200;
+}
+
+#imageUpload__modalOpenButton:hover {
+  transform: scale(1.05);
+}
+
+#imageUpload__modalOpenButton.active .imageUpload__modalOpenButtonIcon {
+  transform: rotate(45deg);
+}
+
+.imageUpload__modalOpenButtonIcon {
+  fill: var(--color-neutral-100);
+  width: 25px;
+  height: 25px;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Image upload modal */
+#imageUpload__backgroundDarkener {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 100vw;
+  height: 100vh;
+  padding: var(--padding-primary-400);
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+#imageUpload__modal {
+  width: 100%;
+  max-width: 1000px;
+  height: 100%;
+  max-height: 600px;
+  background-color: var(--color-primary-900);
+  border-radius: var(--border-radius-300);
+}

@@ -1,0 +1,117 @@
+#loginWrapper {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  padding: var(--padding-primary-700);
+}
+
+#login__formContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  max-width: 450px;
+  padding: var(--padding-primary-500);
+  border-radius: var(--border-radius-400);
+  background: var(--color-neutral-700);
+}
+
+.login__inputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.login__input {
+  width: 100%;
+  padding: var(--padding-primary-300);
+  border-radius: var(--border-radius-300);
+  border: none;
+  background: var(--color-neutral-600);
+  color: var(--color-neutral-100);
+  font-size: var(--font-size-150);
+  font-weight: var(--font-weight-600);
+  letter-spacing: 0.4px;
+}
+
+.login__input:focus {
+  outline: 1px solid var(--color-neutral-200);
+}
+
+.login__input::placeholder {
+  color: var(--color-neutral-500);
+}
+
+.login__buttonsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login__loginButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-secondary-200) var(--padding-secondary-700);
+  border-radius: var(--border-radius-900);
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-900);
+  font-weight: var(--font-weight-700);
+  transition: all 0.2s linear;
+}
+
+.login__loginButton.login__emailButton {
+  padding: var(--padding-secondary-400) var(--padding-secondary-700);
+  border-radius: var(--border-radius-300);
+  background: linear-gradient(-45deg, var(--color-primary-100), var(--color-primary-600));
+  width: 100%;
+}
+
+.login__loginButton:hover {
+  filter: brightness(1.1);
+}
+
+.login__loginButtonIcon {
+  margin-left: var(--margin-primary-200);
+  width: 20px;
+  height: 20px;
+}
+
+.login__logoutButton {
+  padding: var(--padding-secondary-300) var(--padding-secondary-700);
+  border-radius: var(--border-radius-300);
+  background: var(--color-danger-800);
+  font-weight: var(--font-weight-600);
+  font-size: var(--font-size-150);
+  box-shadow: 0 0 8px var(--color-neutral-800);
+  transition: all 0.2s linear;
+}
+
+.login__message {
+  color: var(--color-neutral-400);
+}
+
+.login__warningMessage {
+  color: var(--color-warning-900);
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-600);
+  padding: var(--padding-secondary-100) var(--padding-secondary-300);
+  border-radius: var(--border-radius-200);
+  background: var(--color-warning-300);
+}
+
+.login__errorMessage {
+  color: var(--color-danger-900);
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-600);
+  padding: var(--padding-secondary-100) var(--padding-secondary-300);
+  border-radius: var(--border-radius-200);
+  background: var(--color-danger-300);
+}
+
+.login__logoutButton:hover {
+  background: var(--color-danger-700);
+}

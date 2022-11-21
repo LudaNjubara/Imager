@@ -9,32 +9,49 @@ import Image from "next/image";
 import Logo from "../Logo/Index";
 
 import { auth } from "../../config/firebaseConfig";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { logout } from "../../redux/userSlice";
+import { useAppDispatch } from "../../hooks/hooks";
+import { login, logout } from "../../redux/userSlice";
 
 import { BsHouse, BsSearch, BsBoxArrowLeft } from "react-icons/bs";
 import styles from "./sidebar.module.css";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useRouter } from "next/navigation";
 
 function Sidebar() {
   const [user, loading, error] = useAuthState(auth);
-  const router = useRouter();
   const pathname = usePathname();
-  const [activeLink, setActiveLink] = useState<string>(pathname?.split("/")[1] ?? "");
   const dispatch = useAppDispatch();
-  const reduxUser = useAppSelector((state) => state.user);
+  const [activeLink, setActiveLink] = useState<string>(pathname?.split("/")[1] ?? "");
 
   const signOut = () => {
     auth.signOut().then(() => {
       dispatch(logout());
-      router.push("/login");
     });
   };
 
   const handleActiveLinkChange = (page: string) => {
     setActiveLink(page);
   };
+
+  useEffect(() => {
+    if (user) {
+      dispatch(
+        login({
+          uid: user.uid,
+          isAnonymous: user.isAnonymous,
+          email: user.email,
+          displayName: user.displayName ?? user.providerData[0].displayName,
+          photoURL: user.photoURL ?? user.providerData[0].photoURL,
+          emailVerified: user.emailVerified,
+          phoneNumber: user.phoneNumber,
+          providerId: user.providerId,
+          metadata: {
+            creationTime: user.metadata.creationTime,
+            lastSignInTime: user.metadata.lastSignInTime,
+          },
+        })
+      );
+    }
+  }, [user]);
 
   useEffect(() => {
     handleActiveLinkChange(pathname?.split("/")[1] ?? "");
@@ -99,12 +116,14 @@ function Sidebar() {
               >
                 <Image
                   className={styles.userProfile__image}
-                  src="/images/imagerLogo_small.png"
+                  src={user.photoURL ?? user.providerData[0].photoURL ?? "/images/imagerLogo_small.png"}
                   alt="User profile"
                   width={35}
                   height={35}
                 />
-                <span className={styles.userProfile__username}>{reduxUser.displayName}</span>
+                <span className={styles.userProfile__username}>
+                  {user.displayName ?? user.providerData[0].displayName}
+                </span>
               </Link>
 
               <button type="button" className={styles.logoutButton} onClick={signOut}>

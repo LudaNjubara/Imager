@@ -12,6 +12,7 @@ function Logo({ isSmall }: { isSmall?: boolean }) {
         alt="Logo"
         width={isSmall ? 35 : 155}
         height={isSmall ? 40 : 95}
+        priority
       />
     </Link>
   );
