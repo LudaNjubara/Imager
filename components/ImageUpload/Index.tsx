@@ -15,7 +15,7 @@ function ImageUpload() {
     setIsModalOpen(!isModalOpen);
   };
 
-  return (
+  return !reduxUser.isAnonymous ? (
     <>
       <button
         type="button"
@@ -32,7 +32,7 @@ function ImageUpload() {
         </div>
       )}
     </>
-  );
+  ) : null;
 }
 
 export default ImageUpload;

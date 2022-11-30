@@ -3,6 +3,15 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import aws from 'aws-sdk';
 import { generateRandomImageName } from '../../utils/imageUpload/imageUploadUtils';
 
+type TData = {
+    url: string;
+    key: string;
+}
+
+type TErrorData = {
+    body: string;
+}
+
 const s3 = new aws.S3({
     credentials: {
         accessKeyId: process.env.S3_ACCESS_KEY!,
@@ -12,21 +21,25 @@ const s3 = new aws.S3({
     signatureVersion: 'v4',
 });
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse<TData | TErrorData>) {
 
     if (req.method !== 'GET') {
-        res.status(500).json({ error: 'Method not allowed' });
+        res.status(405).json({ body: 'Method not allowed' });
     }
+
+    const randomImageName = generateRandomImageName();
 
     s3.getSignedUrl('putObject', {
         Bucket: process.env.S3_BUCKET_NAME,
-        Key: generateRandomImageName(),
+        Key: randomImageName,
         Expires: 60,
         ContentType: req.query.fileType,
     }, (err, url) => {
         if (err) {
-            res.status(500).json({ error: 'Error creating a signed URL' });
+            res.status(500).json({ body: 'Error creating a signed URL' });
+            return
         }
-        res.status(200).json({ url });
+        res.status(200).json({ url, key: randomImageName });
     })
 }

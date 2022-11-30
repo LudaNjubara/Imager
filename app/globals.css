@@ -238,7 +238,7 @@ button:focus {
   outline: 1px solid var(--color-primary-300) !important;
 }
 
-image {
+img {
   max-width: 100%;
   display: block;
 }

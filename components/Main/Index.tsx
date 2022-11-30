@@ -1,5 +1,10 @@
+"use client";
+
+import { useAppSelector } from "../../hooks/hooks";
+
 function Main() {
-  return <div>aaa</div>;
+  const reduxUser = useAppSelector((state) => state.user);
+  return <div>{reduxUser.email}</div>;
 }
 
 export default Main;

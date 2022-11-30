@@ -43,11 +43,168 @@
   z-index: 100;
   backdrop-filter: blur(10px);
 }
+
 #imageUpload__modal {
+  display: flex;
+  gap: 20px;
   width: 100%;
   max-width: 1000px;
   height: 100%;
   max-height: 600px;
+  padding: var(--padding-primary-400);
   background-color: var(--color-primary-900);
   border-radius: var(--border-radius-300);
+}
+
+/* Image form */
+#imageUploadModal__imageForm {
+  flex: 0 1 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 50%;
+  height: 100%;
+  padding: var(--padding-primary-400);
+  border-radius: var(--border-radius-300);
+}
+
+#imageUploadModal__imageDescInput,
+#imageUploadModal__imageHashtagsTextarea {
+  width: 100%;
+  padding: var(--padding-primary-300) var(--padding-primary-200);
+  border-radius: var(--border-radius-300);
+  background: var(--color-neutral-600);
+  color: var(--color-neutral-100);
+  font-size: var(--font-size-150);
+  font-weight: var(--font-weight-600);
+  letter-spacing: 0.4px;
+  border: none;
+  box-shadow: 0 0 5px var(--color-neutral-700);
+}
+
+#imageUploadModal__imageHashtagsTextarea {
+  resize: none;
+  overflow-y: auto;
+  line-height: 1.4;
+  font-family: "Poppins", sans-serif;
+  font-weight: var(--font-weight-600);
+  font-size: var(--font-size-150);
+  min-height: 200px;
+}
+
+/* Textbar scrollbar styles */
+#imageUploadModal__imageHashtagsTextarea::-webkit-scrollbar {
+  width: 10px;
+}
+
+#imageUploadModal__imageHashtagsTextarea::-webkit-scrollbar-track {
+  background: var(--color-neutral-700);
+  border-radius: inherit;
+}
+
+#imageUploadModal__imageHashtagsTextarea::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-900);
+  border-radius: 10px;
+}
+
+#imageUploadModal__imageDescInput:focus,
+#imageUploadModal__imageHashtagsTextarea:focus {
+  outline: 1px solid var(--color-neutral-200);
+}
+
+#imageUploadModal__imageDescInput::placeholder,
+#imageUploadModal__imageHashtagsTextarea::placeholder {
+  color: var(--color-neutral-500);
+}
+
+#imageUploadModal__imageInputLabel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: var(--padding-secondary-200) var(--padding-primary-200);
+  border-radius: var(--border-radius-300);
+  background-color: var(--color-secondary-500);
+  cursor: pointer;
+}
+
+#imageUploadModal__imageInputLabel:hover {
+  background-color: var(--color-secondary-600);
+}
+
+#imageUploadModal__imageInputLabel:focus {
+  outline: 1px solid var(--color-neutral-200);
+}
+
+#imageUploadModal__imageInputLabel input {
+  display: none;
+}
+
+.imageUploadModal__imageInputLabelIcon {
+  fill: var(--color-neutral-100);
+  width: 25px;
+  height: 25px;
+}
+
+.imageUploadModal__imageInputLabelText {
+  font-weight: var(--font-weight-600);
+}
+
+#imageUploadModal__imageUploadButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding: var(--padding-primary-200);
+  border-radius: var(--border-radius-300);
+  background-color: var(--color-primary-800);
+  font-weight: var(--font-weight-600);
+}
+
+#imageUploadModal__imageUploadButton:disabled {
+  background-color: var(--color-primary-hover-800);
+  cursor: not-allowed;
+}
+
+/* Hashtags notice */
+.imageUploadModal__notice {
+  font-weight: var(--font-weight-600);
+  font-size: var(--font-size-100);
+  color: var(--color-neutral-300);
+  letter-spacing: 0.4px;
+  line-height: 1.2;
+}
+
+.imageUploadModal__notice.active {
+  color: var(--color-warning-700);
+}
+
+/* Image preview container */
+#imageUploadModal__imagePreviewContainer {
+  display: grid;
+  place-items: center;
+  position: relative;
+  flex: 1;
+  border: 2px dashed var(--color-primary-hover-300);
+  border-radius: var(--border-radius-300);
+  overflow: hidden;
+}
+
+#imageUploadModal__imagePreviewContainer::after {
+  inset: 0;
+  content: "Image preview";
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  background-color: var(--color-primary-hover-300);
+  letter-spacing: 0.4px;
+  opacity: 0.4;
+}
+
+#imageUploadModal__imagePreviewContainer img {
+  z-index: 1;
+  object-fit: contain;
 }

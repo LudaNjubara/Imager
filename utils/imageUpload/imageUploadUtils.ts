@@ -1,14 +1,22 @@
 import { randomBytes } from 'crypto';
+import { database } from "../../config/firebaseConfig"
+import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { TImageInfo } from '../../app/globals';
+
+type TAWSResponse = {
+    imageKey: string | null,
+}
 
 export const generateRandomImageName = (bytes: number = 32) => randomBytes(bytes).toString('hex');
 
-export const uploadImageToAWS = async (image: File) => {
+export const uploadImageToAWS = async (image: File): Promise<TAWSResponse> => {
+    let imageKey = null;
 
     if (image) {
         const fileType = encodeURIComponent(image.type);
 
         const res = await fetch(`/api/imageupload?fileType=${fileType}`);
-        const { url } = await res.json();
+        const { url, key } = await res.json();
 
         const formData = new FormData();
         formData.append("image", image);
@@ -18,12 +26,24 @@ export const uploadImageToAWS = async (image: File) => {
             body: formData,
         })
             .then((res) => {
-                if (res.ok) {
-                    console.log("Uploaded successfully!");
-                } else {
-                    console.error("Upload failed.");
-                }
+                console.log("Uploaded image successfully!");
+                imageKey = key
+
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                console.log("Error uploading image: ", err);
+            });
     }
+
+    return { imageKey };
 };
+
+export const uploadImageInfoToDatabase = (imageInfo: TImageInfo) => {
+
+    const docRef = doc(database, `images/${imageInfo.key}`);
+    setDoc(docRef, imageInfo).then(() => {
+        console.log("Document written with ID: ", docRef.id);
+    }).catch((error) => {
+        console.error("Error adding document: ", error);
+    });
+}

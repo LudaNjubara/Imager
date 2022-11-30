@@ -9,8 +9,6 @@ import Image from "next/image";
 import Logo from "../Logo/Index";
 
 import { auth } from "../../config/firebaseConfig";
-import { useAppDispatch } from "../../hooks/hooks";
-import { login, logout } from "../../redux/userSlice";
 
 import { BsHouse, BsSearch, BsBoxArrowLeft } from "react-icons/bs";
 import styles from "./sidebar.module.css";
@@ -19,39 +17,11 @@ import { useAuthState } from "react-firebase-hooks/auth";
 function Sidebar() {
   const [user, loading, error] = useAuthState(auth);
   const pathname = usePathname();
-  const dispatch = useAppDispatch();
   const [activeLink, setActiveLink] = useState<string>(pathname?.split("/")[1] ?? "");
-
-  const signOut = () => {
-    auth.signOut().then(() => {
-      dispatch(logout());
-    });
-  };
 
   const handleActiveLinkChange = (page: string) => {
     setActiveLink(page);
   };
-
-  useEffect(() => {
-    if (user) {
-      dispatch(
-        login({
-          uid: user.uid,
-          isAnonymous: user.isAnonymous,
-          email: user.email,
-          displayName: user.displayName ?? user.providerData[0].displayName,
-          photoURL: user.photoURL ?? user.providerData[0].photoURL,
-          emailVerified: user.emailVerified,
-          phoneNumber: user.phoneNumber,
-          providerId: user.providerId,
-          metadata: {
-            creationTime: user.metadata.creationTime,
-            lastSignInTime: user.metadata.lastSignInTime,
-          },
-        })
-      );
-    }
-  }, [user]);
 
   useEffect(() => {
     handleActiveLinkChange(pathname?.split("/")[1] ?? "");
@@ -63,36 +33,43 @@ function Sidebar() {
 
   return (
     <aside id={styles.sidebar}>
-      {loading ? (
-        <p>Loading...</p>
-      ) : user ? (
+      <div>{loading && "Loading"}</div>
+
+      {!loading && (
         <>
-          <div className={styles.logoWrapper}>
-            <Logo />
-          </div>
+          {user && (
+            <>
+              <div className={styles.logoWrapper}>
+                <Logo />
+              </div>
 
-          <nav className={styles.nav}>
-            <ul className={styles.navList}>
-              <li className={styles.navItem}>
-                <Link href="/" className={`${styles.navItem__link} ${activeLink === "" && styles.active}`}>
-                  <BsHouse className={styles.navItem__icon} />
-                  <span className={styles.navItem__text}>Home</span>
-                </Link>
-              </li>
+              <nav className={styles.nav}>
+                <ul className={styles.navList}>
+                  <li className={styles.navItem}>
+                    <Link
+                      href="/"
+                      className={`${styles.navItem__link} ${activeLink === "" && styles.active}`}
+                    >
+                      <BsHouse className={styles.navItem__icon} />
+                      <span className={styles.navItem__text}>Home</span>
+                    </Link>
+                  </li>
 
-              <li className={styles.navItem}>
-                <Link
-                  href="/about"
-                  className={`${styles.navItem__link} ${activeLink === "about" && styles.active}`}
-                >
-                  <BsSearch className={styles.navItem__icon} />
-                  <span className={styles.navItem__text}>About</span>
-                </Link>
-              </li>
-            </ul>
-          </nav>
+                  <li className={styles.navItem}>
+                    <Link
+                      href="/about"
+                      className={`${styles.navItem__link} ${activeLink === "about" && styles.active}`}
+                    >
+                      <BsSearch className={styles.navItem__icon} />
+                      <span className={styles.navItem__text}>About</span>
+                    </Link>
+                  </li>
+                </ul>
+              </nav>
+            </>
+          )}
 
-          {user.isAnonymous ? (
+          {(!user || user.isAnonymous) && (
             <div className={styles.loginOrRegisterWrapper}>
               <Link
                 href="/login"
@@ -108,7 +85,9 @@ function Sidebar() {
                 <span className={styles.loginOrRegister__text}>Register</span>
               </Link>
             </div>
-          ) : (
+          )}
+
+          {user && !user.isAnonymous && (
             <div className={styles.userProfileWrapper}>
               <Link
                 href="/profile"
@@ -126,28 +105,12 @@ function Sidebar() {
                 </span>
               </Link>
 
-              <button type="button" className={styles.logoutButton} onClick={signOut}>
+              <button type="button" className={styles.logoutButton} onClick={() => auth.signOut()}>
                 <BsBoxArrowLeft className={styles.logoutIcon} />
               </button>
             </div>
           )}
         </>
-      ) : (
-        <div className={styles.loginOrRegisterWrapper}>
-          <Link
-            href="/login"
-            className={`${styles.loginOrRegister__link} ${activeLink === "login" && styles.active}`}
-          >
-            <span className={styles.loginOrRegister__text}>Login</span>
-          </Link>
-
-          <Link
-            href="/register"
-            className={`${styles.loginOrRegister__link} ${activeLink === "register" && styles.active}`}
-          >
-            <span className={styles.loginOrRegister__text}>Register</span>
-          </Link>
-        </div>
       )}
     </aside>
   );

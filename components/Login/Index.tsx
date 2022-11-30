@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
 
 import {
   signInAnonymously,
@@ -9,51 +9,31 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 
-import { loginAndRegister__messageVariants } from "../../constants/constants";
+import { TEmailUserData, TEmailUserError } from "../../app/globals";
+import { emailRegex, loginAndRegister__messageVariants } from "../../constants/constants";
 import { authProviderFactory } from "../../services/authProviderFactory";
 import { auth } from "../../config/firebaseConfig";
-import { useAppDispatch } from "../../hooks/hooks";
-import { logout } from "../../redux/userSlice";
-
-import Loading from "../Loading/Index";
 
 import { FcGoogle } from "react-icons/fc";
 import { BsGithub } from "react-icons/bs";
 import { FaMask } from "react-icons/fa";
 import styles from "./login.module.css";
 
-interface IEmailUser {
-  email: string;
-  password: string;
-}
-
-type IEmailUserError = {
-  email: {
-    message?: string;
-  };
-  password: {
-    message?: string;
-  };
-};
-
 function LoginForm() {
   const [user, loading, error] = useAuthState(auth);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const dispatch = useAppDispatch();
-  const router = useRouter();
 
   const [firebaseErrorMessage, setFirebaseErrorMessage] = useState<string | undefined>(undefined);
 
-  const [emailUser, setEmailUser] = useState<IEmailUser>({
+  const [emailUser, setEmailUser] = useState<TEmailUserData>({
     email: "",
     password: "",
   });
 
-  const [emailUserError, setEmailUserError] = useState<IEmailUserError>({
+  const [emailUserError, setEmailUserError] = useState<TEmailUserError>({
     email: {
       message: undefined,
     },
@@ -62,20 +42,10 @@ function LoginForm() {
     },
   });
 
-  const handleSignOut = () => {
-    auth.signOut().then(() => {
-      dispatch(logout());
-    });
-  };
-
   const anonymousSignIn = () => {
-    signInAnonymously(auth)
-      .then(({ user }) => {
-        router.push("/");
-      })
-      .catch((error) => {
-        console.log("error", error);
-      });
+    signInAnonymously(auth).catch((error) => {
+      console.log("error", error);
+    });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,7 +55,6 @@ function LoginForm() {
 
   // validate email and password in an arrow function
   const validateEmailAndPassword = () => {
-    const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i;
     setFirebaseErrorMessage(undefined);
 
     if (emailUser.email.length === 0) {
@@ -116,7 +85,7 @@ function LoginForm() {
     }
   };
 
-  const handleEmailSignIn = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEmailSignIn = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     validateEmailAndPassword();
     setIsSubmitting(true);
@@ -124,79 +93,51 @@ function LoginForm() {
 
   const handleFederateSignIn = (providerId: string) => {
     const provider = authProviderFactory(providerId);
-    // add scope for getting displayName
+
+    // add scope for getting user's additional info (displayName, photoURL etc.)
     if (providerId === "google") provider.instance.addScope("profile");
     else if (providerId === "github") provider.instance.addScope("user");
 
     if (user) {
       const currentUser = user;
 
-      linkWithPopup(currentUser, provider.instance)
-        .then(({ user }) => {
-          // Accounts successfully linked.
-          router.push("/");
-        })
-        .catch((error) => {
-          if (error.code === "auth/credential-already-in-use") {
-            signInWithRedirect(auth, provider.instance)
-              .then(({ user }) => {
-                router.push("/");
-              })
-              .catch((error) => {
-                // Handle Errors here.
-                // ...
-                console.error("error", error);
-              });
-          }
-        });
+      linkWithPopup(currentUser, provider.instance).catch((error) => {
+        if (error.code === "auth/credential-already-in-use") {
+          signInWithRedirect(auth, provider.instance).catch((error) => {
+            console.error("error", error);
+          });
+        }
+      });
     } else {
-      signInWithPopup(auth, provider.instance)
-        .then(({ user }) => {
-          router.push("/");
-        })
-        .catch((error) => {
-          console.log("error", error);
-        });
+      signInWithPopup(auth, provider.instance).catch((error) => {
+        console.log("error", error);
+      });
     }
   };
 
   useEffect(() => {
     if (isSubmitting && emailUserError.email.message === "" && emailUserError.password.message === "") {
-      signInWithEmailAndPassword(auth, emailUser.email, emailUser.password)
-        .then(({ user }) => {
-          router.push("/");
-        })
-        .catch((error) => {
-          console.log("error", error);
-          if (error.code === "auth/user-not-found") {
-            setFirebaseErrorMessage("No such user");
-          } else if (error.code === "auth/wrong-password") {
-            setFirebaseErrorMessage("Wrong password");
-          }
-        });
+      signInWithEmailAndPassword(auth, emailUser.email, emailUser.password).catch((error) => {
+        console.log("error", error);
+
+        if (error.code === "auth/user-not-found") {
+          setFirebaseErrorMessage("No such user");
+        } else if (error.code === "auth/wrong-password") {
+          setFirebaseErrorMessage("Wrong password");
+        }
+      });
     }
   }, [isSubmitting, emailUserError]);
 
   useEffect(() => {
-    getRedirectResult(auth)
-      .then((result) => {
-        if (result) {
-          const user = result.user;
-          // User is signed in.
-
-          router.push("/");
-        }
-      })
-      .catch((error) => {
-        console.log("error", error);
-      });
+    getRedirectResult(auth).catch((error) => {
+      console.log("error", error);
+    });
   }, []);
 
   return (
     <div id={styles.loginWrapper}>
-      {loading ? (
-        <Loading />
-      ) : (
+      {!loading && (
         <div id={styles.login__formContainer}>
           <h4 className={styles.login__title}>
             {!user || user?.isAnonymous ? "Log in" : "Already logged in"}
@@ -304,7 +245,7 @@ function LoginForm() {
           {user && !user?.isAnonymous && (
             <>
               <p className={styles.login__message}>Log out before logging in as another user.</p>
-              <button type="button" className={styles.login__logoutButton} onClick={handleSignOut}>
+              <button type="button" className={styles.login__logoutButton} onClick={() => auth.signOut()}>
                 Logout
               </button>
             </>

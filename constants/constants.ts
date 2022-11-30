@@ -1,4 +1,12 @@
-export const loginAndRegister__messageVariants = {
+import { Poppins } from "@next/font/google";
+
+const poppins = Poppins({
+    weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+    style: ["normal", "italic"],
+    fallback: ["system-ui", "arial"],
+});
+
+const loginAndRegister__messageVariants = {
     hidden: {
         opacity: 0,
         y: -5,
@@ -13,7 +21,7 @@ export const loginAndRegister__messageVariants = {
     },
 };
 
-export const imageUpload__modalVariants = {
+const imageUpload__modalVariants = {
     hidden: {
         opacity: 0,
         y: -5,
@@ -32,3 +40,23 @@ export const imageUpload__modalVariants = {
         scale: 0.6
     }
 }
+
+const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i;
+// password regex
+// at leaast 6 characters
+// at least one uppercase letter
+// at least one lowercase letter
+// at least one number
+// at least one special character
+// no spaces
+// max 16 characters
+const MIN_PASSWORD_LENGTH = 6;
+const MAX_PASSWORD_LENGTH = 15;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{6,16}$/;
+// username regex
+// at least 3 characters
+// max 16 characters
+// no special characters
+const usernameRegex = /^[a-zA-Z0-9]{3,16}$/;
+
+export { poppins, loginAndRegister__messageVariants, imageUpload__modalVariants, emailRegex, passwordRegex, usernameRegex, MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH };

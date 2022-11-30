@@ -1,52 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent, ChangeEvent } from "react";
 
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 
-import { loginAndRegister__messageVariants } from "../../constants/constants";
+import {
+  emailRegex,
+  loginAndRegister__messageVariants,
+  MAX_PASSWORD_LENGTH,
+  MIN_PASSWORD_LENGTH,
+  passwordRegex,
+  usernameRegex,
+} from "../../constants/constants";
+import { TEmailUserData, TEmailUserError } from "../../app/globals";
 import { auth } from "../../config/firebaseConfig";
 
 import styles from "./register.module.css";
 
-interface IEmailUser {
-  username: string;
-  email: string;
-  password: string;
-}
-
-type IEmailUserError = {
-  username: {
-    message: string;
-  };
-  email: {
-    message?: string;
-  };
-  password: {
-    message?: string;
-    containsEnoughCharacters?: boolean;
-    containsUpperCaseCharacter?: boolean;
-    containsLowerCaseCharacter?: boolean;
-    containsNumber?: boolean;
-  };
-};
-
 function RegisterForm() {
-  const [user, loading, error] = useAuthState(auth);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
 
-  const [emailUser, setEmailUser] = useState<IEmailUser>({
+  const [emailUser, setEmailUser] = useState<TEmailUserData>({
     username: "",
     email: "",
     password: "",
   });
 
-  const [emailUserError, setEmailUserError] = useState<IEmailUserError>({
+  const [emailUserError, setEmailUserError] = useState<TEmailUserError>({
     username: {
-      message: "",
+      message: undefined,
     },
     email: {
       message: undefined,
@@ -62,29 +44,12 @@ function RegisterForm() {
 
   const [firebaseErrorMessage, setFirebaseErrorMessage] = useState<string | undefined>(undefined);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEmailUser({ ...emailUser, [name]: value });
   };
 
-  // validate email and password in an arrow function
   const validateForm = () => {
-    const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i;
-    // password regex
-    // at leaast 6 characters
-    // at least one uppercase letter
-    // at least one lowercase letter
-    // at least one number
-    // at least one special character
-    // no spaces
-    // max 16 characters
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{6,16}$/;
-    // username regex
-    // at least 3 characters
-    // max 16 characters
-    // no special characters
-    const usernameRegex = /^[a-zA-Z0-9]{3,16}$/;
-
     setFirebaseErrorMessage(undefined);
 
     if (!emailUser.username) {
@@ -131,15 +96,15 @@ function RegisterForm() {
       setEmailUserError((prev) => {
         return { ...prev, password: { message: "Password is required" } };
       });
-    }
-    // password must be at least 6 characters and no more than 15 characters and must include at least one upper case letter, one lower case letter, and one numeric digit. It can have special characters.
-    else if (!passwordRegex.test(emailUser.password)) {
+    } else if (!passwordRegex.test(emailUser.password)) {
       setEmailUserError((prev) => {
         return {
           ...prev,
           password: {
             message: "Password is not valid",
-            containsEnoughCharacters: emailUser.password.length >= 6 && emailUser.password.length <= 15,
+            containsEnoughCharacters:
+              emailUser.password.length >= MIN_PASSWORD_LENGTH &&
+              emailUser.password.length <= MAX_PASSWORD_LENGTH,
             containsUpperCaseCharacter: !!emailUser.password.match(/[A-Z]/),
             containsLowerCaseCharacter: !!emailUser.password.match(/[a-z]/),
             containsNumber: !!emailUser.password.match(/[0-9]/),
@@ -153,7 +118,7 @@ function RegisterForm() {
     }
   };
 
-  const handleEmailSignIn = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEmailSignIn = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     validateForm();
     setIsSubmitting(true);
@@ -162,6 +127,7 @@ function RegisterForm() {
   useEffect(() => {
     if (
       isSubmitting &&
+      emailUserError.username &&
       emailUserError.username.message === "" &&
       emailUserError.email.message === "" &&
       emailUserError.password.message === ""
@@ -170,17 +136,13 @@ function RegisterForm() {
         .then(({ user }) => {
           updateProfile(user, {
             displayName: emailUser.username,
-          })
-            .then(() => {
-              router.push("/");
-            })
-            .catch((error) => {
-              if (error.code === "auth/invalid-display-name") {
-                setFirebaseErrorMessage("Username is not valid");
-              } else if (error.code === "auth/display-name-too-long") {
-                setFirebaseErrorMessage("Username is too long");
-              }
-            });
+          }).catch((error) => {
+            if (error.code === "auth/invalid-display-name") {
+              setFirebaseErrorMessage("Username is not valid");
+            } else if (error.code === "auth/display-name-too-long") {
+              setFirebaseErrorMessage("Username is too long");
+            }
+          });
         })
         .catch((error) => {
           if (error.code === "auth/email-already-in-use") {
