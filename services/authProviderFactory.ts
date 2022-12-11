@@ -1,24 +1,22 @@
 import { GithubAuthProvider, GoogleAuthProvider } from "firebase/auth";
 import { googleProvider, gitHubProvider } from "../config/firebaseConfig";
+import { TFederalProvider } from "../types/globals";
 
-export const authProviderFactory = (authProvider: string | undefined) => {
-    switch (authProvider?.toLowerCase()) {
-        case 'google':
+export const authProviderFactory = (providerId: TFederalProvider) => {
+    switch (providerId) {
+        case 'Google':
             return {
                 instance: googleProvider,
                 class: GoogleAuthProvider
             };
 
-        case 'github':
+        case 'GitHub':
             return {
                 instance: gitHubProvider,
                 class: GithubAuthProvider
             };
 
         default:
-            return {
-                instance: googleProvider,
-                class: GoogleAuthProvider
-            };
+            throw new Error('Invalid providerId');
     }
 }

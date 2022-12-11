@@ -5,6 +5,12 @@ interface userMetadata {
     lastSignInTime?: string;
 }
 
+type TFederalProvider = "Google" | "GitHub";
+type TRegisterProvider = "Email" | "Google" | "GitHub";
+type TLoginProvider = "Email" | "Google" | "GitHub" | "Anonymous";
+type TAccountPlanName = "Bronze" | "Gold" | "Platinum";
+type TAccountRole = "Admin" | "User";
+
 type TUser = {
     readonly uid: string,
     displayName: string | null,
@@ -17,13 +23,19 @@ type TUser = {
     readonly providerId: string
 }
 
-type TEmailUserData = {
+type TUserData = {
     username?: string,
     email: string;
     password: string;
+    accountPlan?: TAccountPlanName;
+    accountRole?: TAccountRole;
+    maxUploadLimit?: number;
+    dailyUploadLimit?: number;
+    uploadSizeLimit?: number;
+    uploadsUsed?: number;
 };
 
-type TEmailUserError = {
+type TUserDataError = {
     username?: {
         message?: string;
     };
@@ -36,6 +48,9 @@ type TEmailUserError = {
         containsUpperCaseCharacter?: boolean;
         containsLowerCaseCharacter?: boolean;
         containsNumber?: boolean;
+    };
+    accountPlan?: {
+        message?: string;
     };
 };
 
@@ -50,4 +65,12 @@ type TImageInfo = {
     uploadDate: Timestamp | FieldValue,
 }
 
-export type { TUser, TEmailUserData, TEmailUserError, TImageInfo }
+type TAccountPlan = {
+    name: string,
+    price: number,
+    uploadSizeLimit: number,
+    dailyUploadLimit: number,
+    maxUploadLimit: number,
+}
+
+export type { TUser, TUserData, TUserDataError, TImageInfo, TFederalProvider, TRegisterProvider, TLoginProvider, TAccountPlan, TAccountPlanName, TAccountRole };

@@ -1,26 +1,19 @@
-import { useEffect, useState, FormEvent } from "react";
+import { useEffect, useState } from "react";
 
-import {
-  signInAnonymously,
-  signInWithPopup,
-  linkWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 
-import { TEmailUserData, TEmailUserError } from "../../app/globals";
+import { TLoginProvider, TUserData, TUserDataError } from "../../types/globals";
 import { emailRegex, loginAndRegister__messageVariants } from "../../constants/constants";
-import { authProviderFactory } from "../../services/authProviderFactory";
 import { auth } from "../../config/firebaseConfig";
+import login from "../../services/Login/Login.class";
 
 import { FcGoogle } from "react-icons/fc";
 import { BsGithub } from "react-icons/bs";
 import { FaMask } from "react-icons/fa";
 import styles from "./login.module.css";
+import LogoutFirst from "../common/LogoutFirst/LogoutFirst";
 
 function LoginForm() {
   const [user, loading, error] = useAuthState(auth);
@@ -28,12 +21,12 @@ function LoginForm() {
 
   const [firebaseErrorMessage, setFirebaseErrorMessage] = useState<string | undefined>(undefined);
 
-  const [emailUser, setEmailUser] = useState<TEmailUserData>({
+  const [userData, setUserData] = useState<TUserData>({
     email: "",
     password: "",
   });
 
-  const [emailUserError, setEmailUserError] = useState<TEmailUserError>({
+  const [userDataError, setUserDataError] = useState<TUserDataError>({
     email: {
       message: undefined,
     },
@@ -42,31 +35,25 @@ function LoginForm() {
     },
   });
 
-  const anonymousSignIn = () => {
-    signInAnonymously(auth).catch((error) => {
-      console.log("error", error);
-    });
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setEmailUser({ ...emailUser, [name]: value });
+    setUserData({ ...userData, [name]: value });
   };
 
   // validate email and password in an arrow function
   const validateEmailAndPassword = () => {
     setFirebaseErrorMessage(undefined);
 
-    if (emailUser.email.length === 0) {
-      setEmailUserError((prev) => {
+    if (userData.email.length === 0) {
+      setUserDataError((prev) => {
         return { ...prev, email: { message: "Email is required" } };
       });
-    } else if (!emailUser.email.match(emailRegex)) {
-      setEmailUserError((prev) => {
+    } else if (!userData.email.match(emailRegex)) {
+      setUserDataError((prev) => {
         return { ...prev, email: { message: "Email is not valid" } };
       });
     } else {
-      setEmailUserError((prev) => {
+      setUserDataError((prev) => {
         return {
           ...prev,
           email: { message: "" },
@@ -74,74 +61,42 @@ function LoginForm() {
       });
     }
 
-    if (emailUser.password.length === 0) {
-      setEmailUserError((prev) => {
+    if (userData.password.length === 0) {
+      setUserDataError((prev) => {
         return { ...prev, password: { message: "Password is required" } };
       });
     } else {
-      setEmailUserError((prev) => {
+      setUserDataError((prev) => {
         return { ...prev, password: { message: "" } };
       });
     }
   };
 
-  const handleEmailSignIn = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleEmailLogin = () => {
     validateEmailAndPassword();
     setIsSubmitting(true);
   };
 
-  const handleFederateSignIn = (providerId: string) => {
-    const provider = authProviderFactory(providerId);
-
-    // add scope for getting user's additional info (displayName, photoURL etc.)
-    if (providerId === "google") provider.instance.addScope("profile");
-    else if (providerId === "github") provider.instance.addScope("user");
-
-    if (user) {
-      const currentUser = user;
-
-      linkWithPopup(currentUser, provider.instance).catch((error) => {
-        if (error.code === "auth/credential-already-in-use") {
-          signInWithRedirect(auth, provider.instance).catch((error) => {
-            console.error("error", error);
-          });
-        }
-      });
-    } else {
-      signInWithPopup(auth, provider.instance).catch((error) => {
-        console.log("error", error);
-      });
-    }
+  const handleLogin = (providerId: TLoginProvider) => {
+    login.ChangeStrategy(providerId);
+    login.Login();
   };
 
   useEffect(() => {
-    if (isSubmitting && emailUserError.email.message === "" && emailUserError.password.message === "") {
-      signInWithEmailAndPassword(auth, emailUser.email, emailUser.password).catch((error) => {
-        console.log("error", error);
-
-        if (error.code === "auth/user-not-found") {
-          setFirebaseErrorMessage("No such user");
-        } else if (error.code === "auth/wrong-password") {
-          setFirebaseErrorMessage("Wrong password");
-        }
-      });
+    if (isSubmitting && !userDataError.email.message && !userDataError.password.message) {
+      handleLogin("Email");
     }
-  }, [isSubmitting, emailUserError]);
-
-  useEffect(() => {
-    getRedirectResult(auth).catch((error) => {
-      console.log("error", error);
-    });
-  }, []);
+  }, [isSubmitting, userDataError]);
 
   return (
     <div id={styles.loginWrapper}>
       {!loading && (
-        <div id={styles.login__formContainer}>
+        <div className={styles.login__formContainer}>
           <h4 className={styles.login__title}>
             {!user || user?.isAnonymous ? "Log in" : "Already logged in"}
           </h4>
+
+          {user && !user.isAnonymous && <LogoutFirst />}
 
           {(!user || user?.isAnonymous) && (
             <>
@@ -159,7 +114,7 @@ function LoginForm() {
                 )}
               </AnimatePresence>
 
-              <form onSubmit={handleEmailSignIn} className={styles.login__inputContainer}>
+              <form className={styles.login__inputContainer}>
                 <label htmlFor="emailInput">
                   <input
                     type="email"
@@ -167,12 +122,12 @@ function LoginForm() {
                     name="email"
                     placeholder="Email.."
                     className={styles.login__input}
-                    value={emailUser.email}
+                    value={userData.email}
                     onChange={handleInputChange}
                   />
                 </label>
                 <AnimatePresence>
-                  {emailUserError.email?.message && (
+                  {userDataError.email?.message && (
                     <motion.p
                       initial="hidden"
                       animate="visible"
@@ -180,7 +135,7 @@ function LoginForm() {
                       variants={loginAndRegister__messageVariants}
                       className={styles.login__errorMessage}
                     >
-                      {emailUserError.email?.message}
+                      {userDataError.email?.message}
                     </motion.p>
                   )}
                 </AnimatePresence>
@@ -192,12 +147,12 @@ function LoginForm() {
                     name="password"
                     placeholder="Password.."
                     className={styles.login__input}
-                    value={emailUser.password}
+                    value={userData.password}
                     onChange={handleInputChange}
                   />
                 </label>
                 <AnimatePresence>
-                  {emailUserError.password?.message && (
+                  {userDataError.password?.message && (
                     <motion.p
                       initial="hidden"
                       animate="visible"
@@ -205,12 +160,16 @@ function LoginForm() {
                       variants={loginAndRegister__messageVariants}
                       className={styles.login__errorMessage}
                     >
-                      {emailUserError.password?.message}
+                      {userDataError.password?.message}
                     </motion.p>
                   )}
                 </AnimatePresence>
 
-                <button type="submit" className={`${styles.login__loginButton} ${styles.login__emailButton}`}>
+                <button
+                  type="button"
+                  className={`${styles.login__loginButton} ${styles.login__emailButton}`}
+                  onClick={handleEmailLogin}
+                >
                   Log in
                 </button>
               </form>
@@ -219,7 +178,7 @@ function LoginForm() {
                 <button
                   type="button"
                   className={styles.login__loginButton}
-                  onClick={() => handleFederateSignIn("google")}
+                  onClick={() => handleLogin("Google")}
                 >
                   Continue with Google
                   <FcGoogle className={styles.login__loginButtonIcon} />
@@ -227,27 +186,22 @@ function LoginForm() {
                 <button
                   type="button"
                   className={styles.login__loginButton}
-                  onClick={() => handleFederateSignIn("github")}
+                  onClick={() => handleLogin("GitHub")}
                 >
                   Continue with GitHub
                   <BsGithub className={styles.login__loginButtonIcon} />
                 </button>
                 {!user && (
-                  <button type="button" className={styles.login__loginButton} onClick={anonymousSignIn}>
+                  <button
+                    type="button"
+                    className={styles.login__loginButton}
+                    onClick={() => handleLogin("Anonymous")}
+                  >
                     Continue as Guest
                     <FaMask className={styles.login__loginButtonIcon} />
                   </button>
                 )}
               </div>
-            </>
-          )}
-
-          {user && !user?.isAnonymous && (
-            <>
-              <p className={styles.login__message}>Log out before logging in as another user.</p>
-              <button type="button" className={styles.login__logoutButton} onClick={() => auth.signOut()}>
-                Logout
-              </button>
             </>
           )}
         </div>

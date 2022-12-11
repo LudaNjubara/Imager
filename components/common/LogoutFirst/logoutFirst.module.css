@@ -1,0 +1,17 @@
+.login__logoutButton {
+  padding: var(--padding-secondary-300) var(--padding-secondary-700);
+  border-radius: var(--border-radius-300);
+  background: var(--color-danger-800);
+  font-weight: var(--font-weight-600);
+  font-size: var(--font-size-150);
+  box-shadow: 0 0 8px var(--color-neutral-800);
+  transition: all 0.2s linear;
+}
+
+.login__logoutButton:hover {
+  background: var(--color-danger-700);
+}
+
+.login__message {
+  color: var(--color-neutral-400);
+}

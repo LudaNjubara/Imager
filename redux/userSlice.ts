@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { TUser } from "../app/globals";
+import { TUser } from "../types/globals";
 import type { RootState } from './store'
 
 const initialState: TUser = {

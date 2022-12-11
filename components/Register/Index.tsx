@@ -1,32 +1,59 @@
-import { useEffect, useState, FormEvent, ChangeEvent } from "react";
-
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { motion } from "framer-motion";
-import { AnimatePresence } from "framer-motion";
+import { useEffect, useState, ChangeEvent, useMemo } from "react";
+import { getRedirectResult } from "firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 import {
   emailRegex,
-  loginAndRegister__messageVariants,
   MAX_PASSWORD_LENGTH,
   MIN_PASSWORD_LENGTH,
   passwordRegex,
   usernameRegex,
 } from "../../constants/constants";
-import { TEmailUserData, TEmailUserError } from "../../app/globals";
+import {
+  TAccountPlan,
+  TAccountPlanName,
+  TUserData,
+  TUserDataError,
+  TRegisterProvider,
+} from "../../types/globals";
+import { useAccountPlans } from "../../hooks/hooks";
+import createAccount from "../../services/Register/CreateAccount.class";
+import observableRegisterProvider, {
+  ObserverRegisterProvider,
+} from "../../services/Register/ObservableRegisterProvider.class";
 import { auth } from "../../config/firebaseConfig";
 
+import UserInfo from "./UserInfo";
+import ChooseAccountPlan from "./ChoosePlan";
+
 import styles from "./register.module.css";
+import LogoutFirst from "../common/LogoutFirst/LogoutFirst";
+
+type TActiveFormSteps = "userInfo" | "chooseAccountPlan";
 
 function RegisterForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [user, loading, error] = useAuthState(auth);
+  const [activeFormStep, setActiveFormStep] = useState<TActiveFormSteps>("userInfo");
+  const [accountPlans, setAccountPlans] = useState<TAccountPlan[]>();
+  const [selectedAccountPlan, setSelectedAccountPlan] = useState<TAccountPlan>();
+  const [firebaseErrorMessage, setFirebaseErrorMessage] = useState<string | undefined>(undefined);
+  const [currentRegisterProvider, setCurrentRegisterProvider] = useState<TRegisterProvider>(
+    createAccount.currentRegisterProvider
+  );
 
-  const [emailUser, setEmailUser] = useState<TEmailUserData>({
+  const [userData, setUserData] = useState<TUserData>({
     username: "",
     email: "",
     password: "",
+    accountPlan: "Bronze",
+    accountRole: "User",
+    dailyUploadLimit: selectedAccountPlan?.dailyUploadLimit,
+    maxUploadLimit: selectedAccountPlan?.maxUploadLimit,
+    uploadSizeLimit: selectedAccountPlan?.uploadSizeLimit,
+    uploadsUsed: 0,
   });
 
-  const [emailUserError, setEmailUserError] = useState<TEmailUserError>({
+  const [userDataError, setUserDataError] = useState<TUserDataError>({
     username: {
       message: undefined,
     },
@@ -40,51 +67,85 @@ function RegisterForm() {
       containsLowerCaseCharacter: false,
       containsNumber: false,
     },
+    accountPlan: {
+      message: undefined,
+    },
   });
 
-  const [firebaseErrorMessage, setFirebaseErrorMessage] = useState<string | undefined>(undefined);
+  const onRegisterProviderChanged: ObserverRegisterProvider = (providerId: TRegisterProvider) => {
+    setCurrentRegisterProvider(providerId);
+  };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setEmailUser({ ...emailUser, [name]: value });
+    setUserData({ ...userData, [name]: value });
+  };
+
+  const handleProviderInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    createAccount.ChangeStrategy(value as TRegisterProvider);
+  };
+
+  const handleAccountPlanInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setSelectedAccountPlan(accountPlans?.find((plan) => plan.name === value));
+  };
+
+  const handleFormStepChange = () => {
+    if (activeFormStep === "userInfo") {
+      if (createAccount.currentRegisterProvider !== "Email") {
+        setActiveFormStep("chooseAccountPlan");
+      } else {
+        if (
+          userDataError.username &&
+          userDataError.username.message === "" &&
+          userDataError.email.message === "" &&
+          userDataError.password.message === ""
+        ) {
+          setActiveFormStep("chooseAccountPlan");
+        }
+      }
+    } else {
+      setActiveFormStep("userInfo");
+    }
   };
 
   const validateForm = () => {
     setFirebaseErrorMessage(undefined);
 
-    if (!emailUser.username) {
-      setEmailUserError({
-        ...emailUserError,
+    if (!userData.username) {
+      setUserDataError({
+        ...userDataError,
         username: {
           message: "Username is required",
         },
       });
-    } else if (!usernameRegex.test(emailUser.username)) {
-      setEmailUserError({
-        ...emailUserError,
+    } else if (!usernameRegex.test(userData.username)) {
+      setUserDataError({
+        ...userDataError,
         username: {
           message: "Username is not valid",
         },
       });
     } else {
-      setEmailUserError({
-        ...emailUserError,
+      setUserDataError({
+        ...userDataError,
         username: {
           message: "",
         },
       });
     }
 
-    if (emailUser.email.length === 0) {
-      setEmailUserError((prev) => {
+    if (userData.email.length === 0) {
+      setUserDataError((prev) => {
         return { ...prev, email: { message: "Email is required" } };
       });
-    } else if (!emailRegex.test(emailUser.email)) {
-      setEmailUserError((prev) => {
+    } else if (!emailRegex.test(userData.email)) {
+      setUserDataError((prev) => {
         return { ...prev, email: { message: "Email is not valid" } };
       });
     } else {
-      setEmailUserError((prev) => {
+      setUserDataError((prev) => {
         return {
           ...prev,
           email: { message: "" },
@@ -92,168 +153,94 @@ function RegisterForm() {
       });
     }
 
-    if (emailUser.password.length === 0) {
-      setEmailUserError((prev) => {
+    if (userData.password.length === 0) {
+      setUserDataError((prev) => {
         return { ...prev, password: { message: "Password is required" } };
       });
-    } else if (!passwordRegex.test(emailUser.password)) {
-      setEmailUserError((prev) => {
+    } else if (!passwordRegex.test(userData.password)) {
+      setUserDataError((prev) => {
         return {
           ...prev,
           password: {
             message: "Password is not valid",
             containsEnoughCharacters:
-              emailUser.password.length >= MIN_PASSWORD_LENGTH &&
-              emailUser.password.length <= MAX_PASSWORD_LENGTH,
-            containsUpperCaseCharacter: !!emailUser.password.match(/[A-Z]/),
-            containsLowerCaseCharacter: !!emailUser.password.match(/[a-z]/),
-            containsNumber: !!emailUser.password.match(/[0-9]/),
+              userData.password.length >= MIN_PASSWORD_LENGTH &&
+              userData.password.length <= MAX_PASSWORD_LENGTH,
+            containsUpperCaseCharacter: !!userData.password.match(/[A-Z]/),
+            containsLowerCaseCharacter: !!userData.password.match(/[a-z]/),
+            containsNumber: !!userData.password.match(/[0-9]/),
           },
         };
       });
     } else {
-      setEmailUserError((prev) => {
+      setUserDataError((prev) => {
         return { ...prev, password: { message: "" } };
       });
     }
   };
 
-  const handleEmailSignIn = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    validateForm();
-    setIsSubmitting(true);
+  const handleSignIn = (userData: TUserData) => {
+    createAccount.CreateAccount(userData);
   };
 
+  const fetchAccountPlans = useMemo(() => {
+    return async () => {
+      const plans = await useAccountPlans();
+      setAccountPlans(plans);
+      setSelectedAccountPlan(plans?.find((plan) => plan.name === userData.accountPlan));
+    };
+  }, []);
+
   useEffect(() => {
-    if (
-      isSubmitting &&
-      emailUserError.username &&
-      emailUserError.username.message === "" &&
-      emailUserError.email.message === "" &&
-      emailUserError.password.message === ""
-    ) {
-      createUserWithEmailAndPassword(auth, emailUser.email, emailUser.password)
-        .then(({ user }) => {
-          updateProfile(user, {
-            displayName: emailUser.username,
-          }).catch((error) => {
-            if (error.code === "auth/invalid-display-name") {
-              setFirebaseErrorMessage("Username is not valid");
-            } else if (error.code === "auth/display-name-too-long") {
-              setFirebaseErrorMessage("Username is too long");
-            }
-          });
-        })
-        .catch((error) => {
-          if (error.code === "auth/email-already-in-use") {
-            setFirebaseErrorMessage("Email already in use");
-          }
-        });
-    }
-  }, [isSubmitting, emailUserError]);
+    setUserData((prev) => ({
+      ...prev,
+      accountPlan: selectedAccountPlan?.name as TAccountPlanName,
+      dailyUploadLimit: selectedAccountPlan?.dailyUploadLimit,
+      maxUploadLimit: selectedAccountPlan?.maxUploadLimit,
+      uploadSizeLimit: selectedAccountPlan?.uploadSizeLimit,
+      uploadsUsed: 0,
+    }));
+  }, [selectedAccountPlan]);
+
+  useEffect(() => {
+    getRedirectResult(auth).catch((error) => {
+      setFirebaseErrorMessage(error.message);
+    });
+
+    fetchAccountPlans();
+    observableRegisterProvider.subscribe(onRegisterProviderChanged);
+
+    return () => observableRegisterProvider.unsubscribe(onRegisterProviderChanged);
+  }, []);
 
   return (
     <div id={styles.registerWrapper}>
-      <div id={styles.register__formContainer}>
-        <h4 className={styles.register__title}>Register</h4>
-
-        <AnimatePresence>
-          {firebaseErrorMessage && (
-            <motion.p
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              variants={loginAndRegister__messageVariants}
-              className={styles.register__warningMessage}
-            >
-              {firebaseErrorMessage}
-            </motion.p>
+      {!loading && (
+        <div className={styles.register__formContainer}>
+          {user && !user.isAnonymous ? (
+            <LogoutFirst />
+          ) : activeFormStep === "userInfo" ? (
+            <UserInfo
+              userData={userData}
+              userDataError={userDataError}
+              currentRegisterProvider={currentRegisterProvider}
+              handleInputChange={handleInputChange}
+              handleProviderInputChange={handleProviderInputChange}
+              handleFormStepChange={handleFormStepChange}
+              validateForm={validateForm}
+            />
+          ) : (
+            <ChooseAccountPlan
+              userData={userData}
+              accountPlans={accountPlans}
+              selectedAccountPlan={selectedAccountPlan}
+              handleFormStepChange={handleFormStepChange}
+              handleAccountPlanInputChange={handleAccountPlanInputChange}
+              handleSignIn={handleSignIn}
+            />
           )}
-        </AnimatePresence>
-        <form onSubmit={handleEmailSignIn} className={styles.register__inputContainer}>
-          <label htmlFor="usernameInput">
-            <input
-              type="text"
-              id="usernameInput"
-              name="username"
-              placeholder="Username.."
-              className={styles.register__input}
-              value={emailUser.username}
-              onChange={handleInputChange}
-            />
-          </label>
-          <AnimatePresence>
-            {emailUserError.username?.message && (
-              <motion.p
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                variants={loginAndRegister__messageVariants}
-                className={styles.register__errorMessage}
-              >
-                {emailUserError.username?.message}
-              </motion.p>
-            )}
-          </AnimatePresence>
-
-          <label htmlFor="emailInput">
-            <input
-              type="email"
-              id="emailInput"
-              name="email"
-              placeholder="Email.."
-              className={styles.register__input}
-              value={emailUser.email}
-              onChange={handleInputChange}
-            />
-          </label>
-          <AnimatePresence>
-            {emailUserError.email?.message && (
-              <motion.p
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                variants={loginAndRegister__messageVariants}
-                className={styles.register__errorMessage}
-              >
-                {emailUserError.email?.message}
-              </motion.p>
-            )}
-          </AnimatePresence>
-
-          <label htmlFor="passwordInput">
-            <input
-              type="password"
-              id="passwordInput"
-              name="password"
-              placeholder="Password.."
-              className={styles.register__input}
-              value={emailUser.password}
-              onChange={handleInputChange}
-            />
-          </label>
-          <AnimatePresence>
-            {emailUserError.password?.message && (
-              <motion.p
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                variants={loginAndRegister__messageVariants}
-                className={styles.register__errorMessage}
-              >
-                {emailUserError.password?.message}
-              </motion.p>
-            )}
-          </AnimatePresence>
-
-          <button
-            type="submit"
-            className={`${styles.register__registerButton} ${styles.register__emailButton}`}
-          >
-            Register
-          </button>
-        </form>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

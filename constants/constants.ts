@@ -41,9 +41,20 @@ const imageUpload__modalVariants = {
     }
 }
 
+const choosePlanVariants = {
+    hidden: {
+        opacity: 0,
+        scale: 0.85
+    },
+    visible: {
+        opacity: 1,
+        scale: 1
+    },
+}
+
 const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i;
 // password regex
-// at leaast 6 characters
+// at least 6 characters
 // at least one uppercase letter
 // at least one lowercase letter
 // at least one number
@@ -59,4 +70,4 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{6,16}$/
 // no special characters
 const usernameRegex = /^[a-zA-Z0-9]{3,16}$/;
 
-export { poppins, loginAndRegister__messageVariants, imageUpload__modalVariants, emailRegex, passwordRegex, usernameRegex, MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH };
+export { poppins, loginAndRegister__messageVariants, imageUpload__modalVariants, choosePlanVariants, emailRegex, passwordRegex, usernameRegex, MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH };

@@ -2,7 +2,7 @@ import { FormEvent, MouseEvent, useState, useEffect } from "react";
 import { serverTimestamp } from "firebase/firestore";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { TImageInfo } from "../../app/globals";
+import { TImageInfo } from "../../types/globals";
 import { useAppSelector } from "../../hooks/hooks";
 import { imageUpload__modalVariants } from "../../constants/constants";
 import { uploadImageInfoToDatabase, uploadImageToAWS } from "../../utils/imageUpload/imageUploadUtils";

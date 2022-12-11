@@ -6,7 +6,7 @@
   padding: var(--padding-primary-700);
 }
 
-#register__formContainer {
+.register__formContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -16,57 +16,6 @@
   padding: var(--padding-primary-500);
   border-radius: var(--border-radius-400);
   background: var(--color-neutral-700);
-}
-
-.register__inputContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-}
-
-.register__input {
-  width: 100%;
-  padding: var(--padding-primary-300);
-  border-radius: var(--border-radius-300);
-  border: none;
-  background: var(--color-neutral-600);
-  color: var(--color-neutral-100);
-  font-size: var(--font-size-150);
-  font-weight: var(--font-weight-600);
-  letter-spacing: 0.4px;
-}
-
-.register__input:focus {
-  outline: 1px solid var(--color-neutral-200);
-}
-
-.register__input::placeholder {
-  color: var(--color-neutral-500);
-}
-
-.register__emailButton {
-  width: 100%;
-  padding: var(--padding-secondary-400) var(--padding-secondary-700);
-  color: var(--color-neutral-900);
-  font-weight: var(--font-weight-700);
-  border-radius: var(--border-radius-300);
-  background: linear-gradient(-45deg, var(--color-primary-100), var(--color-primary-600));
-  transition: all 0.2s linear;
-}
-
-.register__registerButton:hover {
-  filter: brightness(1.1);
-}
-
-.register__logoutButton {
-  padding: var(--padding-secondary-300) var(--padding-secondary-700);
-  border-radius: var(--border-radius-300);
-  background: var(--color-danger-800);
-  font-weight: var(--font-weight-600);
-  font-size: var(--font-size-150);
-  box-shadow: 0 0 8px var(--color-neutral-800);
-  transition: all 0.2s linear;
 }
 
 .register__message {
@@ -89,4 +38,198 @@
   padding: var(--padding-secondary-100) var(--padding-secondary-300);
   border-radius: var(--border-radius-200);
   background: var(--color-danger-300);
+}
+
+.userInfo__formContainer,
+.accountPlan__formContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.register__ctaButton {
+  width: 100%;
+  padding: var(--padding-secondary-400) var(--padding-secondary-800);
+  color: var(--color-neutral-100);
+  font-weight: var(--font-weight-600);
+  font-size: var(--font-size-150);
+  border-radius: var(--border-radius-300);
+  background: var(--color-secondary-600);
+  transition: all 0.2s linear;
+}
+
+.register__ctaButton:hover {
+  filter: brightness(1.05);
+}
+
+/* User info and Account plan radio buttons and their containers */
+.userInfo__radioContainer,
+.accountPlan__radioContainer {
+  display: flex;
+  justify-content: space-around;
+  padding-bottom: var(--padding-primary-300);
+}
+
+.userInfo__radioInput,
+.accountPlan__radioInput {
+  position: fixed;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* UserInfo form - Step 1 */
+.userInfo__radioLabel {
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--color-primary-hover-500);
+  border-radius: var(--border-radius-900);
+  padding: var(--padding-secondary-100) var(--padding-secondary-500);
+  font-weight: var(--font-weight-600);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.userInfo__radioLabel:hover {
+  background-color: var(--color-primary-hover-300);
+}
+
+.userInfo__radioInput:checked + .userInfo__radioLabel {
+  background-color: var(--color-primary-800);
+}
+
+/* Email provider inputs */
+.userInfo__form,
+.accountPlan__form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.userInfo__input {
+  width: 100%;
+  padding: var(--padding-primary-300);
+  border-radius: var(--border-radius-300);
+  border: none;
+  background: var(--color-neutral-600);
+  color: var(--color-neutral-100);
+  font-size: var(--font-size-150);
+  font-weight: var(--font-weight-600);
+  letter-spacing: 0.4px;
+}
+
+.userInfo__input:focus {
+  outline: 1px solid var(--color-neutral-200);
+}
+
+.userInfo__input::placeholder {
+  color: var(--color-neutral-500);
+}
+
+/* AccountPlan form - Step 2 */
+.accountPlan__radioLabel {
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--color-primary-hover-500);
+  border-radius: var(--border-radius-900);
+  padding: var(--padding-secondary-100) var(--padding-secondary-500);
+  font-weight: var(--font-weight-600);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.accountPlan__radioInput:checked + .accountPlan__radioLabel {
+  background-color: var(--color-primary-800);
+}
+
+.accountPlan__buttonContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.accountPlan__detailsHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.accountPlan__price {
+  color: var(--color-neutral-100);
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-600);
+  background-color: var(--color-secondary-600);
+  border: 2px solid var(--color-secondary-300);
+  border-radius: var(--border-radius-300);
+  padding: var(--padding-secondary-100) var(--padding-secondary-300);
+}
+
+.accountPlan__detailsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.accountPlan__detailsItem {
+  color: var(--color-neutral-100);
+  font-size: var(--font-size-150);
+  font-weight: var(--font-weight-600);
+}
+
+.accountPlan__detailsItemTitle {
+  background-color: var(--color-neutral-600);
+  border-radius: var(--border-radius-900);
+  padding: var(--padding-secondary-100) var(--padding-secondary-300);
+}
+
+.accountPlan__detailsItemValue {
+  margin-left: 5px;
+  font-weight: var(--font-weight-700);
+  font-size: var(--font-size-200);
+}
+
+.accountPlan__backButton {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--color-secondary-300);
+  background: var(--color-secondary-700);
+  transition: all 0.2s linear;
+}
+
+.accountPlan__backButton:hover {
+  filter: brightness(1.1);
+}
+
+.accountPlan__backIcon {
+  color: var(--color-secondary-200);
+  width: 21px;
+  height: 21px;
+}
+
+.accountPlan__ctaButton {
+  flex: 1;
+  padding: var(--padding-secondary-400) var(--padding-secondary-700);
+  color: var(--color-neutral-900);
+  font-weight: var(--font-weight-700);
+  border-radius: var(--border-radius-300);
+  background: var(--color-primary-600);
+}
+
+/* Logout */
+.userInfo__logoutButton {
+  padding: var(--padding-secondary-300) var(--padding-secondary-700);
+  border-radius: var(--border-radius-300);
+  background: var(--color-danger-800);
+  font-weight: var(--font-weight-600);
+  font-size: var(--font-size-150);
+  box-shadow: 0 0 8px var(--color-neutral-800);
+  transition: all 0.2s linear;
 }

@@ -1,7 +1,7 @@
 import { randomBytes } from 'crypto';
-import { database } from "../../config/firebaseConfig"
+import { db } from "../../config/firebaseConfig"
 import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
-import { TImageInfo } from '../../app/globals';
+import { TImageInfo } from '../../types/globals';
 
 type TAWSResponse = {
     imageKey: string | null,
@@ -40,7 +40,7 @@ export const uploadImageToAWS = async (image: File): Promise<TAWSResponse> => {
 
 export const uploadImageInfoToDatabase = (imageInfo: TImageInfo) => {
 
-    const docRef = doc(database, `images/${imageInfo.key}`);
+    const docRef = doc(db, `images/${imageInfo.key}`);
     setDoc(docRef, imageInfo).then(() => {
         console.log("Document written with ID: ", docRef.id);
     }).catch((error) => {

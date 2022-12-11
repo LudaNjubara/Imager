@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Provider, useDispatch } from "react-redux";
 
 import store from "../redux/store";
@@ -10,7 +10,7 @@ import Head from "./head";
 import ImageUpload from "../components/ImageUpload/Index";
 import Sidebar from "../components/Sidebar/Index";
 
-import "./globals.css";
+import "../styles/globals.css";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../config/firebaseConfig";
 import { login, logout } from "../redux/userSlice";
@@ -20,11 +20,12 @@ function RootLayoutInner({ children }: { children: React.ReactNode }) {
   const [user, loading, error] = useAuthState(auth);
   const dispatch = useDispatch();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!loading && !user) {
+      if (pathname !== "/login" && pathname !== "/register") router.push("/login");
       dispatch(logout());
-      router.push("/login");
     } else if (!loading && user) {
       dispatch(
         login({
@@ -49,8 +50,8 @@ function RootLayoutInner({ children }: { children: React.ReactNode }) {
   return (
     <div id="pageWrapper">
       <Sidebar />
-      <ImageUpload />
-      <main id="main">{children}</main>
+      {user && !user.isAnonymous && <ImageUpload />}
+      {!loading && <main id="main">{children}</main>}
     </div>
   );
 }
