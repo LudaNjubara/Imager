@@ -1,5 +1,7 @@
 import { useState } from "react";
+
 import { useAppSelector } from "../../hooks/hooks";
+import { TUser } from "../../types/globals";
 
 import ImageUploadModal from "./ImageUploadModal";
 
@@ -7,7 +9,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import styles from "./imageUpload.module.css";
 
 function ImageUpload() {
-  const reduxUser = useAppSelector((state) => state.user);
+  const reduxUser: TUser = useAppSelector((state) => state.user);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 

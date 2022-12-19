@@ -2,8 +2,9 @@ import { ChangeEvent } from "react";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 
-import { TAccountPlan, TUserData } from "../../types/globals";
+import { TAccountPlan, TAccountPlanName, TUserData } from "../../types/globals";
 import { choosePlanVariants } from "../../constants/constants";
+import { getAccountPlanProperty } from "../../utils/register/registerUtils";
 
 import { IoArrowBackOutline } from "react-icons/io5";
 import styles from "./register.module.css";
@@ -11,7 +12,7 @@ import styles from "./register.module.css";
 type TChooseAccountPlanProps = {
   userData: TUserData;
   accountPlans: TAccountPlan[] | undefined;
-  selectedAccountPlan: TAccountPlan | undefined;
+  selectedAccountPlanName: TAccountPlanName | undefined;
   handleFormStepChange: () => void;
   handleAccountPlanInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleSignIn: (userData: TUserData) => void;
@@ -20,7 +21,7 @@ type TChooseAccountPlanProps = {
 function ChooseAccountPlan({
   userData,
   accountPlans,
-  selectedAccountPlan,
+  selectedAccountPlanName,
   handleFormStepChange,
   handleAccountPlanInputChange,
   handleSignIn,
@@ -54,7 +55,7 @@ function ChooseAccountPlan({
           ))}
         </div>
 
-        {!!selectedAccountPlan && (
+        {!!accountPlans && !!selectedAccountPlanName && (
           <AnimatePresence>
             <motion.div
               className={styles.accountPlan__detailsContainer}
@@ -64,28 +65,30 @@ function ChooseAccountPlan({
             >
               <div className={styles.accountPlan__detailsHeader}>
                 <h4 className={styles.accountPlan__detailsTitle}>{userData.accountPlan}</h4>
-                <span className={styles.accountPlan__price}>{selectedAccountPlan.price} €</span>
+                <span className={styles.accountPlan__price}>
+                  {getAccountPlanProperty(accountPlans, selectedAccountPlanName, "price")} €
+                </span>
               </div>
 
               <ul className={styles.accountPlan__detailsList}>
                 <li className={styles.accountPlan__detailsItem}>
                   <span className={styles.accountPlan__detailsItemTitle}>Daily upload limit:</span>
                   <span className={styles.accountPlan__detailsItemValue}>
-                    {selectedAccountPlan.dailyUploadLimit} images
+                    {getAccountPlanProperty(accountPlans, selectedAccountPlanName, "dailyUploadLimit")} images
                   </span>
                 </li>
 
                 <li className={styles.accountPlan__detailsItem}>
                   <span className={styles.accountPlan__detailsItemTitle}>Max uploaded images:</span>
                   <span className={styles.accountPlan__detailsItemValue}>
-                    {selectedAccountPlan.maxUploadLimit} images
+                    {getAccountPlanProperty(accountPlans, selectedAccountPlanName, "maxUploadLimit")} images
                   </span>
                 </li>
 
                 <li className={styles.accountPlan__detailsItem}>
                   <span className={styles.accountPlan__detailsItemTitle}>Max image size:</span>
                   <span className={styles.accountPlan__detailsItemValue}>
-                    {selectedAccountPlan.uploadSizeLimit} MB
+                    {getAccountPlanProperty(accountPlans, selectedAccountPlanName, "uploadSizeLimit")} MB
                   </span>
                 </li>
               </ul>

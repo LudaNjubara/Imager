@@ -15,7 +15,7 @@ type TUser = {
     readonly uid: string,
     displayName: string | null,
     email: string | null,
-    photoURL: string | null,
+    photoURL?: string,
     readonly emailVerified: boolean
     readonly isAnonymous: boolean,
     metadata: userMetadata,
@@ -29,9 +29,6 @@ type TUserData = {
     password: string;
     accountPlan?: TAccountPlanName;
     accountRole?: TAccountRole;
-    maxUploadLimit?: number;
-    dailyUploadLimit?: number;
-    uploadSizeLimit?: number;
     uploadsUsed?: number;
 };
 
@@ -58,11 +55,14 @@ type TImageInfo = {
     key: string,
     fileType: string,
     size: number,
+    width: number,
+    height: number,
     hashtags: string[],
     description: string,
     uploaderUID: string,
     uploaderDisplayName: string | null,
-    uploadDate: Timestamp | FieldValue,
+    uploaderPhotoURL?: string,
+    uploadDate: number,
 }
 
 type TAccountPlan = {

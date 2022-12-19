@@ -11,7 +11,7 @@
 }
 
 [data-nextjs-scroll-focus-boundary] {
-  display: contents;
+  display: contents !important;
 }
 
 a {
@@ -27,7 +27,7 @@ button {
 }
 
 button:focus {
-  outline: 1px solid var(--color-primary-300) !important;
+  outline: 1px solid var(--color-primary-500) !important;
 }
 
 img,
@@ -76,50 +76,51 @@ h6 {
 #main {
   flex-grow: 1;
   padding: var(--padding-primary-600);
+  overflow-y: auto;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     /* Colors */
-    --color-primary-100: #b3edf3;
-    --color-primary-200: #82e2ec;
-    --color-primary-300: #4fd5e4;
-    --color-primary-400: #28ccdd;
-    --color-primary-500: #00c2d8;
-    --color-primary-600: #00b2c5;
-    --color-primary-700: #009cab;
-    --color-primary-800: #008993;
-    --color-primary-900: #006568;
+    --color-primary-100: #bfcdde;
+    --color-primary-200: #9cabc0;
+    --color-primary-300: #788aa3;
+    --color-primary-400: #5f728e;
+    --color-primary-500: #455c79;
+    --color-primary-600: #394f6a;
+    --color-primary-700: #2a3d54;
+    --color-primary-800: #1c2c3f;
+    --color-primary-900: #0a1929;
 
-    --color-primary-hover-100: #b3edf31a;
-    --color-primary-hover-200: #b3edf32e;
-    --color-primary-hover-300: #b3edf33d;
-    --color-primary-hover-400: #b3edf34d;
-    --color-primary-hover-500: #b3edf35c;
-    --color-primary-hover-600: #b3edf36b;
-    --color-primary-hover-700: #b3edf37b;
-    --color-primary-hover-800: #b3edf38a;
-    --color-primary-hover-900: #b3edf399;
+    --color-primary-hover-100: #bfcdde1a;
+    --color-primary-hover-200: #9cabc031;
+    --color-primary-hover-300: #788aa349;
+    --color-primary-hover-400: #5f728e63;
+    --color-primary-hover-500: #455c7979;
+    --color-primary-hover-600: #394f6a93;
+    --color-primary-hover-700: #2a3d54ad;
+    --color-primary-hover-800: #1c2c3fc7;
+    --color-primary-hover-900: #0a1929e7;
 
-    --color-secondary-100: #ffccce;
-    --color-secondary-200: #ffb3b6;
-    --color-secondary-300: #ff999d;
-    --color-secondary-400: #ff8085;
-    --color-secondary-500: #ff666c;
-    --color-secondary-600: #e65a60;
-    --color-secondary-700: #cc4d54;
-    --color-secondary-800: #b34148;
-    --color-secondary-900: #99263c;
+    --color-secondary-100: #b9dcff;
+    --color-secondary-200: #8ac7ff;
+    --color-secondary-300: #56b0ff;
+    --color-secondary-400: #279fff;
+    --color-secondary-500: #008eff;
+    --color-secondary-600: #0080ff;
+    --color-secondary-700: #146dea;
+    --color-secondary-800: #1c5bd8;
+    --color-secondary-900: #2239b8;
 
-    --color-secondary-hover-100: #ffccce1a;
-    --color-secondary-hover-200: #ffccce2e;
-    --color-secondary-hover-300: #ffccce3d;
-    --color-secondary-hover-400: #ffccce4d;
-    --color-secondary-hover-500: #ffccce5c;
-    --color-secondary-hover-600: #ffccce6b;
-    --color-secondary-hover-700: #ffccce7b;
-    --color-secondary-hover-800: #ffccce8a;
-    --color-secondary-hover-900: #ffccce99;
+    --color-secondary-hover-100: #b9dcff1a;
+    --color-secondary-hover-200: #8ac7ff31;
+    --color-secondary-hover-300: #56b0ff49;
+    --color-secondary-hover-400: #279fff63;
+    --color-secondary-hover-500: #008eff79;
+    --color-secondary-hover-600: #0080ff93;
+    --color-secondary-hover-700: #146deaad;
+    --color-secondary-hover-800: #1c5bd8c7;
+    --color-secondary-hover-900: #2239b8e7;
 
     --color-neutral-100: #f7f7f7;
     --color-neutral-200: #eeeeee;

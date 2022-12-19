@@ -1,4 +1,4 @@
-import { useEffect, useState, ChangeEvent, useMemo } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { getRedirectResult } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 
@@ -16,6 +16,7 @@ import {
   TUserDataError,
   TRegisterProvider,
 } from "../../types/globals";
+import { getAccountPlanProperty } from "../../utils/register/registerUtils";
 import { useAccountPlans } from "../../hooks/hooks";
 import createAccount from "../../services/Register/CreateAccount.class";
 import observableRegisterProvider, {
@@ -33,9 +34,8 @@ type TActiveFormSteps = "userInfo" | "chooseAccountPlan";
 
 function RegisterForm() {
   const [user, loading, error] = useAuthState(auth);
+  const { accountPlansData, isLoading, isError } = useAccountPlans();
   const [activeFormStep, setActiveFormStep] = useState<TActiveFormSteps>("userInfo");
-  const [accountPlans, setAccountPlans] = useState<TAccountPlan[]>();
-  const [selectedAccountPlan, setSelectedAccountPlan] = useState<TAccountPlan>();
   const [firebaseErrorMessage, setFirebaseErrorMessage] = useState<string | undefined>(undefined);
   const [currentRegisterProvider, setCurrentRegisterProvider] = useState<TRegisterProvider>(
     createAccount.currentRegisterProvider
@@ -47,11 +47,12 @@ function RegisterForm() {
     password: "",
     accountPlan: "Bronze",
     accountRole: "User",
-    dailyUploadLimit: selectedAccountPlan?.dailyUploadLimit,
-    maxUploadLimit: selectedAccountPlan?.maxUploadLimit,
-    uploadSizeLimit: selectedAccountPlan?.uploadSizeLimit,
     uploadsUsed: 0,
   });
+
+  const [selectedAccountPlanName, setSelectedAccountPlanName] = useState<TAccountPlanName>(
+    userData?.accountPlan as TAccountPlanName
+  );
 
   const [userDataError, setUserDataError] = useState<TUserDataError>({
     username: {
@@ -88,7 +89,7 @@ function RegisterForm() {
 
   const handleAccountPlanInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setSelectedAccountPlan(accountPlans?.find((plan) => plan.name === value));
+    setSelectedAccountPlanName(value as TAccountPlanName);
   };
 
   const handleFormStepChange = () => {
@@ -183,31 +184,30 @@ function RegisterForm() {
     createAccount.CreateAccount(userData);
   };
 
-  const fetchAccountPlans = useMemo(() => {
-    return async () => {
-      const plans = await useAccountPlans();
-      setAccountPlans(plans);
-      setSelectedAccountPlan(plans?.find((plan) => plan.name === userData.accountPlan));
-    };
-  }, []);
-
   useEffect(() => {
     setUserData((prev) => ({
       ...prev,
-      accountPlan: selectedAccountPlan?.name as TAccountPlanName,
-      dailyUploadLimit: selectedAccountPlan?.dailyUploadLimit,
-      maxUploadLimit: selectedAccountPlan?.maxUploadLimit,
-      uploadSizeLimit: selectedAccountPlan?.uploadSizeLimit,
-      uploadsUsed: 0,
+      accountPlan: selectedAccountPlanName,
     }));
-  }, [selectedAccountPlan]);
+  }, [selectedAccountPlanName]);
+
+  useEffect(() => {
+    if (!isLoading && !!userData) {
+      setSelectedAccountPlanName(
+        getAccountPlanProperty(
+          accountPlansData,
+          userData.accountPlan as TAccountPlanName,
+          "name"
+        ) as TAccountPlanName
+      );
+    }
+  }, [isLoading, userData]);
 
   useEffect(() => {
     getRedirectResult(auth).catch((error) => {
       setFirebaseErrorMessage(error.message);
     });
 
-    fetchAccountPlans();
     observableRegisterProvider.subscribe(onRegisterProviderChanged);
 
     return () => observableRegisterProvider.unsubscribe(onRegisterProviderChanged);
@@ -232,8 +232,8 @@ function RegisterForm() {
           ) : (
             <ChooseAccountPlan
               userData={userData}
-              accountPlans={accountPlans}
-              selectedAccountPlan={selectedAccountPlan}
+              accountPlans={accountPlansData}
+              selectedAccountPlanName={selectedAccountPlanName}
               handleFormStepChange={handleFormStepChange}
               handleAccountPlanInputChange={handleAccountPlanInputChange}
               handleSignIn={handleSignIn}

@@ -1,10 +1,15 @@
 "use client";
 
 import { useAppSelector } from "../../hooks/hooks";
+import LatestUploads from "./LatestUploads/LatestUploads";
 
 function Main() {
   const reduxUser = useAppSelector((state) => state.user);
-  return <div>{reduxUser.email}</div>;
+  return (
+    <>
+      <LatestUploads />
+    </>
+  );
 }
 
 export default Main;

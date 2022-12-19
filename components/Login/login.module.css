@@ -66,7 +66,10 @@
 .login__loginButton.login__emailButton {
   padding: var(--padding-secondary-400) var(--padding-secondary-700);
   border-radius: var(--border-radius-300);
-  background: linear-gradient(-45deg, var(--color-primary-100), var(--color-primary-600));
+  background: var(--color-secondary-600);
+  color: var(--color-neutral-100);
+  font-size: var(--font-size-150);
+  font-weight: var(--font-weight-600);
   width: 100%;
 }
 

@@ -5,7 +5,7 @@
   right: 20px;
   display: grid;
   place-items: center;
-  background-color: var(--color-primary-700);
+  background-color: var(--color-primary-800);
   border-radius: 50%;
   width: 55px;
   height: 55px;
@@ -73,7 +73,7 @@
   width: 100%;
   padding: var(--padding-primary-300) var(--padding-primary-200);
   border-radius: var(--border-radius-300);
-  background: var(--color-neutral-600);
+  background: var(--color-primary-600);
   color: var(--color-neutral-100);
   font-size: var(--font-size-150);
   font-weight: var(--font-weight-600);
@@ -86,9 +86,6 @@
   resize: none;
   overflow-y: auto;
   line-height: 1.4;
-  font-family: "Poppins", sans-serif;
-  font-weight: var(--font-weight-600);
-  font-size: var(--font-size-150);
   min-height: 200px;
 }
 
@@ -114,7 +111,7 @@
 
 #imageUploadModal__imageDescInput::placeholder,
 #imageUploadModal__imageHashtagsTextarea::placeholder {
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-400);
 }
 
 #imageUploadModal__imageInputLabel {
@@ -124,12 +121,12 @@
   gap: 10px;
   padding: var(--padding-secondary-200) var(--padding-primary-200);
   border-radius: var(--border-radius-300);
-  background-color: var(--color-secondary-500);
+  background: var(--color-neutral-100);
   cursor: pointer;
 }
 
 #imageUploadModal__imageInputLabel:hover {
-  background-color: var(--color-secondary-600);
+  filter: brightness(1.05);
 }
 
 #imageUploadModal__imageInputLabel:focus {
@@ -141,13 +138,14 @@
 }
 
 .imageUploadModal__imageInputLabelIcon {
-  fill: var(--color-neutral-100);
+  fill: var(--color-secondary-600);
   width: 25px;
   height: 25px;
 }
 
 .imageUploadModal__imageInputLabelText {
   font-weight: var(--font-weight-600);
+  color: var(--color-secondary-600);
 }
 
 #imageUploadModal__imageUploadButton {
@@ -158,12 +156,12 @@
   margin-top: auto;
   padding: var(--padding-primary-200);
   border-radius: var(--border-radius-300);
-  background-color: var(--color-primary-800);
+  background: var(--color-secondary-600);
   font-weight: var(--font-weight-600);
 }
 
 #imageUploadModal__imageUploadButton:disabled {
-  background-color: var(--color-primary-hover-800);
+  background: var(--color-secondary-hover-700);
   cursor: not-allowed;
 }
 

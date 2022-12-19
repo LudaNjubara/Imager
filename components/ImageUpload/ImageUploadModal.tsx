@@ -1,11 +1,13 @@
 import { FormEvent, MouseEvent, useState, useEffect } from "react";
-import { serverTimestamp } from "firebase/firestore";
+import { serverTimestamp, Timestamp } from "firebase/firestore";
 import { AnimatePresence, motion } from "framer-motion";
 
+import database from "../../services/Database/Database.class";
 import { TImageInfo } from "../../types/globals";
 import { useAppSelector } from "../../hooks/hooks";
 import { imageUpload__modalVariants } from "../../constants/constants";
-import { uploadImageInfoToDatabase, uploadImageToAWS } from "../../utils/imageUpload/imageUploadUtils";
+import { convertFileToImage } from "../../utils/common/utils";
+import { uploadImageToAWS } from "../../utils/imageUpload/imageUploadUtils";
 
 import styles from "./imageUpload.module.css";
 import { MdOutlineImageSearch } from "react-icons/md";
@@ -33,19 +35,33 @@ function ImageUploadModal() {
     if (image) {
       const res = await uploadImageToAWS(image);
 
+      const {
+        height,
+        width,
+      }: {
+        height: number;
+        width: number;
+      } = await convertFileToImage(image).then((res: any) => {
+        return res;
+      });
+
       if (res.imageKey) {
         const imageInfo: TImageInfo = {
           key: res.imageKey,
-          fileType: image.type,
+          fileType: image.type.split("/")[1].toUpperCase(),
           size: image.size,
+          height: height,
+          width: width,
           hashtags: imageHashtags,
           description: imageDesc,
           uploaderUID: reduxUser.uid,
           uploaderDisplayName: reduxUser.displayName,
-          uploadDate: serverTimestamp(),
+          uploaderPhotoURL: reduxUser.photoURL,
+          uploadDate: Timestamp.now().toMillis(),
         };
 
-        uploadImageInfoToDatabase(imageInfo);
+        database.AddImageInfo(imageInfo);
+        database.UpdateUserUploadsUsed("increment", reduxUser.uid);
       }
     }
   };

@@ -6,6 +6,12 @@ const poppins = Poppins({
     fallback: ["system-ui", "arial"],
 });
 
+const toDateOptions = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+} as const;
+
 const loginAndRegister__messageVariants = {
     hidden: {
         opacity: 0,
@@ -70,4 +76,4 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{6,16}$/
 // no special characters
 const usernameRegex = /^[a-zA-Z0-9]{3,16}$/;
 
-export { poppins, loginAndRegister__messageVariants, imageUpload__modalVariants, choosePlanVariants, emailRegex, passwordRegex, usernameRegex, MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH };
+export { poppins, toDateOptions, loginAndRegister__messageVariants, imageUpload__modalVariants, choosePlanVariants, emailRegex, passwordRegex, usernameRegex, MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH };
