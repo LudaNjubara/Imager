@@ -1,12 +1,11 @@
-import { randomBytes } from 'crypto';
-
 type TAWSResponse = {
     imageKey: string | null,
 }
 
-export const generateRandomImageKey = (imageExtension: string, bytes: number = 32) => {
-    const randomString = randomBytes(bytes).toString('hex');
-    const imageKey = `${randomString}.${imageExtension}`;
+export const generateRandomImageKey = (imageExtension: string, numOfCharacters: number = 25) => {
+    // generate random string for image key thats 10 characters long and icludes only letters
+    const randomString = [...Array(numOfCharacters)].map(() => Math.random().toString(36)[2]).join('');
+    const imageKey = `imager_${randomString}.${imageExtension}`;
 
     return imageKey;
 };

@@ -179,7 +179,7 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  box-shadow: 2px 3px 8px var(--color-neutral-700);
+  box-shadow: 2px 3px 8px var(--color-neutral-800);
   cursor: pointer;
   transition: background 0.1s ease-in-out;
 }

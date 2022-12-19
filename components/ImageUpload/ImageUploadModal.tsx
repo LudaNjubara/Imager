@@ -90,7 +90,7 @@ function ImageUploadModal() {
     }
 
     setHasImageHashtagsError(false);
-    setImageHashtags(e.currentTarget.value.trim().split(" "));
+    setImageHashtags(e.currentTarget.value.trim().toLowerCase().split(" "));
   };
 
   const createImageObjectURL = (image: File) => {
