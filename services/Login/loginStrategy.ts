@@ -35,21 +35,20 @@ export default class LoginStrategy {
                 const { user } = result;
 
                 if (additionalUserInfo?.isNewUser) {
-                    const accountPlans = await useAccountPlans();
-                    const bronzePlan = accountPlans.find((plan) => plan.name === "Bronze")!;
-                    const userData: TUserData = {
-                        email: user?.email!,
-                        password: "",
-                        username: user?.displayName ?? user?.providerData[0]?.displayName!,
-                        accountPlan: bronzePlan.name as TAccountPlanName,
-                        accountRole: "User",
-                        dailyUploadLimit: bronzePlan.dailyUploadLimit,
-                        maxUploadLimit: bronzePlan.maxUploadLimit,
-                        uploadSizeLimit: bronzePlan.uploadSizeLimit,
-                        uploadsUsed: 0,
-                    }
+                    const { accountPlansData, isLoading } = useAccountPlans();
+                    if (!isLoading) {
+                        const bronzePlan = accountPlansData.find((plan) => plan.name === "Bronze")!;
+                        const userData: TUserData = {
+                            email: user?.email!,
+                            password: "",
+                            username: user?.displayName ?? user?.providerData[0]?.displayName!,
+                            accountPlan: bronzePlan.name as TAccountPlanName,
+                            accountRole: "User",
+                            uploadsUsed: 0,
+                        }
 
-                    database.AddUser(userData, user?.uid!);
+                        database.AddUser(userData, user?.uid!);
+                    }
                 }
             })
             .catch((error) => {
@@ -67,21 +66,20 @@ export default class LoginStrategy {
                 const { user } = result;
 
                 if (additionalUserInfo?.isNewUser) {
-                    const accountPlans = await useAccountPlans();
-                    const bronzePlan = accountPlans.find((plan) => plan.name === "Bronze")!;
-                    const userData: TUserData = {
-                        email: user?.email!,
-                        password: "",
-                        username: user?.displayName ?? user?.providerData[0]?.displayName!,
-                        accountPlan: bronzePlan.name as TAccountPlanName,
-                        accountRole: "User",
-                        dailyUploadLimit: bronzePlan.dailyUploadLimit,
-                        maxUploadLimit: bronzePlan.maxUploadLimit,
-                        uploadSizeLimit: bronzePlan.uploadSizeLimit,
-                        uploadsUsed: 0,
-                    }
+                    const { accountPlansData, isLoading } = useAccountPlans();
+                    if (!isLoading) {
+                        const bronzePlan = accountPlansData.find((plan) => plan.name === "Bronze")!;
+                        const userData: TUserData = {
+                            email: user?.email!,
+                            password: "",
+                            username: user?.displayName ?? user?.providerData[0]?.displayName!,
+                            accountPlan: bronzePlan.name as TAccountPlanName,
+                            accountRole: "User",
+                            uploadsUsed: 0,
+                        }
 
-                    database.AddUser(userData, user?.uid!);
+                        database.AddUser(userData, user?.uid!);
+                    }
                 }
             })
             .catch((error) => {
