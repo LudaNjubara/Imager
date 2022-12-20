@@ -6,7 +6,7 @@ const initialState: TUser = {
     uid: "",
     displayName: null,
     email: null,
-    photoURL: null,
+    photoURL: undefined,
     emailVerified: false,
     isAnonymous: false,
     metadata: {
