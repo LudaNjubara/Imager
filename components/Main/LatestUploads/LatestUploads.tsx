@@ -11,9 +11,8 @@ import styles from "./latestUploads.module.css";
 
 function LatestUploads() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { latestUploadsImagesData, isLoading, isError } = useLatestUploadsImages();
-  const { imageURLsData, isURLsLoading } = useAWSImageURLs(latestUploadsImagesData);
-  const [imageURLs, setImageURLs] = useState<string[]>([]);
+  const { latestUploadsImagesData } = useLatestUploadsImages();
+  const { imageURLsData } = useAWSImageURLs(latestUploadsImagesData);
   const [modalImageURL, setModalImageURL] = useState<string>();
   const [modalImageData, setModalImageData] = useState<TImageInfo>();
 

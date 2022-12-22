@@ -5,11 +5,7 @@ import LatestUploads from "./LatestUploads/LatestUploads";
 
 function Main() {
   const reduxUser = useAppSelector((state) => state.user);
-  return (
-    <>
-      <LatestUploads />
-    </>
-  );
+  return <>{reduxUser.uid && <LatestUploads />}</>;
 }
 
 export default Main;

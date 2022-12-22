@@ -1,0 +1,151 @@
+.searchBar__header {
+  position: sticky;
+  top: 30px;
+  padding: 0 var(--padding-primary-200);
+  z-index: 100;
+}
+
+.searchBar__container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  max-width: 600px;
+  height: 55px;
+  margin: 0 auto;
+  border-radius: var(--border-radius-900);
+  padding: var(--padding-secondary-100);
+  background: radial-gradient(
+    50% 50% at 50% 20%,
+    var(--color-secondary-500) 0%,
+    var(--color-primary-700) 100%
+  );
+  overflow: hidden;
+}
+
+/* Dropdown */
+.searchBar__dropdownContainer {
+  height: 100%;
+  border-radius: var(--border-radius-900) var(--border-radius-100) var(--border-radius-100)
+    var(--border-radius-900);
+  padding: var(--padding-secondary-100) var(--padding-secondary-200);
+  background: transparent;
+  backdrop-filter: blur(10px);
+  transition: background 0.2s ease-in-out;
+  box-shadow: 0 0 7px var(--color-primary-800);
+}
+
+.searchBar__dropdownContainer:hover {
+  background: var(--color-secondary-hover-300);
+}
+
+.searchBar__searchDropdown {
+  height: 100%;
+  font-weight: var(--font-weight-600);
+  outline: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.searchBar__searchDropdown option {
+  background: var(--color-secondary-600);
+  color: var(--color-neutral-100);
+  font-weight: var(--font-weight-600);
+}
+
+/* Center of search bar */
+.searchBar__searchFieldContainer {
+  flex-grow: 1;
+  height: 100%;
+  border-radius: var(--border-radius-100);
+}
+
+.searchBar__dateFilterContainer {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  height: 100%;
+}
+
+.searchBar__searchFieldContainer > div {
+  height: 100%;
+  flex-grow: 1;
+}
+
+.searchBar__dateFilterContainer > label {
+  height: 100%;
+  flex-grow: 1;
+}
+
+.searchBar__dateFilter {
+  height: 100%;
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: var(--padding-secondary-200);
+  font-weight: var(--font-weight-600);
+  border-radius: var(--border-radius-100);
+  background: transparent;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+  box-shadow: 0 0 7px var(--color-primary-800);
+}
+
+.searchBar__dateFilter:hover,
+.searchBar__dateFilter:focus-visible {
+  background: var(--color-secondary-hover-300);
+}
+
+.searchBar__dateFilter:active {
+  background: var(--color-secondary-hover-700);
+}
+
+.searchBar__searchInput {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  padding: var(--padding-secondary-200);
+  color: var(--color-neutral-100);
+  font-size: var(--font-size-150);
+  font-weight: var(--font-weight-600);
+  border-radius: var(--border-radius-100);
+  background: transparent;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 7px var(--color-primary-800);
+}
+
+.searchBar__searchInput::placeholder {
+  color: var(--color-neutral-hover-600);
+}
+
+/* Search button */
+.searchBar__searchButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+  padding: var(--padding-secondary-100) var(--padding-secondary-200);
+  border-radius: var(--border-radius-100) var(--border-radius-900) var(--border-radius-900)
+    var(--border-radius-100);
+  font-weight: var(--font-weight-600);
+  background: transparent;
+  backdrop-filter: blur(10px);
+  transition: background 0.2s ease-in-out;
+  box-shadow: 0 0 7px var(--color-primary-800);
+}
+
+.searchBar__searchButton:hover,
+.searchBar__searchButton:focus-visible {
+  background: var(--color-secondary-hover-300);
+}
+
+.searchBar__searchIcon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-neutral-hover-500);
+}

@@ -10,6 +10,7 @@ type TRegisterProvider = "Email" | "Google" | "GitHub";
 type TLoginProvider = "Email" | "Google" | "GitHub" | "Anonymous";
 type TAccountPlanName = "Bronze" | "Gold" | "Platinum";
 type TAccountRole = "Admin" | "User";
+type TSearchFilter = "date" | "size" | "author" | "hashtags" | "extension";
 
 type TUser = {
     readonly uid: string,
@@ -73,4 +74,4 @@ type TAccountPlan = {
     maxUploadLimit: number,
 }
 
-export type { TUser, TUserData, TUserDataError, TImageInfo, TFederalProvider, TRegisterProvider, TLoginProvider, TAccountPlan, TAccountPlanName, TAccountRole };
+export type { TUser, TUserData, TUserDataError, TImageInfo, TFederalProvider, TRegisterProvider, TLoginProvider, TAccountPlan, TAccountPlanName, TAccountRole, TSearchFilter };

@@ -6,9 +6,7 @@ import SearchResults from "./SearchResults/SearchResults";
 function Search() {
   return (
     <>
-      <header>
-        <SearchBar />
-      </header>
+      <SearchBar />
       <main>
         <SearchResults />
       </main>

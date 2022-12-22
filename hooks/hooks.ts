@@ -1,11 +1,11 @@
 import useSWR from 'swr'
 import { useDispatch, useSelector } from 'react-redux'
 import type { TypedUseSelectorHook } from 'react-redux'
-import { collection, doc, getDoc, getDocs, limit, orderBy, query } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, limit, onSnapshot, orderBy, query, where } from 'firebase/firestore'
 
 import type { RootState, AppDispatch } from '../redux/store'
 import { db } from '../config/firebaseConfig'
-import { TAccountPlan, TImageInfo, TUserData } from '../types/globals'
+import { TAccountPlan, TImageInfo, TSearchFilter, TUserData } from '../types/globals'
 import { convertImageKeysToString } from '../utils/common/utils'
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
@@ -90,4 +90,63 @@ export const useAWSImageURLs = (array: TImageInfo[]) => {
         isURLsLoading: !error && !data,
         isError: error
     }
+}
+
+export const searchImages = async (searchFilter: TSearchFilter, searchQuery: string) => {
+    const results: TImageInfo[] = [];
+
+    switch (searchFilter) {
+        case "author":
+            {
+                const q = query(collection(db, "images"), where("uploaderDisplayName", "==", searchQuery));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach((doc) => {
+                    results.push(doc.data() as TImageInfo);
+                });
+            }
+            break;
+
+        case "size":
+            {
+                const transformedSearchQuery = parseFloat(searchQuery) * 1000000;
+                const q = query(collection(db, "images"), where("size", "<=", transformedSearchQuery));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach((doc) => {
+                    results.push(doc.data() as TImageInfo);
+                }
+                );
+            }
+            break;
+
+        case "extension":
+            {
+                const q = query(collection(db, "images"), where("fileType", "==", searchQuery.toUpperCase()));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach((doc) => {
+                    results.push(doc.data() as TImageInfo);
+                }
+                );
+            }
+            break;
+
+        case "hashtags":
+            {
+                const q = query(collection(db, "images"), where("hashtags", "array-contains-any", searchQuery.split(" ")));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach((doc) => {
+                    results.push(doc.data() as TImageInfo);
+                }
+                );
+            }
+            break;
+
+        case "date":
+            break;
+
+        default:
+            break;
+
+    }
+
+    return results;
 }
