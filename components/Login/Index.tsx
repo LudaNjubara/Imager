@@ -13,7 +13,7 @@ import { FcGoogle } from "react-icons/fc";
 import { BsGithub } from "react-icons/bs";
 import { FaMask } from "react-icons/fa";
 import styles from "./login.module.css";
-import LogoutFirst from "../common/LogoutFirst/LogoutFirst";
+import LogoutFirst from "../common/LogoutFirst/Index";
 
 function LoginForm() {
   const [user, loading, error] = useAuthState(auth);

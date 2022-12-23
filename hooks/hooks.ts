@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import { useDispatch, useSelector } from 'react-redux'
 import type { TypedUseSelectorHook } from 'react-redux'
-import { collection, doc, getDoc, getDocs, limit, onSnapshot, orderBy, query, where } from 'firebase/firestore'
+import { collection, doc, endAt, getDoc, getDocs, limit, orderBy, query, startAt, where } from 'firebase/firestore'
 
 import type { RootState, AppDispatch } from '../redux/store'
 import { db } from '../config/firebaseConfig'
@@ -92,7 +92,10 @@ export const useAWSImageURLs = (array: TImageInfo[]) => {
     }
 }
 
-export const searchImages = async (searchFilter: TSearchFilter, searchQuery: string) => {
+export const searchImages = async (searchFilter: TSearchFilter, searchQuery: string, dateSearchQuery?: {
+    from?: number,
+    to?: number
+}) => {
     const results: TImageInfo[] = [];
 
     switch (searchFilter) {
@@ -117,7 +120,6 @@ export const searchImages = async (searchFilter: TSearchFilter, searchQuery: str
                 );
             }
             break;
-
         case "extension":
             {
                 const q = query(collection(db, "images"), where("fileType", "==", searchQuery.toUpperCase()));
@@ -128,7 +130,6 @@ export const searchImages = async (searchFilter: TSearchFilter, searchQuery: str
                 );
             }
             break;
-
         case "hashtags":
             {
                 const q = query(collection(db, "images"), where("hashtags", "array-contains-any", searchQuery.split(" ")));
@@ -139,13 +140,18 @@ export const searchImages = async (searchFilter: TSearchFilter, searchQuery: str
                 );
             }
             break;
-
         case "date":
+            {
+                const q = query(collection(db, "images"), orderBy("uploadDate", "desc"), where("uploadDate", ">=", dateSearchQuery?.from), where("uploadDate", "<=", dateSearchQuery?.to));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach((doc) => {
+                    results.push(doc.data() as TImageInfo);
+                });
+            }
             break;
 
         default:
             break;
-
     }
 
     return results;

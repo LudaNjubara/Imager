@@ -28,7 +28,7 @@ import UserInfo from "./UserInfo";
 import ChooseAccountPlan from "./ChoosePlan";
 
 import styles from "./register.module.css";
-import LogoutFirst from "../common/LogoutFirst/LogoutFirst";
+import LogoutFirst from "../common/LogoutFirst/Index";
 
 type TActiveFormSteps = "userInfo" | "chooseAccountPlan";
 

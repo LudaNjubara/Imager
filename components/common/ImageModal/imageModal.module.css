@@ -4,7 +4,7 @@
   background: rgba(0, 0, 0, 0.5);
   padding: var(--padding-primary-400) var(--padding-primary-400);
   backdrop-filter: blur(10px);
-  z-index: 10;
+  z-index: 999;
   overflow: auto;
 }
 

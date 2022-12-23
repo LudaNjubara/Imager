@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { TImageInfo, TSearchFilter } from "../../../types/globals";
@@ -7,22 +7,48 @@ import { searchImages } from "../../../hooks/hooks";
 import { BsSearch } from "react-icons/bs";
 import styles from "./searchBar.module.css";
 
-function SearchBar() {
+type TSearchBarProps = {
+  setSearchResults: (results: TImageInfo[]) => void;
+};
+
+function SearchBar({ setSearchResults }: TSearchBarProps) {
   const [searchText, setSearchText] = useState("");
+  const [dateSearchInput, setDateSearchInput] = useState<{
+    from?: number;
+    to?: number;
+  }>({});
   const [selectedFilter, setSelectedFilter] = useState<TSearchFilter>("hashtags");
   const filters: TSearchFilter[] = ["date", "size", "author", "hashtags", "extension"];
-  const [searchResults, setSearchResults] = useState<TImageInfo[]>([]);
 
   const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const results = await searchImages(selectedFilter, searchText);
+    if (selectedFilter !== "date") {
+      if (searchText.length < 2) return;
+    } else {
+      if (!dateSearchInput.from || !dateSearchInput.to) return;
+    }
+
+    const results = await searchImages(
+      selectedFilter,
+      searchText,
+      selectedFilter === "date" ? dateSearchInput : undefined
+    );
+
     setSearchResults(results);
   };
 
-  useEffect(() => {
-    console.log(searchResults);
-  }, [searchResults]);
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.currentTarget.value) return;
+
+    if (event.currentTarget.id === "searchBar__dateFrom") {
+      const startOfDay = new Date(event.currentTarget.valueAsNumber).setHours(0, 0, 0, 0);
+      setDateSearchInput({ ...dateSearchInput, from: startOfDay });
+    } else {
+      const endOfDay = new Date(event.currentTarget.valueAsNumber).setHours(23, 59, 59, 999);
+      setDateSearchInput({ ...dateSearchInput, to: endOfDay });
+    }
+  };
 
   return (
     <header className={styles.searchBar__header}>
@@ -62,11 +88,21 @@ function SearchBar() {
                 className={styles.searchBar__dateFilterContainer}
               >
                 <label htmlFor="searchBar__dateFrom">
-                  <input type="date" id="searchBar__dateFrom" className={styles.searchBar__dateFilter} />
+                  <input
+                    type="date"
+                    id="searchBar__dateFrom"
+                    className={styles.searchBar__dateFilter}
+                    onChange={handleDateChange}
+                  />
                 </label>
 
                 <label htmlFor="searchBar__dateTo">
-                  <input type="date" id="searchBar__dateTo" className={styles.searchBar__dateFilter} />
+                  <input
+                    type="date"
+                    id="searchBar__dateTo"
+                    className={styles.searchBar__dateFilter}
+                    onChange={handleDateChange}
+                  />
                 </label>
               </motion.div>
             )}
