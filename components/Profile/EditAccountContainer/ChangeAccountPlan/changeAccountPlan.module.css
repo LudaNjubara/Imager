@@ -1,0 +1,232 @@
+/* keyframes that rotates button icon left and right fast */
+@keyframes rotateLeft {
+  0% {
+    transform: rotateZ(-10deg);
+  }
+  50% {
+    transform: rotateZ(-20deg);
+  }
+  100% {
+    transform: rotateZ(-10deg);
+  }
+}
+
+.changeAccountPlan__title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  font-size: var(--font-size-150);
+  font-weight: var(--font-weight-500);
+  background: linear-gradient(to right, var(--color-secondary-700), var(--color-secondary-800));
+  padding: var(--padding-secondary-200) var(--padding-secondary-400);
+}
+
+.changeAccountPlan__container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: var(--margin-primary-700);
+  padding: var(--padding-primary-300);
+}
+
+.changeAccountPlan__item {
+  background: var(--color-primary-800);
+  border: 2px solid var(--color-secondary-hover-400);
+  border-radius: var(--border-radius-300);
+  padding: var(--padding-primary-300) var(--padding-primary-400);
+}
+
+.changeAccountPlan__item__title {
+  position: relative;
+  margin-left: 8px;
+  padding-left: 2px;
+  margin-bottom: var(--margin-secondary-600);
+  font-size: var(--font-size-150);
+  font-weight: var(--font-weight-500);
+}
+
+.changeAccountPlan__item__title::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--color-success-500);
+  border-radius: var(--border-radius-300);
+}
+
+.changeAccountPlan__item__content {
+  display: flex;
+  gap: 20px;
+}
+
+.changeAccountPlan__item__info {
+  flex-grow: 1;
+}
+
+.changeAccountPlan__item__info__content {
+  max-width: 250px;
+}
+
+.changeAccountPlan__item__info__content__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.changeAccountPlan__item__info__content__list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.changeAccountPlan__item__info__content__list__item__title {
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-600);
+  background: var(--color-neutral-200);
+  padding: var(--padding-secondary-100) var(--padding-secondary-300);
+  border-radius: var(--border-radius-900);
+  color: var(--color-neutral-900);
+}
+
+.changeAccountPlan__item__info__content__list__item__title.newPlan {
+  background: var(--color-neutral-300);
+}
+
+.changeAccountPlan__item__info__content__list__item__value {
+  font-weight: var(--font-weight-600);
+}
+
+.changeAccountPlan__item__buttonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.changeAccountPlan__item__buttonContainer__button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--color-secondary-700);
+  border-radius: var(--border-radius-300);
+  padding: var(--padding-primary-200) var(--padding-primary-300);
+  font-size: var(--font-size-150);
+  font-weight: var(--font-weight-600);
+  color: var(--color-neutral-100);
+  transition: all 0.2s ease-in-out;
+}
+
+.changeAccountPlan__item__buttonContainer__button:hover,
+.changeAccountPlan__item__buttonContainer__button:focus-visible {
+  background: var(--color-neutral-100);
+  color: var(--color-secondary-700);
+}
+
+.changeAccountPlan__item__buttonContainer__button:hover
+  .changeAccountPlan__item__buttonContainer__button__icon,
+.changeAccountPlan__item__buttonContainer__button:focus-visible
+  .changeAccountPlan__item__buttonContainer__button__icon {
+  color: var(--color-secondary-700);
+  animation: rotateLeft 0.3s ease-in-out infinite;
+}
+
+.changeAccountPlan__item__buttonContainer__button__icon {
+  width: 15px;
+  height: 15px;
+  color: var(--color-neutral-100);
+  transform: rotateZ(-10deg);
+}
+
+.changeAccountPlan__item__plansContainer {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: var(--margin-primary-900);
+}
+
+.changeAccountPlan__item__plansContainer__plan {
+  flex-grow: 1;
+  max-width: 300px;
+  background: radial-gradient(
+    50% 50% at center top,
+    var(--color-primary-800) 0%,
+    var(--color-primary-900) 100%
+  );
+  border: 2px solid var(--color-secondary-hover-200);
+  border-radius: var(--border-radius-300);
+  padding: var(--padding-primary-300);
+  transition: background 0.2s ease-in-out;
+}
+
+.changeAccountPlan__item__plansContainer__plan__buttonContainer {
+  display: flex;
+  gap: 8px;
+  margin-top: var(--margin-primary-500);
+  transition: all 0.2s ease-in-out;
+}
+
+.changeAccountPlan__item__plansContainer__plan__button {
+  flex-grow: 1;
+  background: transparent;
+  border: 2px solid var(--color-secondary-700);
+  border-radius: var(--border-radius-200);
+  padding: var(--padding-primary-200) var(--padding-primary-300);
+  font-size: var(--font-size-150);
+  font-weight: var(--font-weight-700);
+  color: var(--color-neutral-100);
+  transition: all 0.2s ease-in-out;
+}
+
+.changeAccountPlan__item__plansContainer__plan__button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.changeAccountPlan__item__plansContainer__plan__button.isActive {
+  border: 2px solid var(--color-success-hover-500);
+  background: var(--color-success-700);
+  color: var(--color-neutral-100);
+}
+
+.changeAccountPlan__item__plansContainer__plan__button.confirm {
+  flex-grow: unset;
+  border: 2px solid var(--color-success-hover-500);
+  background: var(--color-success-700);
+  color: var(--color-neutral-100);
+}
+
+.changeAccountPlan__item__plansContainer__plan__button.cancel {
+  background: transparent;
+  border: 2px solid var(--color-warning-700);
+  color: var(--color-neutral-100);
+}
+
+.changeAccountPlan__item__plansContainer__plan__button.confirm:hover,
+.changeAccountPlan__item__plansContainer__plan__button.confirm:focus-visible {
+  background: var(--color-success-800);
+}
+
+.changeAccountPlan__item__plansContainer__plan__button.cancel:hover,
+.changeAccountPlan__item__plansContainer__plan__button.cancel:focus-visible {
+  background: var(--color-warning-800);
+}
+
+.changeAccountPlan__item__plansContainer__plan__button:not(
+    .changeAccountPlan__item__plansContainer__plan__button.isActive
+  ):hover,
+.changeAccountPlan__item__plansContainer__plan__button:not(
+    .changeAccountPlan__item__plansContainer__plan__button.isActive
+  ):focus-visible {
+  background: var(--color-neutral-100);
+  color: var(--color-secondary-800);
+}
+
+.changeAccountPlan__item__plansContainer__plan__button__icon {
+  width: 22px;
+  height: 22px;
+  color: var(--color-success-100);
+}

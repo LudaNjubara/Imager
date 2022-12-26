@@ -1,5 +1,5 @@
 import { doc, increment, setDoc, updateDoc } from "firebase/firestore";
-import { TImageInfo, TUserData } from "../../types/globals";
+import { TAccountPlanName, TImageInfo, TUserData } from "../../types/globals";
 import { db } from "../../config/firebaseConfig";
 
 interface IDatabase {
@@ -52,6 +52,16 @@ class Database implements IDatabase {
                 throw new Error(error);
             });
         }
+    }
+
+    UpdateUserAccountPlan(plan: TAccountPlanName, uid: string) {
+        const userRef = doc(db, "users", uid);
+
+        return updateDoc(userRef, {
+            accountPlan: plan
+        }).catch((error) => {
+            throw new Error(error);
+        });
     }
 
     AddImageInfo(imageInfo: TImageInfo) {

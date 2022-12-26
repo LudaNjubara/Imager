@@ -1,0 +1,56 @@
+.profileDashboard__container {
+  display: grid;
+  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  margin-top: var(--margin-primary-500);
+}
+
+.profileDashboard__link {
+  position: relative;
+  aspect-ratio: 16/9;
+  border-radius: var(--border-radius-300);
+  background: var(--color-primary-900);
+  padding: var(--padding-primary-200);
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+.profileDashboard__link img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profileDashboard__link__darkener {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  background: linear-gradient(to top, var(--color-primary-900), transparent);
+  z-index: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.profileDashboard__link__title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: var(--padding-primary-200) var(--padding-primary-300);
+  font-size: var(--font-size-200);
+  font-weight: var(--font-weight-600);
+  transform: translateY(0%);
+  z-index: 10 !important;
+  transition: transform 0.3s ease-out;
+}
+
+.profileDashboard__link:hover .profileDashboard__link__title,
+.profileDashboard__link:focus .profileDashboard__link__title {
+  transform: translateY(-20%);
+}
+
+.profileDashboard__link:hover .profileDashboard__link__darkener,
+.profileDashboard__link:focus .profileDashboard__link__darkener {
+  opacity: 1;
+}

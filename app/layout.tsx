@@ -3,18 +3,18 @@
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Provider, useDispatch } from "react-redux";
-
-import store from "../redux/store";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 import Head from "./head";
 import ImageUpload from "../components/ImageUpload/Index";
 import Sidebar from "../components/Sidebar/Index";
 
-import "../styles/globals.css";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../config/firebaseConfig";
+import store from "../redux/store";
 import { login, logout } from "../redux/userSlice";
 import { poppins } from "../constants/constants";
+
+import "../styles/globals.css";
 
 function RootLayoutInner({ children }: { children: React.ReactNode }) {
   const [user, loading, error] = useAuthState(auth);
@@ -43,7 +43,8 @@ function RootLayoutInner({ children }: { children: React.ReactNode }) {
           },
         })
       );
-      router.push("/");
+
+      if (pathname === "/login" || pathname === "/register") router.push("/");
     }
   }, [user, loading]);
 
