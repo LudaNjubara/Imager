@@ -41,7 +41,8 @@ function ImageItem({ imageURL, imageData, handleImageItemClick }: TImageItemProp
 
                 const link = document.createElement("a");
                 link.href = imageURL;
-                link.setAttribute("download", `${imageData.key}.${imageData.fileType.toLowerCase()}`);
+                link.setAttribute("download", imageData.key);
+                link.setAttribute("href", "");
                 document.body.appendChild(link);
                 link.click();
                 link.parentNode!.removeChild(link);

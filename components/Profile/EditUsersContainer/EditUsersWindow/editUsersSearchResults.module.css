@@ -1,0 +1,18 @@
+.editUsersSearchResults__wrapper {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.editUsersSearchResults__wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.editUsersSearchResults__wrapper::-webkit-scrollbar-track {
+  background: var(--color-primary-800);
+}
+
+.editUsersSearchResults__wrapper::-webkit-scrollbar-thumb {
+  background: var(--color-secondary-700);
+  border-radius: 3px;
+}

@@ -71,6 +71,51 @@ export const useLatestUploadsImages = () => {
     }
 }
 
+const currentUserImagesFetcher = async (swrKey: string) => {
+    const uid = swrKey.split('_')[1];
+
+    const q = query(collection(db, "images"), where("uploaderUID", "==", uid), orderBy("uploadDate", "desc"));
+    const currentUserImagesSnapshot = await getDocs(q)
+
+    const data = currentUserImagesSnapshot.docs.map((doc) => doc.data());
+
+    return data;
+}
+
+export const useCurrentUserImages = (uid: string) => {
+    const { data, error } = useSWR(`getcurrentuserimages_${uid}`, currentUserImagesFetcher, { revalidateOnFocus: false });
+
+    return {
+        currentUserImagesData: data as unknown as TImageInfo[],
+        isLoading: !error && !data,
+        isError: error
+    }
+}
+
+export const useSearchUsers = async (searchQuery: string) => {
+    let isError;
+    let data: TUserData[] = [];
+    try {
+        const q = query(
+            collection(db, "users"),
+            orderBy("username"),
+            startAt(searchQuery),
+            where("username", ">=", searchQuery),
+            where("username", "<=", searchQuery + "\uf8ff")
+        );
+        const searchedUsersSnapshot = await getDocs(q)
+        data = searchedUsersSnapshot.docs.map((doc) => doc.data() as TUserData);
+    } catch (error) {
+        isError = error;
+    }
+
+    return {
+        searchedUsersData: data,
+        isLoading: !isError && !data,
+        isError
+    }
+}
+
 const getAWSImageURLsFetcher = async (swrKey: string) => {
     const data = await fetch(swrKey)
         .then((res) => {

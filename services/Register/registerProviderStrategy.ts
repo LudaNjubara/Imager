@@ -13,15 +13,17 @@ export default class RegisterProviderStrategy {
             .then(({ user }) => {
                 updateProfile(user, {
                     displayName: username,
-                }).catch((error) => {
-                    if (error.code === "auth/invalid-display-name") {
-                        /* Implement client side logging of errors and warnings */
-                    } else if (error.code === "auth/display-name-too-long") {
-                        /* Implement client side logging of errors and warnings */
-                    }
-                });
-
-                database.AddUser(userData, user.uid);
+                })
+                    .then(() => {
+                        database.AddUser(userData, user.uid);
+                    })
+                    .catch((error) => {
+                        if (error.code === "auth/invalid-display-name") {
+                            /* Implement client side logging of errors and warnings */
+                        } else if (error.code === "auth/display-name-too-long") {
+                            /* Implement client side logging of errors and warnings */
+                        }
+                    });
             })
             .catch((error) => {
                 if (error.code === "auth/email-already-in-use") {
@@ -45,6 +47,7 @@ export default class RegisterProviderStrategy {
                     if (additionalUserInfo?.isNewUser) {
                         userData.email = user.email!;
                         userData.username = user?.displayName ?? user.providerData[0]?.displayName!;
+                        userData.photoURL = user?.photoURL ?? user.providerData[0]?.photoURL!;
 
                         database.AddUser(userData, user.uid);
                     }
@@ -78,6 +81,7 @@ export default class RegisterProviderStrategy {
                     if (additionalUserInfo?.isNewUser) {
                         userData.email = user.email!;
                         userData.username = user?.displayName ?? user.providerData[0]?.displayName!;
+                        userData.photoURL = user?.photoURL ?? user.providerData[0]?.photoURL!;
 
                         database.AddUser(userData, user.uid);
                     }

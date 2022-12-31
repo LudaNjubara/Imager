@@ -12,15 +12,21 @@ import Sidebar from "../components/Sidebar/Index";
 import { auth } from "../config/firebaseConfig";
 import store from "../redux/store";
 import { login, logout } from "../redux/userSlice";
+import { useState } from "react";
+
 import { poppins } from "../constants/constants";
 
 import "../styles/globals.css";
+import { useAppSelector, useUserData } from "../hooks/hooks";
+import database from "../services/Database/Database.class";
 
 function RootLayoutInner({ children }: { children: React.ReactNode }) {
   const [user, loading, error] = useAuthState(auth);
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
+  const reduxUser = useAppSelector((state) => state.user);
+  const { userData } = useUserData(reduxUser.uid);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -44,9 +50,13 @@ function RootLayoutInner({ children }: { children: React.ReactNode }) {
         })
       );
 
+      database.UpdateUserAccountPlan(user.uid, userData, {
+        fromProfilePage: false,
+      });
+
       if (pathname === "/login" || pathname === "/register") router.push("/");
     }
-  }, [user, loading]);
+  }, [user, loading, error]);
 
   return (
     <div id="pageWrapper">

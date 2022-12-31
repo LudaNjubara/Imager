@@ -9,13 +9,7 @@ import {
   passwordRegex,
   usernameRegex,
 } from "../../constants/constants";
-import {
-  TAccountPlan,
-  TAccountPlanName,
-  TUserData,
-  TUserDataError,
-  TRegisterProvider,
-} from "../../types/globals";
+import { TAccountPlanName, TUserData, TUserDataError, TRegisterProvider } from "../../types/globals";
 import { getAccountPlanProperty } from "../../utils/register/registerUtils";
 import { useAccountPlans } from "../../hooks/hooks";
 import createAccount from "../../services/Register/CreateAccount.class";

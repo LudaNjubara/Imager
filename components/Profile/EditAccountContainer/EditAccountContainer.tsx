@@ -1,11 +1,14 @@
 "use client";
 
+import { TUser } from "../../../types/globals";
 import { useAccountPlans, useAppSelector, useUserData } from "../../../hooks/hooks";
-import styles from "./editAccountContainer.module.css";
+
 import ChangeAccountPlan from "./ChangeAccountPlan/ChangeAccountPlan";
 
+import styles from "./editAccountContainer.module.css";
+
 function EditAccountContainer() {
-  const reduxUser = useAppSelector((state) => state.user);
+  const reduxUser: TUser = useAppSelector((state) => state.user);
   const { accountPlansData } = useAccountPlans();
   const { userData } = useUserData(reduxUser.uid);
 
@@ -16,9 +19,9 @@ function EditAccountContainer() {
       <section className={styles.editAccountContainer__container}>
         <ChangeAccountPlan
           itemTitle="Current Plan"
+          reduxUser={reduxUser}
           accountPlansData={accountPlansData}
           userData={userData}
-          reduxUser={reduxUser}
         />
       </section>
     </div>

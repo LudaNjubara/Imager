@@ -1,9 +1,15 @@
 import { doc, increment, setDoc, updateDoc } from "firebase/firestore";
 import { TAccountPlanName, TImageInfo, TUserData } from "../../types/globals";
 import { db } from "../../config/firebaseConfig";
+import logger from "../Logger/Logger.class";
 
 interface IDatabase {
     AddUser: (userData: TUserData, uid: string) => void;
+    UpdateImageInfo: (description: string, hashtags: string[], key: string) => void;
+    UpdateUserUploadsUsed: (value: "increment" | "decrement", uid: string) => void;
+    UpdateUserAccountPlan: (uid: string, userData: TUserData, { plan, fromProfilePage }: { plan?: TAccountPlanName, fromProfilePage: boolean }) => void;
+    AddImageInfo: (imageInfo: TImageInfo) => void;
+    UpdateUserField: (uid: string, fieldName: string, value: string | number | boolean | null) => void;
 }
 
 class Database implements IDatabase {
@@ -24,17 +30,34 @@ class Database implements IDatabase {
             accountRole,
             accountPlan,
             uploadsUsed,
+            photoURL
         } = userData
 
         const userRef = doc(db, "users", uid);
         setDoc(userRef, {
+            uid,
             email,
             username,
             accountRole,
             accountPlan,
             uploadsUsed,
-        })
+            photoURL: photoURL ?? null
+        }).catch((error) => {
+            throw new Error(error);
+        });
     }
+
+    UpdateImageInfo(description: string, hashtags: string[], key: string) {
+        const docRef = doc(db, `images/${key}`);
+
+        updateDoc(docRef, {
+            description,
+            hashtags
+        }).catch((error) => {
+            throw new Error(error);
+        });
+    }
+
 
     UpdateUserUploadsUsed(value: "increment" | "decrement", uid: string) {
         const userRef = doc(db, "users", uid);
@@ -54,14 +77,33 @@ class Database implements IDatabase {
         }
     }
 
-    UpdateUserAccountPlan(plan: TAccountPlanName, uid: string) {
+    UpdateUserAccountPlan(uid: string, userData: TUserData, { plan, fromProfilePage }: { plan?: TAccountPlanName, fromProfilePage: boolean }) {
         const userRef = doc(db, "users", uid);
+        const isEligibleForPlanUpdate = !!userData?.accountPlanUpdateDate && userData?.accountPlanUpdateDate < Date.now() && userData?.isPendingAccountPlanUpdate;
 
-        return updateDoc(userRef, {
-            accountPlan: plan
-        }).catch((error) => {
-            throw new Error(error);
-        });
+        if (isEligibleForPlanUpdate) {
+            setDoc(userRef, {
+                accountPlan: userData.pendingAccountPlan,
+                isPendingAccountPlanUpdate: false,
+                pendingAccountPlan: null,
+                uploadsUsed: 0,
+                accountPlanUpdateDate: null,
+            }, { merge: true })
+        } else {
+            if (!fromProfilePage) return;
+
+            const nextDay = new Date();
+            nextDay.setDate(nextDay.getDate() + 1);
+            nextDay.setHours(0, 0, 0, 0);
+            const nextDayInMilliseconds = nextDay.getTime();
+
+            setDoc(userRef, {
+                accountPlanUpdateDate: nextDayInMilliseconds,
+                isPendingAccountPlanUpdate: true,
+                pendingAccountPlan: plan,
+            }, { merge: true })
+
+        }
     }
 
     AddImageInfo(imageInfo: TImageInfo) {
@@ -75,8 +117,18 @@ class Database implements IDatabase {
                 console.error("Error adding document: ", error);
             });
     }
+
+    UpdateUserField(uid: string, fieldName: string, value: string | number | boolean | null) {
+        const userRef = doc(db, "users", uid);
+
+        updateDoc(userRef, {
+            [fieldName]: value
+        }).catch((error) => {
+            throw new Error(error);
+        });
+    }
 }
 
-const database = Database.getInstance();
+const database = Object.freeze(Database.getInstance());
 
 export default database;

@@ -12,9 +12,10 @@ type TSearchResultsProps = {
   title: string;
   imagesData: TImageInfo[];
   imageURLsData: string[];
+  canEdit?: boolean;
 };
 
-function ImagesContainer({ title, imagesData, imageURLsData }: TSearchResultsProps) {
+function ImagesContainer({ title, imagesData, imageURLsData, canEdit }: TSearchResultsProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImageURL, setModalImageURL] = useState<string>();
   const [modalImageData, setModalImageData] = useState<TImageInfo>();
@@ -47,7 +48,7 @@ function ImagesContainer({ title, imagesData, imageURLsData }: TSearchResultsPro
 
   return (
     <section className={styles.imagesContainer__wrapper}>
-      <h2 className={styles.imagesContainer__title}>{title}</h2>
+      <h3 className={styles.imagesContainer__title}>{title}</h3>
       <div className={styles.imagesContainer__container}>
         {imageURLsData ? (
           imageURLsData.map((url) => (
@@ -66,7 +67,12 @@ function ImagesContainer({ title, imagesData, imageURLsData }: TSearchResultsPro
       </div>
 
       {isModalOpen && (
-        <ImageModal toggleModal={toggleModal} modalImageURL={modalImageURL} modalImageData={modalImageData} />
+        <ImageModal
+          toggleModal={toggleModal}
+          modalImageURL={modalImageURL}
+          modalImageData={modalImageData}
+          canEdit={canEdit}
+        />
       )}
     </section>
   );

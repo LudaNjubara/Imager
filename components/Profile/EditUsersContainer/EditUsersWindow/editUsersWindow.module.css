@@ -1,0 +1,8 @@
+.editUsersWindow__wrapper {
+  display: flex;
+  min-height: 700px;
+  max-height: 800px;
+  border-radius: var(--border-radius-300);
+  background-color: var(--color-primary-800);
+  overflow: hidden;
+}

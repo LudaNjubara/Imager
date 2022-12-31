@@ -1,10 +1,20 @@
-import { FieldValue, Timestamp } from "firebase/firestore";
+/* Enums */
+enum EAccountPlanName {
+    Bronze = "Bronze",
+    Gold = "Gold",
+    Platinum = "Platinum"
+}
 
-interface userMetadata {
+enum EAccountRole {
+    Admin = "Admin",
+    User = "User"
+}
+
+/* Types */
+type userMetadata = {
     creationTime?: string;
     lastSignInTime?: string;
 }
-
 type TFederalProvider = "Google" | "GitHub";
 type TRegisterProvider = "Email" | "Google" | "GitHub";
 type TLoginProvider = "Email" | "Google" | "GitHub" | "Anonymous";
@@ -16,7 +26,7 @@ type TUser = {
     readonly uid: string,
     displayName: string | null,
     email: string | null,
-    photoURL?: string,
+    photoURL?: string | null,
     readonly emailVerified: boolean
     readonly isAnonymous: boolean,
     metadata: userMetadata,
@@ -25,12 +35,17 @@ type TUser = {
 }
 
 type TUserData = {
+    uid?: string,
     username?: string,
     email: string;
     password: string;
+    photoURL?: string | null,
     accountPlan?: TAccountPlanName;
     accountRole?: TAccountRole;
     uploadsUsed?: number;
+    accountPlanUpdateDate?: number | null;
+    isPendingAccountPlanUpdate?: boolean;
+    pendingAccountPlan?: TAccountPlanName | null;
 };
 
 type TUserDataError = {
@@ -74,4 +89,8 @@ type TAccountPlan = {
     maxUploadLimit: number,
 }
 
-export type { TUser, TUserData, TUserDataError, TImageInfo, TFederalProvider, TRegisterProvider, TLoginProvider, TAccountPlan, TAccountPlanName, TAccountRole, TSearchFilter };
+/* export enums  */
+export { EAccountPlanName, EAccountRole };
+
+/* export types  */
+export type { TUser, TUserData, TUserDataError, TImageInfo, TFederalProvider, TRegisterProvider, TLoginProvider, TAccountPlan, TAccountPlanName, TSearchFilter };

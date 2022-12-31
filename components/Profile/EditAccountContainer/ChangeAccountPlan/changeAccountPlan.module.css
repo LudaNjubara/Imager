@@ -141,10 +141,33 @@
 }
 
 .changeAccountPlan__item__plansContainer {
+  position: relative;
   display: flex;
   justify-content: center;
   gap: 20px;
   margin-top: var(--margin-primary-900);
+}
+
+.changeAccountPlan__item__plansContainer:has(.changeAccountPlan__item__plansContainer__pendingUpdate)
+  .changeAccountPlan__item__plansContainer__plan {
+  pointer-events: none;
+}
+
+.changeAccountPlan__item__plansContainer__pendingUpdate {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--padding-secondary-200) var(--padding-secondary-300);
+  border-radius: var(--border-radius-300);
+  z-index: 1;
+  backdrop-filter: blur(10px);
+  background: var(--color-primary-hover-800);
+}
+
+.changeAccountPlan__item__plansContainer__pendingUpdate__text {
+  font-size: var(--font-size-150);
+  font-weight: var(--font-weight-500);
 }
 
 .changeAccountPlan__item__plansContainer__plan {

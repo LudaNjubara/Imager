@@ -1,19 +1,73 @@
+import { useState, useRef } from "react";
+
 import { Timestamp } from "firebase/firestore";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { TImageInfo } from "../../../types/globals";
 import { imageUpload__modalVariants, toDateOptions } from "../../../constants/constants";
 
+import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import { MdOutlineModeEditOutline, MdEditOff } from "react-icons/md";
 import { BsDownload, BsXLg } from "react-icons/bs";
 import styles from "./imageModal.module.css";
+import database from "../../../services/Database/Database.class";
 
 type ImageModalProps = {
   toggleModal: () => void;
   modalImageURL?: string;
   modalImageData?: TImageInfo;
+  canEdit?: boolean;
 };
 
-function ImageModal({ toggleModal, modalImageURL, modalImageData }: ImageModalProps) {
+function ImageModal({ toggleModal, modalImageURL, modalImageData, canEdit }: ImageModalProps) {
+  const [isEditButtonClicked, setIsEditButtonClicked] = useState(false);
+  const [hasImageHashtagsError, setHasImageHashtagsError] = useState<boolean>(false);
+  const imageDescRef = useRef<HTMLInputElement>(null);
+  const imageHashtagsRef = useRef<HTMLTextAreaElement>(null);
+
+  const checkDescAndHashtagsValidity = () => {
+    if (
+      imageDescRef.current?.value.length &&
+      imageHashtagsRef.current?.value.split(" ").length !== 0 &&
+      !hasImageHashtagsError
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const handleEditButtonClick = () => {
+    setIsEditButtonClicked((prevState) => !prevState);
+  };
+
+  const handleConfirmEditButtonClick = () => {
+    if (
+      !modalImageData?.key ||
+      !imageDescRef.current ||
+      !imageHashtagsRef.current ||
+      !checkDescAndHashtagsValidity()
+    ) {
+      return;
+    }
+
+    database.UpdateImageInfo(
+      imageDescRef.current.value,
+      imageHashtagsRef.current?.value.split(" "),
+      modalImageData.key
+    );
+  };
+
+  const handleImageHashtagsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    /* if current value contains characters other than -_ and space, lowercase and uppercase letters then return */
+    if (e.currentTarget.value.length === 0 || e.currentTarget.value.match(/[^a-zA-Z-_ ]/g)) {
+      setHasImageHashtagsError(true);
+      return;
+    }
+
+    setHasImageHashtagsError(false);
+  };
+
   return (
     <AnimatePresence>
       {modalImageURL && modalImageData && (
@@ -63,20 +117,52 @@ function ImageModal({ toggleModal, modalImageURL, modalImageData }: ImageModalPr
                     </span>
                   </div>
 
-                  <p className={styles.imageModal__infoContainer__main__info__description}>
-                    {modalImageData.description}
-                  </p>
+                  {isEditButtonClicked ? (
+                    <input
+                      id={styles.imageUploadModal__imageDescInput}
+                      type="text"
+                      name="image_desc"
+                      placeholder="Description..."
+                      ref={imageDescRef}
+                      defaultValue={modalImageData.description}
+                    />
+                  ) : (
+                    <p className={styles.imageModal__infoContainer__main__info__description}>
+                      {modalImageData.description}
+                    </p>
+                  )}
 
-                  <div className={styles.imageModal__infoContainer__main__info__hashtagsContainer}>
-                    {modalImageData.hashtags.map((hashtag) => (
-                      <span
-                        key={hashtag}
-                        className={styles.imageModal__infoContainer__main__info__hashtagsContainer__hashtag}
+                  {isEditButtonClicked ? (
+                    <div id={styles.imageUploadModal__imageHashtags}>
+                      <textarea
+                        id={styles.imageUploadModal__imageHashtagsTextarea}
+                        name="image_hashtags"
+                        placeholder="Hashtags..."
+                        ref={imageHashtagsRef}
+                        defaultValue={modalImageData.hashtags.join(" ")}
+                        onChange={handleImageHashtagsChange}
+                      ></textarea>
+                      <p
+                        className={`${styles.imageUploadModal__notice} ${
+                          hasImageHashtagsError && styles.active
+                        }`}
                       >
-                        {hashtag}
-                      </span>
-                    ))}
-                  </div>
+                        * Hashtags must be separated with spaces and can only contain letters, dashes and
+                        underscores.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className={styles.imageModal__infoContainer__main__info__hashtagsContainer}>
+                      {modalImageData.hashtags.map((hashtag) => (
+                        <span
+                          key={hashtag}
+                          className={styles.imageModal__infoContainer__main__info__hashtagsContainer__hashtag}
+                        >
+                          {hashtag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className={styles.imageModal__infoContainer__main__propertiesContainer}>
@@ -115,6 +201,43 @@ function ImageModal({ toggleModal, modalImageURL, modalImageData }: ImageModalPr
                       className={styles.imageModal__infoContainer__aside__userActions__button__icon}
                     />
                   </button>
+
+                  {canEdit && (
+                    <div className={styles.imageModal__infoContainer__aside__userActions__editContainer}>
+                      <button
+                        type="button"
+                        className={styles.imageModal__infoContainer__aside__userActions__button}
+                        onClick={handleEditButtonClick}
+                      >
+                        {isEditButtonClicked ? (
+                          <MdEditOff
+                            className={`${styles.imageModal__infoContainer__aside__userActions__button__icon} ${styles.cancel}`}
+                          />
+                        ) : (
+                          <MdOutlineModeEditOutline
+                            className={styles.imageModal__infoContainer__aside__userActions__button__icon}
+                          />
+                        )}
+                      </button>
+
+                      <AnimatePresence>
+                        {isEditButtonClicked && (
+                          <motion.button
+                            initial={{ y: -10, opacity: 0, scale: 0 }}
+                            animate={{ y: 0, opacity: 1, scale: 1 }}
+                            exit={{ y: -10, opacity: 0, scale: 0 }}
+                            type="button"
+                            className={`${styles.imageModal__infoContainer__aside__userActions__button} ${styles.confirm}`}
+                            onClick={handleConfirmEditButtonClick}
+                          >
+                            <IoCheckmarkDoneOutline
+                              className={`${styles.imageModal__infoContainer__aside__userActions__button__icon} ${styles.confirm}`}
+                            />
+                          </motion.button>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  )}
                 </div>
               </aside>
             </div>

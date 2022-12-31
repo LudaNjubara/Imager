@@ -56,4 +56,17 @@ const convertImageKeysToString = (array: TImageInfo[]) => {
     return imageKeys
 }
 
-export { setCSSVariable, extractImageDataFromURL, convertFileToImage, convertImageKeysToString };
+const convertDatabaseFiledToReadableFormat = (fieldName: string) => {
+    const titleArray = fieldName.split("");
+    const newFieldNameArray = titleArray.map((char) => {
+        if (char === char.toUpperCase()) {
+            return ` ${char.toLowerCase()}`;
+        } else {
+            return char;
+        }
+    });
+
+    return newFieldNameArray.join("");
+}
+
+export { setCSSVariable, extractImageDataFromURL, convertFileToImage, convertImageKeysToString, convertDatabaseFiledToReadableFormat };

@@ -1,0 +1,94 @@
+.editUsersDetailsListItem__wrapper {
+  display: flex;
+  gap: 40px;
+  padding: var(--padding-secondary-300) var(--padding-primary-500);
+  background: var(--color-neutral-hover-300);
+}
+
+.editUsersDetailsListItem__detailsContainer {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.editUsersDetailsListItem__title {
+  font-weight: var(--font-weight-600);
+  color: var(--color-neutral-200);
+  padding: var(--padding-secondary-100) var(--padding-secondary-500);
+  background: var(--color-neutral-hover-300);
+  border-radius: var(--border-radius-900);
+}
+
+.editUsersDetailsListItem__value {
+  font-weight: var(--font-weight-400);
+  color: var(--color-neutral-300);
+}
+
+.editUsersDetailsListItem__input {
+  font-weight: var(--font-weight-400);
+  color: var(--color-neutral-300);
+  background: var(--color-neutral-hover-300);
+  outline: none;
+  border: 1px solid var(--color-neutral-hover-400);
+  border-radius: var(--border-radius-900);
+  padding: var(--padding-secondary-200) var(--padding-secondary-600);
+  transition: border 0.2s ease-in-out;
+}
+
+.editUsersDetailsListItem__input::placeholder {
+  color: var(--color-neutral-hover-800);
+}
+
+.editUsersDetailsListItem__input:focus-visible {
+  border: 1px solid var(--color-neutral-hover-900);
+}
+
+.editUsersDetailsListItem__input.error {
+  border: 1px solid var(--color-danger-400);
+}
+
+.editUsersDetailsListItem__buttonsContainer {
+  display: flex;
+  gap: 3px;
+}
+
+.editUsersDetailsListItem__buttonsContainer__button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-primary-600);
+  border-radius: 50%;
+  background: var(--color-primary-700);
+  transition: background 0.2s ease-in-out;
+}
+
+.editUsersDetailsListItem__buttonsContainer__button.confirm {
+  border: 1px solid var(--color-success-700);
+}
+
+.editUsersDetailsListItem__buttonsContainer__button:hover,
+.editUsersDetailsListItem__buttonsContainer__button:focus-visible {
+  background: var(--color-primary-600);
+}
+
+.editUsersDetailsListItem__buttonsContainer__button.confirm:disabled {
+  background: var(--color-primary-700);
+  opacity: 0.5 !important;
+  cursor: default;
+}
+
+.editUsersDetailsListItem__buttonsContainer__button__icon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-neutral-200);
+}
+
+.editUsersDetailsListItem__buttonsContainer__button__icon.cancel {
+  color: var(--color-danger-400);
+}
+
+.editUsersDetailsListItem__buttonsContainer__button__icon.confirm {
+  color: var(--color-success-500);
+}

@@ -11,8 +11,8 @@ import styles from "./changeAccountPlan.module.css";
 type TChangeAccountPlanProps = {
   itemTitle: string;
   reduxUser: TUser;
-  userData: TUserData;
-  accountPlansData: TAccountPlan[];
+  userData?: TUserData;
+  accountPlansData?: TAccountPlan[];
 };
 
 function ChangeAccountPlan({ itemTitle, reduxUser, userData, accountPlansData }: TChangeAccountPlanProps) {
@@ -20,6 +20,7 @@ function ChangeAccountPlan({ itemTitle, reduxUser, userData, accountPlansData }:
   const [currentNewAccountPlanName, setCurrentNewAccountPlanName] = useState<TAccountPlanName>();
   const [isChangePlanButtonChecked, setIsChangePlanButtonChecked] = useState(false);
   const [isSelectNewPlanButtonChecked, setIsSelectNewPlanButtonChecked] = useState(false);
+  const [isEligibleForPlanChange, setIsEligibleForPlanChange] = useState(false);
 
   const handleChangePlanButtonClicked = () => {
     setIsChangePlanButtonChecked((prevState) => !prevState);
@@ -34,9 +35,14 @@ function ChangeAccountPlan({ itemTitle, reduxUser, userData, accountPlansData }:
   };
 
   const handleConfirmNewPlanClicked = () => {
-    if (!currentNewAccountPlanName || userData.accountPlan === currentNewAccountPlanName) return;
+    if (!currentNewAccountPlanName || !userData || userData?.accountPlan === currentNewAccountPlanName)
+      return;
 
-    database.UpdateUserAccountPlan(currentNewAccountPlanName, reduxUser.uid);
+    database.UpdateUserAccountPlan(reduxUser.uid, userData, {
+      plan: currentNewAccountPlanName,
+      fromProfilePage: true,
+    });
+
     setIsSelectNewPlanButtonChecked(false);
     setCurrentNewAccountPlanName(undefined);
     setIsChangePlanButtonChecked(false);
@@ -44,8 +50,13 @@ function ChangeAccountPlan({ itemTitle, reduxUser, userData, accountPlansData }:
 
   useEffect(() => {
     if (!!userData && !!accountPlansData) {
-      const currentPlan = accountPlansData.find((plan) => plan.name === userData.accountPlan);
+      const currentPlan = accountPlansData.find((plan) => plan.name === userData?.accountPlan);
       setCurrentUserAccountPlan(currentPlan);
+      setIsEligibleForPlanChange(
+        !!userData?.accountPlanUpdateDate &&
+          Date.now() < userData.accountPlanUpdateDate &&
+          !!userData?.isPendingAccountPlanUpdate
+      );
     }
 
     return () => {
@@ -127,10 +138,22 @@ function ChangeAccountPlan({ itemTitle, reduxUser, userData, accountPlansData }:
         {isChangePlanButtonChecked && (
           <motion.div
             initial={{ height: 0 }}
-            animate={{ height: "auto", transition: { duration: 0.8, staggerChildren: 0.2 } }}
+            animate={{ height: "auto", transition: { duration: 0.8 } }}
             exit={{ height: 0, transition: { duration: 0.5 } }}
             className={styles.changeAccountPlan__item__plansContainer}
           >
+            {isEligibleForPlanChange && (
+              <motion.div
+                initial={{ y: -30 }}
+                animate={{ y: 0, transition: { duration: 0.5 } }}
+                exit={{ y: -30, transition: { duration: 0.5 } }}
+                className={styles.changeAccountPlan__item__plansContainer__pendingUpdate}
+              >
+                <p className={styles.changeAccountPlan__item__plansContainer__pendingUpdate__text}>
+                  Your account plan is pending account plan update. Please check back later.
+                </p>
+              </motion.div>
+            )}
             {accountPlansData?.map((plan) => (
               <motion.div
                 key={plan.name}
@@ -198,7 +221,7 @@ function ChangeAccountPlan({ itemTitle, reduxUser, userData, accountPlansData }:
                   <button
                     type="button"
                     data-plan-name={plan.name}
-                    disabled={userData.accountPlan === plan.name}
+                    disabled={isEligibleForPlanChange || userData?.accountPlan === plan.name}
                     className={`${styles.changeAccountPlan__item__plansContainer__plan__button} ${
                       currentNewAccountPlanName === plan.name && styles.isActive
                     } ${
@@ -227,7 +250,7 @@ function ChangeAccountPlan({ itemTitle, reduxUser, userData, accountPlansData }:
                         }}
                         type="button"
                         data-plan-name={plan.name}
-                        disabled={userData.accountPlan === plan.name}
+                        disabled={userData?.accountPlan === plan.name}
                         className={`${styles.changeAccountPlan__item__plansContainer__plan__button} ${styles.isActive} ${styles.confirm}`}
                         onClick={handleConfirmNewPlanClicked}
                       >
