@@ -77,7 +77,7 @@ type TImageInfo = {
     description: string,
     uploaderUID: string,
     uploaderDisplayName: string | null,
-    uploaderPhotoURL?: string,
+    uploaderPhotoURL?: string | null,
     uploadDate: number,
 }
 

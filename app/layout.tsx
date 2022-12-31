@@ -12,7 +12,6 @@ import Sidebar from "../components/Sidebar/Index";
 import { auth } from "../config/firebaseConfig";
 import store from "../redux/store";
 import { login, logout } from "../redux/userSlice";
-import { useState } from "react";
 
 import { poppins } from "../constants/constants";
 
