@@ -92,30 +92,6 @@ export const useCurrentUserImages = (uid: string) => {
     }
 }
 
-export const useSearchUsers = async (searchQuery: string) => {
-    let isError;
-    let data: TUserData[] = [];
-    try {
-        const q = query(
-            collection(db, "users"),
-            orderBy("username"),
-            startAt(searchQuery),
-            where("username", ">=", searchQuery),
-            where("username", "<=", searchQuery + "\uf8ff")
-        );
-        const searchedUsersSnapshot = await getDocs(q)
-        data = searchedUsersSnapshot.docs.map((doc) => doc.data() as TUserData);
-    } catch (error) {
-        isError = error;
-    }
-
-    return {
-        searchedUsersData: data,
-        isLoading: !isError && !data,
-        isError
-    }
-}
-
 const getAWSImageURLsFetcher = async (swrKey: string) => {
     const data = await fetch(swrKey)
         .then((res) => {

@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { useSearchUsers } from "../../../../hooks/hooks";
-import observableAccountItem from "../../../../services/Profile/ObservableSearchedUsers.class";
+import styles from "./editUsersSearch.module.css";
 
 import { BsSearch } from "react-icons/bs";
-import styles from "./editUsersSearch.module.css";
+import { searchUsers } from "../../../../utils/profile/profileUtils";
+import observableAccountItem from "../../../../services/Profile/ObservableSearchedUsers.class";
 
 function EditUsersSearch() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,7 +16,7 @@ function EditUsersSearch() {
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { searchedUsersData, isLoading, isError } = await useSearchUsers(searchQuery);
+    const { searchedUsersData, isLoading, isError } = await searchUsers(searchQuery);
 
     if (!isLoading && !isError) {
       observableAccountItem.notify(searchedUsersData);

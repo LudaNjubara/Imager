@@ -1,5 +1,8 @@
-import { emailRegex, usernameRegex } from "../../constants/constants";
+import { collection, getDocs, orderBy, query, startAt, where } from "firebase/firestore";
+
 import { EAccountPlanName, EAccountRole, TUserData } from "../../types/globals";
+import { emailRegex, usernameRegex } from "../../constants/constants";
+import { db } from "../../config/firebaseConfig";
 
 const validateDetailsInput = (title: keyof TUserData, inputValue: string) => {
     switch (title) {
@@ -29,4 +32,30 @@ const validateDetailsInput = (title: keyof TUserData, inputValue: string) => {
     }
 };
 
-export { validateDetailsInput }
+const searchUsers = async (searchQuery: string) => {
+    let isError;
+    let data: TUserData[] = [];
+    try {
+        const q = query(
+            collection(db, "users"),
+            orderBy("username"),
+            startAt(searchQuery),
+            where("username", ">=", searchQuery),
+            where("username", "<=", searchQuery + "\uf8ff")
+        );
+        const querySnapshot = await getDocs(q);
+        data = querySnapshot.docs.map((doc) => doc.data() as TUserData);
+
+    } catch (error) {
+        console.log(error);
+        isError = error;
+    }
+
+    return {
+        searchedUsersData: data,
+        isLoading: !isError && !data,
+        isError
+    }
+}
+
+export { validateDetailsInput, searchUsers }
