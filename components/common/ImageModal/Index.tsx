@@ -101,7 +101,7 @@ function ImageModal({ toggleModal, modalImageURL, modalImageData, canEdit }: Ima
                 <div className={styles.imageModal__infoContainer__main__info}>
                   <div className={styles.imageModal__infoContainer__main__info__main}>
                     <img
-                      src={modalImageData.uploaderPhotoURL}
+                      src={modalImageData.uploaderPhotoURL ?? "/images/imagerLogo2.png"}
                       alt="User Profile"
                       className={styles.imageModal__infoContainer__main__info__main__userImage}
                     />
