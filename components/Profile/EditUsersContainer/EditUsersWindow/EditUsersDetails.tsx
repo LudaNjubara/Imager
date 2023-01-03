@@ -5,11 +5,12 @@ import EditUsersDetailsListItem from "./EditUsersDetailsListItem";
 
 type TEditUsersDetailsProps = {
   user: TUserData;
+  currentUserUsername: string;
 };
 
 /* Create a function that will be used in a javascript sort method that sorts keys of object of type TUserData. Keys such as uploadsUsed, accountRole and accountPlan take presedence over other keys. */
 
-function EditUsersDetails({ user }: TEditUsersDetailsProps) {
+function EditUsersDetails({ user, currentUserUsername }: TEditUsersDetailsProps) {
   return (
     <section className={styles.editUsersDetails__wrapper}>
       <h2 className={styles.editUsersDetails__title}>User Details</h2>
@@ -47,6 +48,8 @@ function EditUsersDetails({ user }: TEditUsersDetailsProps) {
                   <EditUsersDetailsListItem
                     key={key}
                     uid={user.uid!}
+                    username={user.username!}
+                    currentUserUsername={currentUserUsername!}
                     title={key as keyof TUserData}
                     value={user[key as keyof TUserData]}
                   />

@@ -1,43 +1,34 @@
-//import { TUserInfo } from "../../../Globals";
-type TLogOptions = {
-    readonly object?: any;
-}
-
-const logOptionsDefaults: TLogOptions = {
-    object: undefined
-}
-
-const setDefaultOptions = (options: TLogOptions, defaults: {}) => {
-    return Object.assign({}, defaults, options);
-}
-
-type TLogType = "log" | "warn" | "error";
+import { GeoPoint } from "firebase/firestore";
+import { TLogData, TLogAction } from "../../types/globals";
+import { detectBrowser, detectOS, getUserLocation } from "../../utils/common/utils";
+import database from "../Database/Database.class";
 
 interface ILogger {
-    Log(message: string, type: TLogType, options?: TLogOptions): void;
+    Log(username: string, action: TLogAction): void;
 }
 
 class Logger implements ILogger {
 
-    Log(message: string, type: TLogType = "log", options?: TLogOptions) {
-        if (options) options = setDefaultOptions(options, logOptionsDefaults);
+    Log(username: string, action: TLogAction) {
+        const logData: TLogData = {
+            username,
+            time: Date.now(),
+            location: "unknown",
+            userAgent: {
+                browser: detectBrowser(),
+                os: detectOS()
+            },
+            action
+        };
 
-        switch (type) {
-            case "log":
-                if (options?.object) console.log(message, options.object)
-                else console.log(message)
-                break;
-            case "warn":
-                if (options?.object) console.warn(message, options.object)
-                else console.warn(message)
-                break;
-            case "error":
-                if (options?.object) console.error(message, options.object)
-                else console.error(message)
-                break;
-            default:
-                throw new Error("Invalid log type");
-        }
+        getUserLocation()
+            .then(({ latitude, longitude }) => {
+                logData.location = new GeoPoint(latitude, longitude);
+                database.LogUserAction(logData);
+            })
+            .catch((error) => {
+                database.LogUserAction(logData);
+            });
     }
 }
 

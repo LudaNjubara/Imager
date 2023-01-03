@@ -11,6 +11,8 @@ import { MdOutlineModeEditOutline, MdEditOff } from "react-icons/md";
 import { BsDownload, BsXLg } from "react-icons/bs";
 import styles from "./imageModal.module.css";
 import database from "../../../services/Database/Database.class";
+import { downloadImage } from "../../../utils/common/utils";
+import { useAppSelector } from "../../../hooks/hooks";
 
 type ImageModalProps = {
   toggleModal: () => void;
@@ -20,6 +22,7 @@ type ImageModalProps = {
 };
 
 function ImageModal({ toggleModal, modalImageURL, modalImageData, canEdit }: ImageModalProps) {
+  const reduxUser = useAppSelector((state) => state.user);
   const [isEditButtonClicked, setIsEditButtonClicked] = useState(false);
   const [hasImageHashtagsError, setHasImageHashtagsError] = useState<boolean>(false);
   const imageDescRef = useRef<HTMLInputElement>(null);
@@ -54,7 +57,8 @@ function ImageModal({ toggleModal, modalImageURL, modalImageData, canEdit }: Ima
     database.UpdateImageInfo(
       imageDescRef.current.value,
       imageHashtagsRef.current?.value.split(" "),
-      modalImageData.key
+      modalImageData.key,
+      reduxUser.displayName!
     );
   };
 
@@ -196,7 +200,14 @@ function ImageModal({ toggleModal, modalImageURL, modalImageData, canEdit }: Ima
 
               <aside className={styles.imageModal__infoContainer__aside}>
                 <div className={styles.imageModal__infoContainer__aside__userActions}>
-                  <button className={styles.imageModal__infoContainer__aside__userActions__button}>
+                  <button
+                    className={styles.imageModal__infoContainer__aside__userActions__button}
+                    onClick={(e) => {
+                      e.stopPropagation();
+
+                      downloadImage(modalImageURL, modalImageData.key);
+                    }}
+                  >
                     <BsDownload
                       className={styles.imageModal__infoContainer__aside__userActions__button__icon}
                     />

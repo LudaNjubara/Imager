@@ -151,7 +151,7 @@ function Sidebar() {
                       height={35}
                     />
                     <span className={styles.userProfile__username}>
-                      {user.displayName ?? user.providerData[0].displayName}
+                      {userData?.username ?? user.displayName ?? user.providerData[0].displayName}
                     </span>
                   </Link>
 

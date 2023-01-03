@@ -1,5 +1,5 @@
 import { FormEvent, MouseEvent, useState, useEffect } from "react";
-import { serverTimestamp, Timestamp } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 import { AnimatePresence, motion } from "framer-motion";
 
 import database from "../../services/Database/Database.class";
@@ -56,7 +56,7 @@ function ImageUploadModal() {
           description: imageDesc,
           uploaderUID: reduxUser.uid,
           uploaderDisplayName: reduxUser.displayName,
-          uploaderPhotoURL: reduxUser.photoURL,
+          uploaderPhotoURL: reduxUser.photoURL ?? null,
           uploadDate: Timestamp.now().toMillis(),
         };
 

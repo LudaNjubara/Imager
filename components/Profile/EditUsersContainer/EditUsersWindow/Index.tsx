@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useAppSelector } from "../../../../hooks/hooks";
 import observableAccountItem from "../../../../services/Profile/ObservableAccountItem.class";
-import observableSearchedUsers from "../../../../services/Profile/ObservableSearchedUsers.class";
 
 import { TUserData } from "../../../../types/globals";
 
@@ -12,6 +12,7 @@ import EditUsersSidebar from "./EditUsersSidebar";
 import styles from "./editUsersWindow.module.css";
 
 function EditUsersWindow() {
+  const reduxUser = useAppSelector((state) => state.user);
   const [clickedUserData, setClickedUserData] = useState<TUserData>();
 
   const handleClickedAccountItem = (user: TUserData) => {
@@ -29,7 +30,9 @@ function EditUsersWindow() {
   return (
     <div className={styles.editUsersWindow__wrapper}>
       <EditUsersSidebar />
-      {!!clickedUserData ? <EditUsersDetails user={clickedUserData} /> : null}
+      {!!clickedUserData ? (
+        <EditUsersDetails user={clickedUserData} currentUserUsername={reduxUser.displayName!} />
+      ) : null}
     </div>
   );
 }

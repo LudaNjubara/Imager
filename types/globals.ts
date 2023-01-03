@@ -1,3 +1,5 @@
+import { GeoPoint } from "firebase/firestore";
+
 /* Enums */
 enum EAccountPlanName {
     Bronze = "Bronze",
@@ -89,8 +91,27 @@ type TAccountPlan = {
     maxUploadLimit: number,
 }
 
+type TLogAction = {
+    url: string;
+    type: "log" | "warn" | "error" | "unknown";
+    title: string;
+    description: string;
+    data: any;
+}
+
+type TLogData = {
+    username: string;
+    time: number;
+    location: GeoPoint | "unknown";
+    userAgent: {
+        browser: string;
+        os: string;
+    }
+    action: TLogAction;
+}
+
 /* export enums  */
 export { EAccountPlanName, EAccountRole };
 
 /* export types  */
-export type { TUser, TUserData, TUserDataError, TImageInfo, TFederalProvider, TRegisterProvider, TLoginProvider, TAccountPlan, TAccountPlanName, TSearchFilter };
+export type { TUser, TUserData, TUserDataError, TImageInfo, TFederalProvider, TRegisterProvider, TLoginProvider, TAccountPlan, TLogAction, TLogData, TAccountPlanName, TSearchFilter };

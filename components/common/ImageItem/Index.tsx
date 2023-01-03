@@ -5,6 +5,7 @@ import { TImageInfo } from "../../../types/globals";
 
 import { BsDownload } from "react-icons/bs";
 import styles from "./imageItem.module.css";
+import { downloadImage } from "../../../utils/common/utils";
 
 type TImageItemProps = {
   imageURL: string;
@@ -39,13 +40,7 @@ function ImageItem({ imageURL, imageData, handleImageItemClick }: TImageItemProp
               onClick={(e) => {
                 e.stopPropagation();
 
-                const link = document.createElement("a");
-                link.href = imageURL;
-                link.setAttribute("download", imageData.key);
-                link.setAttribute("href", "");
-                document.body.appendChild(link);
-                link.click();
-                link.parentNode!.removeChild(link);
+                downloadImage(imageURL, imageData.key);
               }}
             >
               <BsDownload className={styles.imageItem__downloadButton__icon} />

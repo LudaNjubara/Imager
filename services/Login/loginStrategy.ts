@@ -1,7 +1,6 @@
 import { signInWithPopup, signInWithEmailAndPassword, signInAnonymously, getAdditionalUserInfo } from "firebase/auth";
 import { auth } from "../../config/firebaseConfig";
-import { useAccountPlans } from "../../hooks/hooks";
-import { TAccountPlanName, TUserData } from "../../types/globals";
+import { EAccountPlanName, TUserData } from "../../types/globals";
 import { authProviderFactory } from "../authProviderFactory";
 import database from "../Database/Database.class";
 import logger from "../Logger/Logger.class";
@@ -35,20 +34,18 @@ export default class LoginStrategy {
                 const { user } = result;
 
                 if (additionalUserInfo?.isNewUser) {
-                    const { accountPlansData, isLoading } = useAccountPlans();
-                    if (!isLoading) {
-                        const bronzePlan = accountPlansData.find((plan) => plan.name === "Bronze")!;
-                        const userData: TUserData = {
-                            email: user?.email!,
-                            password: "",
-                            username: user?.displayName ?? user?.providerData[0]?.displayName!,
-                            accountPlan: bronzePlan.name as TAccountPlanName,
-                            accountRole: "User",
-                            uploadsUsed: 0,
-                        }
-
-                        database.AddUser(userData, user?.uid!);
+                    const userData: TUserData = {
+                        email: user?.email!,
+                        password: "",
+                        username: user?.displayName ?? user?.providerData[0]?.displayName!,
+                        photoURL: user?.photoURL ?? user?.providerData[0]?.photoURL ?? null,
+                        accountPlan: EAccountPlanName.Bronze,
+                        accountRole: "User",
+                        uploadsUsed: 0,
                     }
+
+                    database.AddUser(userData, user?.uid!);
+
                 }
             })
             .catch((error) => {
@@ -66,20 +63,19 @@ export default class LoginStrategy {
                 const { user } = result;
 
                 if (additionalUserInfo?.isNewUser) {
-                    const { accountPlansData, isLoading } = useAccountPlans();
-                    if (!isLoading) {
-                        const bronzePlan = accountPlansData.find((plan) => plan.name === "Bronze")!;
-                        const userData: TUserData = {
-                            email: user?.email!,
-                            password: "",
-                            username: user?.displayName ?? user?.providerData[0]?.displayName!,
-                            accountPlan: bronzePlan.name as TAccountPlanName,
-                            accountRole: "User",
-                            uploadsUsed: 0,
-                        }
-
-                        database.AddUser(userData, user?.uid!);
+                    const userData: TUserData = {
+                        email: user?.email!,
+                        password: "",
+                        username: user?.displayName ?? user?.
+                            providerData[0]?.displayName!,
+                        photoURL: user?.photoURL ?? user?.providerData[0]?.photoURL ?? null,
+                        accountPlan: EAccountPlanName.Bronze,
+                        accountRole: "User",
+                        uploadsUsed: 0,
                     }
+
+                    database.AddUser(userData, user?.uid!);
+
                 }
             })
             .catch((error) => {

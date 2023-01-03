@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import database from "../../../../services/Database/Database.class";
-import { convertDatabaseFiledToReadableFormat } from "../../../../utils/common/utils";
+import { convertDatabaseFieldToReadableFormat } from "../../../../utils/common/utils";
 
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
 import { MdOutlineModeEditOutline, MdEditOff } from "react-icons/md";
@@ -13,10 +13,18 @@ import { TUserData } from "../../../../types/globals";
 type TEditUsersDetailsListItemProps = {
   title: keyof TUserData;
   uid: string;
+  username: string;
+  currentUserUsername: string;
   value: any;
 };
 
-function EditUsersDetailsListItem({ title, uid, value }: TEditUsersDetailsListItemProps) {
+function EditUsersDetailsListItem({
+  title,
+  uid,
+  username,
+  currentUserUsername,
+  value,
+}: TEditUsersDetailsListItemProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [hasInputError, setHasInputError] = useState(false);
   const [isEditButtonClicked, setIsEditButtonClicked] = useState(false);
@@ -38,7 +46,7 @@ function EditUsersDetailsListItem({ title, uid, value }: TEditUsersDetailsListIt
       return;
     }
 
-    database.UpdateUserField(uid, title, inputRef.current!.value);
+    database.UpdateUserField(username, currentUserUsername, uid, title, inputRef.current!.value);
     setIsEditButtonClicked(false);
   };
 
@@ -46,7 +54,7 @@ function EditUsersDetailsListItem({ title, uid, value }: TEditUsersDetailsListIt
     <li className={styles.editUsersDetailsListItem__wrapper}>
       <div className={styles.editUsersDetailsListItem__detailsContainer}>
         <span className={styles.editUsersDetailsListItem__title}>
-          {convertDatabaseFiledToReadableFormat(title)}:
+          {convertDatabaseFieldToReadableFormat(title)}:
         </span>
         {isEditButtonClicked ? (
           <input

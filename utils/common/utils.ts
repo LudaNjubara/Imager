@@ -1,5 +1,56 @@
-import React from "react";
 import { TImageInfo } from "../../types/globals";
+
+const detectOS = () => {
+    const userAgent = navigator.userAgent;
+    const isWindows = /Windows/.test(userAgent);
+    const isMac = /Mac/.test(userAgent);
+    const isLinux = /Linux/.test(userAgent);
+    const isAndroid = /Android/.test(userAgent);
+    const isiOS = /iPhone|iPad|iPod/.test(userAgent);
+
+    if (isWindows) return "Windows";
+    if (isMac) return "Mac";
+    if (isLinux) return "Linux";
+    if (isAndroid) return "Android";
+    if (isiOS) return "iOS";
+
+    return "Unknown";
+}
+
+const detectBrowser = () => {
+    const userAgent = navigator.userAgent;
+    const isChrome = /Chrome/.test(userAgent);
+    const isFirefox = /Firefox/.test(userAgent);
+    const isSafari = /Safari/.test(userAgent);
+    const isOpera = /Opera/.test(userAgent);
+    const isIE = /Trident/.test(userAgent);
+
+    if (isChrome) return "Chrome";
+    if (isFirefox) return "Firefox";
+    if (isSafari) return "Safari";
+    if (isOpera) return "Opera";
+    if (isIE) return "IE";
+
+    return "Unknown";
+}
+
+const getUserLocation = ():
+    Promise<{ latitude: number, longitude: number }> => {
+    return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+            reject("Geolocation is not supported by your browser");
+        }
+
+        navigator.geolocation.getCurrentPosition((position) => {
+            resolve({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            });
+        }, () => {
+            reject("Unable to retrieve your location");
+        });
+    });
+}
 
 const setCSSVariable = (name: string, value: string) => {
     document.documentElement.style.setProperty(name, value);
@@ -56,7 +107,17 @@ const convertImageKeysToString = (array: TImageInfo[]) => {
     return imageKeys
 }
 
-const convertDatabaseFiledToReadableFormat = (fieldName: string) => {
+const downloadImage = (imageURL: string, imageKey: string) => {
+    const link = document.createElement("a");
+    link.href = imageURL;
+    link.setAttribute("download", imageKey);
+    link.setAttribute("href", "");
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode!.removeChild(link);
+}
+
+const convertDatabaseFieldToReadableFormat = (fieldName: string) => {
     const titleArray = fieldName.split("");
     const newFieldNameArray = titleArray.map((char) => {
         if (char === char.toUpperCase()) {
@@ -69,4 +130,4 @@ const convertDatabaseFiledToReadableFormat = (fieldName: string) => {
     return newFieldNameArray.join("");
 }
 
-export { setCSSVariable, extractImageDataFromURL, convertFileToImage, convertImageKeysToString, convertDatabaseFiledToReadableFormat };
+export { detectOS, detectBrowser, getUserLocation, setCSSVariable, extractImageDataFromURL, convertFileToImage, convertImageKeysToString, downloadImage, convertDatabaseFieldToReadableFormat };

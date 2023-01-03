@@ -71,6 +71,24 @@ export const useLatestUploadsImages = () => {
     }
 }
 
+const allUserImagesFetcher = async () => {
+    const q = query(collection(db, "images"), orderBy("uploadDate", "desc"));
+    const allUserImagesSnapshot = await getDocs(q)
+
+    const data = allUserImagesSnapshot.docs.map((doc) => doc.data());
+
+    return data;
+}
+
+export const useAllUserImages = () => {
+    const { data, error } = useSWR("getallusersimages", allUserImagesFetcher, { revalidateOnFocus: false });
+
+    return {
+        allUsersImagesData: data as unknown as TImageInfo[],
+        isLoading: !error && !data,
+        isError: error
+    }
+}
 const currentUserImagesFetcher = async (swrKey: string) => {
     const uid = swrKey.split('_')[1];
 
