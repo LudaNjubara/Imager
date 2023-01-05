@@ -5,7 +5,7 @@ import { collection, doc, endAt, getDoc, getDocs, limit, orderBy, query, startAt
 
 import type { RootState, AppDispatch } from '../redux/store'
 import { db } from '../config/firebaseConfig'
-import { TAccountPlan, TImageInfo, TSearchFilter, TUserData } from '../types/globals'
+import { TAccountPlan, TImageInfo, TLogData, TSearchFilter, TUserData } from '../types/globals'
 import { convertImageKeysToString } from '../utils/common/utils'
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
@@ -127,6 +127,27 @@ export const useAWSImageURLs = (array: TImageInfo[]) => {
     return {
         imageURLsData: data as unknown as string[],
         isURLsLoading: !error && !data,
+        isError: error
+    }
+}
+
+const userLogsFetcher = async () => {
+    const q = query(collection(db, "logs"), orderBy("time", "desc"), orderBy("username", "asc"));
+    const userLogsSnapshot = await getDocs(q)
+
+    const data = userLogsSnapshot.docs.map((doc) => {
+        return doc.data()
+    });
+
+    return data;
+}
+
+export const useUserLogs = () => {
+    const { data, error } = useSWR("getuserlogs", userLogsFetcher, { revalidateOnFocus: false });
+
+    return {
+        userLogsData: data as unknown as TLogData[],
+        isLoading: !error && !data,
         isError: error
     }
 }

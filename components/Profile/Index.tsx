@@ -40,6 +40,14 @@ function ProfileDashboard() {
           <h3 className={styles.profileDashboard__link__title}>Edit user images</h3>
         </Link>
       )}
+
+      {userData?.accountRole === EAccountRole.Admin && (
+        <Link className={styles.profileDashboard__link} href={"/profile/view-user-logs"}>
+          <img src="/images/edit_image_bg.webp" alt="View logs background" />
+          <span className={styles.profileDashboard__link__darkener}></span>
+          <h3 className={styles.profileDashboard__link__title}>View user logs</h3>
+        </Link>
+      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import ProfileDashboard from "../../components/Profile/Index";
 
-function Profile() {
+function ProfilePage() {
   return <ProfileDashboard />;
 }
 
-export default Profile;
+export default ProfilePage;

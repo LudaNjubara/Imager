@@ -1,7 +1,7 @@
-import styles from "./editUsersContainer.module.css";
+import styles from "./editUsers.module.css";
 import EditUsersWindow from "./EditUsersWindow/Index";
 
-function EditUsersContainer() {
+function EditUsers() {
   return (
     <div className={styles.editUsersContainer__wrapper}>
       <section className={styles.editUsersContainer__container}>
@@ -11,4 +11,4 @@ function EditUsersContainer() {
   );
 }
 
-export default EditUsersContainer;
+export default EditUsers;

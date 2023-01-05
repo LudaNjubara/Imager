@@ -1,0 +1,38 @@
+.viewLogsFilter__title {
+  font-size: var(--font-size-250);
+  font-weight: var(--font-weight-600);
+  margin-bottom: var(--margin-secondary-400);
+  opacity: 0.8;
+}
+
+.viewLogsFilter__form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.viewLogsFilter__input {
+  padding: var(--padding-secondary-300);
+  border: 1px solid var(--color-secondary-hover-400);
+  border-radius: var(--border-radius-200);
+  outline: none;
+  background-color: var(--color-primary-900);
+  transition: border 0.2s ease-in-out;
+}
+
+.viewLogsFilter__input::placeholder {
+  color: var(--color-neutral-hover-500);
+}
+
+.viewLogsFilter__input:focus-visible {
+  border: 1px solid var(--color-secondary-hover-600);
+}
+
+.viewLogsFilter__button {
+  padding: var(--padding-secondary-300) var(--padding-primary-500);
+  border: 1px solid var(--color-secondary-hover-400);
+  border-radius: var(--border-radius-200);
+  outline: none;
+  background-color: var(--color-secondary-900);
+  transition: border 0.2s ease-in-out;
+}

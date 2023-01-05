@@ -1,7 +1,7 @@
-import EditImageContainer from "../../../components/Profile/EditImageContainer/EditImageContainer";
+import EditImage from "../../../components/Profile/EditImage/EditImage";
 
-function EditImageWrapper() {
-  return <EditImageContainer />;
+function EditImagePage() {
+  return <EditImage />;
 }
 
-export default EditImageWrapper;
+export default EditImagePage;

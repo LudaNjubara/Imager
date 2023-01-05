@@ -4,9 +4,9 @@ import { useAWSImageURLs, useAllUserImages } from "../../../hooks/hooks";
 
 import ImagesContainer from "../../common/ImagesContainer/Index";
 
-import styles from "../EditImageContainer/editImageContainer.module.css";
+import styles from "../EditImage/editImage.module.css";
 
-function EditUserImagesContainer() {
+function EditUserImages() {
   const { allUsersImagesData, isError } = useAllUserImages();
   const { imageURLsData } = useAWSImageURLs(allUsersImagesData);
 
@@ -24,4 +24,4 @@ function EditUserImagesContainer() {
   );
 }
 
-export default EditUserImagesContainer;
+export default EditUserImages;

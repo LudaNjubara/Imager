@@ -1,7 +1,7 @@
-import EditUsersContainer from "../../../components/Profile/EditUsersContainer/EditUsersContainer";
+import EditUsers from "../../../components/Profile/EditUsers/EditUsers";
 
-function EditUsersWrapper() {
-  return <EditUsersContainer />;
+function EditUsersPage() {
+  return <EditUsers />;
 }
 
-export default EditUsersWrapper;
+export default EditUsersPage;

@@ -1,7 +1,7 @@
-import EditAccountContainer from "../../../components/Profile/EditAccountContainer/EditAccountContainer";
+import EditAccount from "../../../components/Profile/EditAccount/EditAccount";
 
-function EditAccountWrapper() {
-  return <EditAccountContainer />;
+function EditAccountPage() {
+  return <EditAccount />;
 }
 
-export default EditAccountWrapper;
+export default EditAccountPage;

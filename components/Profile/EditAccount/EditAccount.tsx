@@ -5,9 +5,9 @@ import { useAccountPlans, useAppSelector, useUserData } from "../../../hooks/hoo
 
 import ChangeAccountPlan from "./ChangeAccountPlan/ChangeAccountPlan";
 
-import styles from "./editAccountContainer.module.css";
+import styles from "./editAccount.module.css";
 
-function EditAccountContainer() {
+function EditAccount() {
   const reduxUser: TUser = useAppSelector((state) => state.user);
   const { accountPlansData } = useAccountPlans();
   const { userData } = useUserData(reduxUser.uid);
@@ -28,4 +28,4 @@ function EditAccountContainer() {
   );
 }
 
-export default EditAccountContainer;
+export default EditAccount;

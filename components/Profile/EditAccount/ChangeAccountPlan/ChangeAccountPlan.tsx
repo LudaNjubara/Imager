@@ -137,29 +137,30 @@ function ChangeAccountPlan({ itemTitle, reduxUser, userData, accountPlansData }:
       <AnimatePresence>
         {isChangePlanButtonChecked && (
           <motion.div
-            initial={{ height: 0 }}
-            animate={{ height: "auto", transition: { duration: 0.8 } }}
-            exit={{ height: 0, transition: { duration: 0.5 } }}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
             className={styles.changeAccountPlan__item__plansContainer}
           >
-            {isEligibleForPlanChange && (
-              <motion.div
-                initial={{ y: -30 }}
-                animate={{ y: 0, transition: { duration: 0.5 } }}
-                exit={{ y: -30, transition: { duration: 0.5 } }}
-                className={styles.changeAccountPlan__item__plansContainer__pendingUpdate}
-              >
-                <p className={styles.changeAccountPlan__item__plansContainer__pendingUpdate__text}>
-                  Your account plan is pending account plan update. Please check back later.
-                </p>
-              </motion.div>
-            )}
+            {userData?.isPendingAccountPlanUpdate ||
+              (isEligibleForPlanChange && (
+                <motion.div
+                  initial={{ y: -30 }}
+                  animate={{ y: 0, transition: { duration: 0.5 } }}
+                  exit={{ y: -30, transition: { duration: 0.5 } }}
+                  className={styles.changeAccountPlan__item__plansContainer__pendingUpdate}
+                >
+                  <p className={styles.changeAccountPlan__item__plansContainer__pendingUpdate__text}>
+                    Your account plan is pending account plan update. Please check back later.
+                  </p>
+                </motion.div>
+              ))}
             {accountPlansData?.map((plan) => (
               <motion.div
                 key={plan.name}
                 initial={{ opacity: 0, y: -30 }}
-                animate={{ opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.3 } }}
-                exit={{ opacity: 0, y: -30, transition: { duration: 0.5 } }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -30 }}
                 className={styles.changeAccountPlan__item__plansContainer__plan}
               >
                 <div className={styles.changeAccountPlan__item__plansContainer__plan__content}>

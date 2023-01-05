@@ -5,9 +5,9 @@ import { TUser } from "../../../types/globals";
 
 import ImagesContainer from "../../common/ImagesContainer/Index";
 
-import styles from "./editImageContainer.module.css";
+import styles from "./editImage.module.css";
 
-function EditImageContainer() {
+function EditImage() {
   const reduxUser: TUser = useAppSelector((state) => state.user);
   const { currentUserImagesData, isError } = useCurrentUserImages(reduxUser.uid);
   const { imageURLsData } = useAWSImageURLs(currentUserImagesData);
@@ -26,4 +26,4 @@ function EditImageContainer() {
   );
 }
 
-export default EditImageContainer;
+export default EditImage;
