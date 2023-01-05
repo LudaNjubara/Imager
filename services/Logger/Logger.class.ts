@@ -1,6 +1,6 @@
 import { GeoPoint } from "firebase/firestore";
 import { TLogData, TLogAction } from "../../types/globals";
-import { detectBrowser, detectOS, getUserLocation } from "../../utils/common/utils";
+import { detectBrowser, detectOS, generateRandomId, getUserLocation } from "../../utils/common/utils";
 import database from "../Database/Database.class";
 
 interface ILogger {
@@ -11,6 +11,7 @@ class Logger implements ILogger {
 
     Log(username: string, action: TLogAction) {
         const logData: TLogData = {
+            id: generateRandomId(),
             username,
             time: Date.now(),
             location: "unknown",

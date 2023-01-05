@@ -29,7 +29,7 @@ const ViewLogsContainer = ({ logs }: TViewLogsContainerProps) => {
         </header>
 
         {logs?.map((log) => (
-          <ViewLogsContainerItem log={log} />
+          <ViewLogsContainerItem key={log.id} log={log} />
         ))}
       </section>
     </>

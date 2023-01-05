@@ -56,6 +56,14 @@ const setCSSVariable = (name: string, value: string) => {
     document.documentElement.style.setProperty(name, value);
 }
 
+const generateRandomId = (numOfCharacters: number = 25) => {
+    // generate random string for id
+    const randomString = [...Array(numOfCharacters)].map(() => Math.random().toString(36)[2]).join('');
+    const id = randomString;
+
+    return id;
+};
+
 const extractImageKeyFromURL = (url: string) => {
     const regex = /(?<=imager-project-bucket.s3.eu-central-1.amazonaws.com\/)(.*)(?=\?)/g;
     const match = regex.exec(url);
@@ -130,4 +138,4 @@ const convertDatabaseFieldToReadableFormat = (fieldName: string) => {
     return newFieldNameArray.join("");
 }
 
-export { detectOS, detectBrowser, getUserLocation, setCSSVariable, extractImageDataFromURL, convertFileToImage, convertImageKeysToString, downloadImage, convertDatabaseFieldToReadableFormat };
+export { detectOS, detectBrowser, getUserLocation, generateRandomId, setCSSVariable, extractImageDataFromURL, convertFileToImage, convertImageKeysToString, downloadImage, convertDatabaseFieldToReadableFormat };

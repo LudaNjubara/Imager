@@ -100,6 +100,7 @@ type TLogAction = {
 }
 
 type TLogData = {
+    id: string;
     username: string;
     time: number;
     location: GeoPoint | "unknown";
