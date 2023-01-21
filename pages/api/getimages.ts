@@ -53,18 +53,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     };
 
     res.status(500).json({ body: 'Internal server error' });
-
-
-
-    /*    s3.getSignedUrl('getObject', {
-           Bucket: process.env.S3_BUCKET_NAME,
-           Key: imageKey,
-           Expires: expiresInSeconds,
-       }, (err, url) => {
-           if (err) {
-               res.status(500).json({ body: 'Error creating a signed URL' });
-               return
-           }
-           res.status(200).json({ url, key: randomImageName });
-       }) */
 }

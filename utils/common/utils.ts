@@ -1,3 +1,6 @@
+import { MutableRefObject, RefObject } from "react";
+
+import { toPng, toJpeg, toSvg } from 'html-to-image';
 import { TImageInfo } from "../../types/globals";
 
 const detectOS = () => {
@@ -52,6 +55,15 @@ const getUserLocation = ():
     });
 }
 
+const getNextDayInMilliseconds = () => {
+    const nextDay = new Date();
+    nextDay.setDate(nextDay.getDate() + 1);
+    nextDay.setHours(0, 0, 0, 0);
+    const nextDayInMilliseconds = nextDay.getTime();
+
+    return nextDayInMilliseconds;
+}
+
 const setCSSVariable = (name: string, value: string) => {
     document.documentElement.style.setProperty(name, value);
 }
@@ -84,24 +96,16 @@ const extractImageDataFromURL = (url: string, imagesData: TImageInfo[]) => {
     return imageInfo;
 }
 
-const convertFileToImage = (file: File) => {
+const convertBase64ToImage = (base64Image: string): Promise<HTMLImageElement> => {
     return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
 
-        reader.onload = (event) => {
-            const img = new Image();
-            img.src = event.target?.result as string;
+        const img = new Image();
+        img.src = base64Image
 
-            img.onload = () => {
-                resolve(img) as any;
-            };
-            img.onerror = (error) => {
-                reject(error);
-            };
+        img.onload = () => {
+            resolve(img);
         };
-
-        reader.onerror = (error) => {
+        img.onerror = (error) => {
             reject(error);
         };
     });
@@ -125,6 +129,60 @@ const downloadImage = (imageURL: string, imageKey: string) => {
     link.parentNode!.removeChild(link);
 }
 
+const getEditedImage = (ref: HTMLDivElement, extension: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+
+        switch (extension) {
+            case 'png':
+                toPng(ref)
+                    .then(async (dataUrl) => {
+                        resolve(dataUrl)
+                    })
+                    .catch((err) => {
+                        reject(err)
+                    })
+                break;
+
+            case 'jpg':
+                toJpeg(ref)
+                    .then(async (dataUrl) => {
+                        resolve(dataUrl)
+                    })
+                    .catch((err) => {
+                        reject(err)
+                    })
+                break;
+
+            case 'svg':
+                toSvg(ref)
+                    .then(async (dataUrl) => {
+                        resolve(dataUrl)
+                    })
+                    .catch((err) => {
+                        reject(err)
+                    })
+                break;
+
+            default:
+                break;
+        }
+    })
+}
+
+const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+            const base64data = reader.result;
+            resolve(base64data as string);
+        };
+        reader.onerror = (error) => {
+            reject(error);
+        };
+    });
+}
+
 const convertDatabaseFieldToReadableFormat = (fieldName: string) => {
     const titleArray = fieldName.split("");
     const newFieldNameArray = titleArray.map((char) => {
@@ -138,4 +196,4 @@ const convertDatabaseFieldToReadableFormat = (fieldName: string) => {
     return newFieldNameArray.join("");
 }
 
-export { detectOS, detectBrowser, getUserLocation, generateRandomId, setCSSVariable, extractImageDataFromURL, convertFileToImage, convertImageKeysToString, downloadImage, convertDatabaseFieldToReadableFormat };
+export { detectOS, detectBrowser, getUserLocation, getNextDayInMilliseconds, generateRandomId, setCSSVariable, extractImageDataFromURL, convertBase64ToImage, convertImageKeysToString, downloadImage, getEditedImage, blobToBase64, convertDatabaseFieldToReadableFormat };

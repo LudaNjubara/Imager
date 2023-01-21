@@ -1,0 +1,62 @@
+.saveAsDropdown__wrapper {
+  position: absolute;
+  top: var(--padding-primary-200);
+  right: var(--padding-primary-200);
+  z-index: 1;
+}
+
+.saveAsDropdown__button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: var(--padding-secondary-200);
+  border-radius: var(--border-radius-300);
+  background: var(--color-primary-hover-400);
+  backdrop-filter: blur(10px);
+  font-weight: var(--font-weight-600);
+  transition: background 0.2s ease-in-out;
+}
+
+.saveAsDropdown__button:disabled {
+  background: var(--color-secondary-hover-700);
+  cursor: not-allowed;
+}
+
+.saveAsDropdown__button:hover {
+  background: var(--color-primary-hover-500);
+}
+
+.saveAsDropdown__button__icon {
+  width: 15px;
+  height: 15px;
+}
+
+.saveAsDropdown__list {
+  position: absolute;
+  bottom: -100px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  max-width: 100px;
+  border-radius: var(--border-radius-300);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: var(--color-primary-hover-800);
+  backdrop-filter: blur(10px);
+  z-index: 1;
+  overflow: hidden;
+}
+
+.saveAsDropdown__list__item__button {
+  width: 100%;
+  padding: var(--padding-secondary-200) var(--padding-secondary-300);
+  font-weight: var(--font-weight-600);
+  background: var(--color-primary-hover-400);
+  transition: filter 0.2s ease-in-out;
+}
+
+.saveAsDropdown__list__item__button:hover,
+.saveAsDropdown__list__item__button:focus-visible {
+  filter: brightness(1.2);
+}

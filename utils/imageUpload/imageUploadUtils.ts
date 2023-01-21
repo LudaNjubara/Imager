@@ -10,23 +10,24 @@ export const generateRandomImageKey = (imageExtension: string, numOfCharacters: 
     return imageKey;
 };
 
-export const uploadImageToAWS = async (image: File): Promise<TAWSResponse> => {
+export const uploadImageToAWS = async (base64Image: string, fileType: string): Promise<TAWSResponse> => {
     let imageKey = null;
 
-    if (image) {
-        const fileType = image.type.replace(/%2F/g, "/").split("/")[1];
-
+    if (base64Image) {
         const res = await fetch(`/api/imageupload?fileType=${fileType}`, {
             method: "GET",
         });
         const { url, key } = await res.json();
 
+        const base64Data = Buffer.from(base64Image.replace(/^data:image\/\w+;base64,/, ""), 'base64');
+
         const upload = await fetch(url, {
             method: "PUT",
             headers: {
-                "Content-Type": `image/${fileType}`
+                "Content-Type": `image/${fileType}`,
+                "Content-Encoding": "base64"
             },
-            body: image,
+            body: base64Data,
         })
             .then((res) => {
                 console.log("Uploaded image successfully!");

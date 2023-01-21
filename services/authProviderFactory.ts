@@ -5,16 +5,10 @@ import { TFederalProvider } from "../types/globals";
 export const authProviderFactory = (providerId: TFederalProvider) => {
     switch (providerId) {
         case 'Google':
-            return {
-                instance: googleProvider,
-                class: GoogleAuthProvider
-            };
+            return googleProvider
 
         case 'GitHub':
-            return {
-                instance: gitHubProvider,
-                class: GithubAuthProvider
-            };
+            return gitHubProvider
 
         default:
             throw new Error('Invalid providerId');

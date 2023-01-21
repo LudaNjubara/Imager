@@ -2,8 +2,7 @@ import { signInWithPopup, signInWithEmailAndPassword, signInAnonymously, getAddi
 import { auth } from "../../config/firebaseConfig";
 import { EAccountPlanName, TUserData } from "../../types/globals";
 import { authProviderFactory } from "../authProviderFactory";
-import database from "../Database/Database.class";
-import logger from "../Logger/Logger.class";
+import facade from "../facade.class"
 
 export default class LoginStrategy {
     static Anonymous() {
@@ -28,7 +27,7 @@ export default class LoginStrategy {
     static Google() {
         const provider = authProviderFactory("Google");
 
-        signInWithPopup(auth, provider.instance)
+        signInWithPopup(auth, provider)
             .then(async (result) => {
                 const additionalUserInfo = getAdditionalUserInfo(result);
                 const { user } = result;
@@ -44,7 +43,7 @@ export default class LoginStrategy {
                         uploadsUsed: 0,
                     }
 
-                    database.AddUser(userData, user?.uid!);
+                    facade.AddUser(userData, user?.uid!);
 
                 }
             })
@@ -57,7 +56,7 @@ export default class LoginStrategy {
     static GitHub() {
         const provider = authProviderFactory("GitHub");
 
-        signInWithPopup(auth, provider.instance)
+        signInWithPopup(auth, provider)
             .then(async (result) => {
                 const additionalUserInfo = getAdditionalUserInfo(result);
                 const { user } = result;
@@ -74,7 +73,7 @@ export default class LoginStrategy {
                         uploadsUsed: 0,
                     }
 
-                    database.AddUser(userData, user?.uid!);
+                    facade.AddUser(userData, user?.uid!);
 
                 }
             })

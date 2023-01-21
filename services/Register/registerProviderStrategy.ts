@@ -2,8 +2,7 @@ import { createUserWithEmailAndPassword, linkWithPopup, signInWithPopup, signInW
 import { auth } from "../../config/firebaseConfig";
 import { TUserData } from "../../types/globals";
 import { authProviderFactory } from "../authProviderFactory";
-import database from "../Database/Database.class";
-import logger from "../Logger/Logger.class";
+import facade from "../facade.class"
 
 export default class RegisterProviderStrategy {
     static Email(userData: TUserData) {
@@ -15,7 +14,7 @@ export default class RegisterProviderStrategy {
                     displayName: username,
                 })
                     .then(() => {
-                        database.AddUser(userData, user.uid);
+                        facade.AddUser(userData, user.uid);
                     })
                     .catch((error) => {
                         if (error.code === "auth/invalid-display-name") {
@@ -34,12 +33,12 @@ export default class RegisterProviderStrategy {
 
     static Google(userData: TUserData) {
         const provider = authProviderFactory("Google");
-        provider.instance.addScope("profile");
+        provider.addScope("profile");
 
         const prevUser = auth.currentUser;
 
         if (!prevUser) {
-            signInWithPopup(auth, provider.instance)
+            signInWithPopup(auth, provider)
                 .then((result) => {
                     const additionalUserInfo = getAdditionalUserInfo(result);
                     const { user } = result;
@@ -49,16 +48,16 @@ export default class RegisterProviderStrategy {
                         userData.username = user?.displayName ?? user.providerData[0]?.displayName!;
                         userData.photoURL = user?.photoURL ?? user.providerData[0]?.photoURL!;
 
-                        database.AddUser(userData, user.uid);
+                        facade.AddUser(userData, user.uid);
                     }
                 }).catch((error) => {
                     console.error("error", error);
                 });
         } else if (prevUser.isAnonymous) {
-            linkWithPopup(prevUser, provider.instance)
+            linkWithPopup(prevUser, provider)
                 .catch((error) => {
                     if (error.code === "auth/credential-already-in-use") {
-                        linkWithRedirect(prevUser, provider.instance).catch((error) => {
+                        linkWithRedirect(prevUser, provider).catch((error) => {
                             console.error("error", error);
                         });
                     }
@@ -68,12 +67,12 @@ export default class RegisterProviderStrategy {
 
     static GitHub(userData: TUserData) {
         const provider = authProviderFactory("GitHub");
-        provider.instance.addScope("user");
+        provider.addScope("user");
 
         const prevUser = auth.currentUser;
 
         if (!prevUser) {
-            signInWithPopup(auth, provider.instance)
+            signInWithPopup(auth, provider)
                 .then((result) => {
                     const additionalUserInfo = getAdditionalUserInfo(result);
                     const { user } = result;
@@ -83,16 +82,16 @@ export default class RegisterProviderStrategy {
                         userData.username = user?.displayName ?? user.providerData[0]?.displayName!;
                         userData.photoURL = user?.photoURL ?? user.providerData[0]?.photoURL!;
 
-                        database.AddUser(userData, user.uid);
+                        facade.AddUser(userData, user.uid);
                     }
                 }).catch((error) => {
                     console.error("error", error);
                 });
         } else if (prevUser.isAnonymous) {
-            linkWithPopup(prevUser, provider.instance)
+            linkWithPopup(prevUser, provider)
                 .catch((error) => {
                     if (error.code === "auth/credential-already-in-use") {
-                        signInWithRedirect(auth, provider.instance).catch((error) => {
+                        signInWithRedirect(auth, provider).catch((error) => {
                             console.error("error", error);
                         });
                     }

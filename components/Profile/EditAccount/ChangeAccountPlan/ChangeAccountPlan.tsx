@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { TAccountPlan, TAccountPlanName, TUser, TUserData } from "../../../../types/globals";
-import database from "../../../../services/Database/Database.class";
+import facade from "../../../../services/facade.class";
 
 import { BsPencilFill } from "react-icons/bs";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
@@ -38,7 +38,7 @@ function ChangeAccountPlan({ itemTitle, reduxUser, userData, accountPlansData }:
     if (!currentNewAccountPlanName || !userData || userData?.accountPlan === currentNewAccountPlanName)
       return;
 
-    database.UpdateUserAccountPlan(reduxUser.uid, userData, {
+    facade.UpdateUserAccountPlan(reduxUser.uid, userData, {
       plan: currentNewAccountPlanName,
       fromProfilePage: true,
     });

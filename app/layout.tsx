@@ -15,9 +15,10 @@ import { login, logout } from "../redux/userSlice";
 
 import { poppins } from "../constants/constants";
 
-import "../styles/globals.css";
 import { useAppSelector, useUserData } from "../hooks/hooks";
-import database from "../services/Database/Database.class";
+import facade from "../services/facade.class";
+
+import "../styles/globals.css";
 
 function RootLayoutInner({ children }: { children: React.ReactNode }) {
   const [user, loading, error] = useAuthState(auth);
@@ -53,7 +54,7 @@ function RootLayoutInner({ children }: { children: React.ReactNode }) {
         })
       );
 
-      database.UpdateUserAccountPlan(user.uid, userData, {
+      facade.UpdateUserAccountPlan(user.uid, userData, {
         fromProfilePage: false,
       });
 

@@ -1,0 +1,43 @@
+.imageEditor__imageContainer img {
+  z-index: 1;
+  object-fit: contain;
+}
+
+.imageEditor__controlsContainer {
+  position: absolute;
+  bottom: var(--padding-secondary-300);
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: var(--padding-secondary-400) var(--padding-secondary-400) 0;
+}
+.imageEditor__controls {
+  display: flex;
+  gap: 8px;
+  z-index: 1;
+  width: 100%;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+}
+
+.imageEditor__controls::-webkit-scrollbar {
+  display: none;
+}
+
+.imageEditor__controls__button {
+  padding: var(--padding-secondary-100) var(--padding-secondary-300);
+  border: 1px solid var(--color-neutral-hover-200);
+  border-radius: var(--border-radius-900);
+  opacity: 0.7;
+  font-weight: var(--font-weight-500);
+  font-size: var(--font-size-100);
+  background: linear-gradient(to right, var(--color-primary-600) 0%, var(--color-primary-700) 100%);
+  cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.imageEditor__controls__button:hover {
+  opacity: 1;
+}

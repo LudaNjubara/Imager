@@ -10,7 +10,7 @@ import { IoCheckmarkDoneOutline } from "react-icons/io5";
 import { MdOutlineModeEditOutline, MdEditOff } from "react-icons/md";
 import { BsDownload, BsXLg } from "react-icons/bs";
 import styles from "./imageModal.module.css";
-import database from "../../../services/Database/Database.class";
+import facade from "../../../services/facade.class";
 import { downloadImage } from "../../../utils/common/utils";
 import { useAppSelector } from "../../../hooks/hooks";
 
@@ -54,7 +54,7 @@ function ImageModal({ toggleModal, modalImageURL, modalImageData, canEdit }: Ima
       return;
     }
 
-    database.UpdateImageInfo(
+    facade.UpdateImageInfo(
       imageDescRef.current.value,
       imageHashtagsRef.current?.value.split(" "),
       modalImageData.key,

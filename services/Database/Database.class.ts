@@ -2,7 +2,7 @@ import { collection, doc, addDoc, GeoPoint, increment, setDoc, updateDoc } from 
 import { TAccountPlanName, TImageInfo, TLogData, TUserData } from "../../types/globals";
 import { db } from "../../config/firebaseConfig";
 import logger from "../Logger/Logger.class";
-import { detectBrowser, detectOS, getUserLocation } from "../../utils/common/utils";
+import { detectBrowser, detectOS, getNextDayInMilliseconds, getUserLocation } from "../../utils/common/utils";
 
 interface IDatabase {
     AddUser: (userData: TUserData, uid: string) => void;
@@ -10,8 +10,10 @@ interface IDatabase {
     UpdateUserUploadsUsed: (value: "increment" | "decrement", uid: string) => void;
     UpdateUserAccountPlan: (uid: string, userData: TUserData, { plan, fromProfilePage }: { plan?: TAccountPlanName, fromProfilePage: boolean }) => void;
     AddImageInfo: (imageInfo: TImageInfo) => void;
-    UpdateUserField: (userUsername: string, adminUsername: string, uid: string, fieldName: keyof TUserData, value: string | number | boolean | null) => void;
+    UpdateUserField: (uid: string, fieldName: keyof TUserData, value: string | number | boolean | null) => void;
 }
+
+/* ///////////////////////////// */
 
 class Database implements IDatabase {
     private static instance: Database;
@@ -98,88 +100,51 @@ class Database implements IDatabase {
         }
     }
 
-    UpdateUserAccountPlan(uid: string, userData: TUserData, { plan, fromProfilePage }: { plan?: TAccountPlanName, fromProfilePage: boolean }) {
+    UpdateUserAccountPlan(uid: string, userData: TUserData) {
         const userRef = doc(db, "users", uid);
-        const isEligibleForPlanUpdate = !!userData?.accountPlanUpdateDate && userData?.accountPlanUpdateDate < Date.now() && userData?.isPendingAccountPlanUpdate;
 
-        if (isEligibleForPlanUpdate) {
-            setDoc(userRef, {
-                accountPlan: userData.pendingAccountPlan,
-                isPendingAccountPlanUpdate: false,
-                pendingAccountPlan: null,
-                uploadsUsed: 0,
-                accountPlanUpdateDate: null,
-            }, { merge: true })
-                .then(() => {
-                    logger.Log(userData.username!, {
-                        url: window.location.href,
-                        type: "log",
-                        title: "Account plan updated",
-                        description: `Updated account plan to ${userData.accountPlan}`,
-                        data: null
-                    });
-                })
-        } else {
-            if (!fromProfilePage) return;
+        setDoc(userRef, {
+            accountPlan: userData.pendingAccountPlan,
+            isPendingAccountPlanUpdate: false,
+            pendingAccountPlan: null,
+            uploadsUsed: 0,
+            accountPlanUpdateDate: null,
+        }, { merge: true })
+            .catch(() => {
+                throw new Error("Error updating to new account plan");
+            })
+    }
 
-            const nextDay = new Date();
-            nextDay.setDate(nextDay.getDate() + 1);
-            nextDay.setHours(0, 0, 0, 0);
-            const nextDayInMilliseconds = nextDay.getTime();
+    SetPendingUserAccountPlan(uid: string, { plan, fromProfilePage }: { plan?: TAccountPlanName, fromProfilePage: boolean }) {
+        if (!fromProfilePage) return;
 
-            setDoc(userRef, {
-                accountPlanUpdateDate: nextDayInMilliseconds,
-                isPendingAccountPlanUpdate: true,
-                pendingAccountPlan: plan,
-            }, { merge: true })
-                .then(() => {
-                    logger.Log(userData.username!, {
-                        url: window.location.href,
-                        type: "log",
-                        title: "Scheduled account plan update",
-                        description: `Scheduled an account plan update from ${userData.accountPlan} to ${plan}`,
-                        data: null
-                    });
-                })
+        const userRef = doc(db, "users", uid);
 
-        }
+        setDoc(userRef, {
+            accountPlanUpdateDate: getNextDayInMilliseconds(),
+            isPendingAccountPlanUpdate: true,
+            pendingAccountPlan: plan,
+        }, { merge: true })
+            .catch(() => {
+                throw new Error("Error setting pending account plan");
+            })
     }
 
     AddImageInfo(imageInfo: TImageInfo) {
         const docRef = doc(db, `images/${imageInfo.key}`);
 
         setDoc(docRef, imageInfo)
-            .then(() => {
-                console.log("Document written with ID: ", docRef.id);
-
-                logger.Log(imageInfo.uploaderDisplayName!, {
-                    url: window.location.href,
-                    type: "log",
-                    title: "Image uploaded",
-                    description: `Uploaded an image with key ${imageInfo.key}`,
-                    data: null
-                })
-            })
             .catch((error) => {
                 console.error("Error adding document: ", error);
             });
     }
 
-    UpdateUserField(userUsername: string, adminUsername: string, uid: string, fieldName: keyof TUserData, value: string | number | boolean | null,) {
+    UpdateUserField(uid: string, fieldName: keyof TUserData, value: string | number | boolean | null,) {
         const userRef = doc(db, "users", uid);
 
         updateDoc(userRef, {
             [fieldName]: value
         })
-            .then(() => {
-                logger.Log(userUsername, {
-                    url: window.location.href,
-                    type: "log",
-                    title: "User data updated (admin)",
-                    description: `Admin ${adminUsername} updated user's ${fieldName} to ${value}`,
-                    data: null
-                });
-            })
             .catch((error) => {
                 throw new Error(error);
             });

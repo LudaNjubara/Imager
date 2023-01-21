@@ -1,4 +1,8 @@
 .viewLogsContainerItem__container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--margin-primary-700);
+  padding: 0 var(--padding-secondary-400) var(--padding-secondary-400);
   background-color: var(--color-primary-800);
   overflow: hidden;
   transition: filter 0.2s ease-in-out;
@@ -12,7 +16,7 @@
   display: flex;
   align-items: center;
   gap: 20px;
-  padding: var(--padding-secondary-400);
+  padding-top: var(--padding-secondary-400);
   cursor: pointer;
 }
 
@@ -48,7 +52,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 20px;
-  padding: var(--padding-secondary-400) var(--padding-secondary-600);
 }
 
 .viewLogsContainerItem__fullView__item {

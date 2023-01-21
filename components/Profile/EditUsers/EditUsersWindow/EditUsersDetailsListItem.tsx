@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-import database from "../../../../services/Database/Database.class";
+import facade from "../../../../services/facade.class";
 import { convertDatabaseFieldToReadableFormat } from "../../../../utils/common/utils";
 
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
@@ -46,7 +46,7 @@ function EditUsersDetailsListItem({
       return;
     }
 
-    database.UpdateUserField(username, currentUserUsername, uid, title, inputRef.current!.value);
+    facade.UpdateUserField(username, currentUserUsername, uid, title, inputRef.current!.value);
     setIsEditButtonClicked(false);
   };
 
