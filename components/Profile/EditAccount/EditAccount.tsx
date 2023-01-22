@@ -1,6 +1,5 @@
 "use client";
 
-import { TUser } from "../../../types/globals";
 import { useAccountPlans, useAppSelector, useUserData } from "../../../hooks/hooks";
 
 import ChangeAccountPlan from "./ChangeAccountPlan/ChangeAccountPlan";
@@ -8,7 +7,7 @@ import ChangeAccountPlan from "./ChangeAccountPlan/ChangeAccountPlan";
 import styles from "./editAccount.module.css";
 
 function EditAccount() {
-  const reduxUser: TUser = useAppSelector((state) => state.user);
+  const reduxUser = useAppSelector((state) => state.user);
   const { accountPlansData } = useAccountPlans();
   const { userData } = useUserData(reduxUser.uid);
 

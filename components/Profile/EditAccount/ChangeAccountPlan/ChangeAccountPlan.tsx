@@ -46,6 +46,7 @@ function ChangeAccountPlan({ itemTitle, reduxUser, userData, accountPlansData }:
     setIsSelectNewPlanButtonChecked(false);
     setCurrentNewAccountPlanName(undefined);
     setIsChangePlanButtonChecked(false);
+    setIsEligibleForPlanChange(true);
   };
 
   useEffect(() => {
@@ -142,19 +143,19 @@ function ChangeAccountPlan({ itemTitle, reduxUser, userData, accountPlansData }:
             exit={{ opacity: 0, height: 0 }}
             className={styles.changeAccountPlan__item__plansContainer}
           >
-            {userData?.isPendingAccountPlanUpdate ||
-              (isEligibleForPlanChange && (
-                <motion.div
-                  initial={{ y: -30 }}
-                  animate={{ y: 0, transition: { duration: 0.5 } }}
-                  exit={{ y: -30, transition: { duration: 0.5 } }}
-                  className={styles.changeAccountPlan__item__plansContainer__pendingUpdate}
-                >
-                  <p className={styles.changeAccountPlan__item__plansContainer__pendingUpdate__text}>
-                    Your account plan is pending account plan update. Please check back later.
-                  </p>
-                </motion.div>
-              ))}
+            {(userData?.isPendingAccountPlanUpdate || isEligibleForPlanChange) && (
+              <motion.div
+                initial={{ y: -30 }}
+                animate={{ y: 0, transition: { duration: 0.5 } }}
+                exit={{ y: -30, transition: { duration: 0.5 } }}
+                className={styles.changeAccountPlan__item__plansContainer__pendingUpdate}
+              >
+                <p className={styles.changeAccountPlan__item__plansContainer__pendingUpdate__text}>
+                  Your account is pending account plan update. Please check back later.
+                </p>
+              </motion.div>
+            )}
+
             {accountPlansData?.map((plan) => (
               <motion.div
                 key={plan.name}
