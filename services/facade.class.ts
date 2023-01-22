@@ -54,6 +54,8 @@ class Facade implements IFacade {
                 data: null
             });
         } else {
+            if (!fromProfilePage) return;
+
             database.SetPendingUserAccountPlan(uid, { plan, fromProfilePage });
 
             logger.Log(userData.username!, {

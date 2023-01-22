@@ -116,8 +116,6 @@ class Database implements IDatabase {
     }
 
     SetPendingUserAccountPlan(uid: string, { plan, fromProfilePage }: { plan?: TAccountPlanName, fromProfilePage: boolean }) {
-        if (!fromProfilePage) return;
-
         const userRef = doc(db, "users", uid);
 
         setDoc(userRef, {
