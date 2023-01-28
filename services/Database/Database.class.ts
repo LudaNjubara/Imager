@@ -1,8 +1,8 @@
-import { collection, doc, addDoc, GeoPoint, increment, setDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, addDoc, increment, setDoc, updateDoc } from "firebase/firestore";
 import { TAccountPlanName, TImageInfo, TLogData, TUserData } from "../../types/globals";
 import { db } from "../../config/firebaseConfig";
 import logger from "../Logger/Logger.class";
-import { detectBrowser, detectOS, getNextDayInMilliseconds, getUserLocation } from "../../utils/common/utils";
+import { getNextDayInMilliseconds } from "../../utils/common/utils";
 
 interface IDatabase {
     AddUser: (userData: TUserData, uid: string) => void;
@@ -13,19 +13,7 @@ interface IDatabase {
     UpdateUserField: (uid: string, fieldName: keyof TUserData, value: string | number | boolean | null) => void;
 }
 
-/* ///////////////////////////// */
-
 class Database implements IDatabase {
-    private static instance: Database;
-    private constructor() { }
-
-    public static getInstance(): Database {
-        if (!Database.instance) {
-            Database.instance = new Database();
-        }
-        return Database.instance;
-    }
-
     AddUser(userData: TUserData, uid: string) {
         const {
             email,
@@ -133,7 +121,7 @@ class Database implements IDatabase {
 
         setDoc(docRef, imageInfo)
             .catch((error) => {
-                console.error("Error adding document: ", error);
+                throw new Error(error);
             });
     }
 
@@ -156,11 +144,11 @@ class Database implements IDatabase {
                 console.log("Log written with ID: ", docRef.id);
             })
             .catch((error) => {
-                console.error("Error adding log: ", error);
+                throw new Error(error);
             });
     }
 }
 
-const database = Object.freeze(Database.getInstance());
+const database = Object.freeze(new Database);
 
 export default database;

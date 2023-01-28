@@ -54,13 +54,21 @@ function RootLayoutInner({ children }: { children: React.ReactNode }) {
         })
       );
 
-      facade.UpdateUserAccountPlan(user.uid, userData, {
-        fromProfilePage: false,
-      });
-
       if (pathname === "/login" || pathname === "/register") router.push("/");
     }
   }, [user, loading, error]);
+
+  useEffect(() => {
+    if (user && !!userData) {
+      try {
+        facade.UpdateUserAccountPlan(user.uid, userData, {
+          fromProfilePage: false,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }, [user, userData]);
 
   return (
     <div id="pageWrapper">

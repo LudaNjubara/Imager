@@ -46,8 +46,12 @@ function EditUsersDetailsListItem({
       return;
     }
 
-    facade.UpdateUserField(username, currentUserUsername, uid, title, inputRef.current!.value);
-    setIsEditButtonClicked(false);
+    try {
+      facade.UpdateUserField(username, currentUserUsername, uid, title, inputRef.current!.value);
+      setIsEditButtonClicked(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

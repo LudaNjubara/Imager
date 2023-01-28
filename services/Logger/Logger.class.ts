@@ -27,7 +27,7 @@ class Logger implements ILogger {
                 logData.location = new GeoPoint(latitude, longitude);
                 database.LogUserAction(logData);
             })
-            .catch((error) => {
+            .catch(() => {
                 database.LogUserAction(logData);
             });
     }

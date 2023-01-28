@@ -9,11 +9,14 @@ import { emailRegex, loginAndRegister__messageVariants } from "../../constants/c
 import { auth } from "../../config/firebaseConfig";
 import login from "../../services/Login/Login.class";
 
+import LogoutFirst from "../common/LogoutFirst/Index";
+
 import { FcGoogle } from "react-icons/fc";
 import { BsGithub } from "react-icons/bs";
 import { FaMask } from "react-icons/fa";
 import styles from "./login.module.css";
-import LogoutFirst from "../common/LogoutFirst/Index";
+import { validateEmail } from "../../utils/common/utils";
+import { validatePassword } from "../../utils/register/registerUtils";
 
 function LoginForm() {
   const [user, loading, error] = useAuthState(auth);
@@ -40,40 +43,31 @@ function LoginForm() {
     setUserData({ ...userData, [name]: value });
   };
 
-  // validate email and password in an arrow function
-  const validateEmailAndPassword = () => {
+  const validateForm = () => {
     setFirebaseErrorMessage(undefined);
 
-    if (userData.email.length === 0) {
-      setUserDataError((prev) => {
-        return { ...prev, email: { message: "Email is required" } };
-      });
-    } else if (!userData.email.match(emailRegex)) {
-      setUserDataError((prev) => {
-        return { ...prev, email: { message: "Email is not valid" } };
-      });
-    } else {
-      setUserDataError((prev) => {
-        return {
-          ...prev,
-          email: { message: "" },
-        };
-      });
-    }
+    const emailCheck = validateEmail(userData);
+    const passwordCheck = validatePassword(userData);
 
-    if (userData.password.length === 0) {
-      setUserDataError((prev) => {
-        return { ...prev, password: { message: "Password is required" } };
-      });
-    } else {
-      setUserDataError((prev) => {
-        return { ...prev, password: { message: "" } };
-      });
-    }
+    setUserDataError((prev) => {
+      return {
+        ...prev,
+        email: {
+          message: emailCheck.message,
+        },
+        password: {
+          message: passwordCheck.message,
+          containsEnoughCharacters: passwordCheck.password.containsEnoughCharacters,
+          containsUpperCaseCharacter: passwordCheck.password.containsUpperCaseCharacter,
+          containsLowerCaseCharacter: passwordCheck.password.containsLowerCaseCharacter,
+          containsNumber: passwordCheck.password.containsNumber,
+        },
+      };
+    });
   };
 
   const handleEmailLogin = () => {
-    validateEmailAndPassword();
+    validateForm();
     setIsSubmitting(true);
   };
 

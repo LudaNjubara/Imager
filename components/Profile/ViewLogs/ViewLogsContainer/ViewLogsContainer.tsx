@@ -1,5 +1,3 @@
-"use client";
-
 import { TLogData } from "../../../../types/globals";
 
 import ViewLogsContainerItem from "./ViewLogsContainerItem";

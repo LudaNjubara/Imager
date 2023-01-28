@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import { useDispatch, useSelector } from 'react-redux'
 import type { TypedUseSelectorHook } from 'react-redux'
-import { collection, doc, endAt, getDoc, getDocs, limit, orderBy, query, startAt, where } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, limit, orderBy, query, where } from 'firebase/firestore'
 
 import type { RootState, AppDispatch } from '../redux/store'
 import { db } from '../config/firebaseConfig'
@@ -16,7 +16,7 @@ const accountPlansFetcher = async () => {
     const accountPlansSnapshot = await getDocs(collection(db, "AccountPlans"))
     const accountPlans = accountPlansSnapshot.docs.map((doc) => doc.data());
 
-    return accountPlans;
+    return accountPlans as TAccountPlan[];
 }
 
 export const useAccountPlans = () => {
@@ -25,7 +25,7 @@ export const useAccountPlans = () => {
     });
 
     return {
-        accountPlansData: data as unknown as TAccountPlan[],
+        accountPlansData: data,
         isLoading: !error && !data,
         isError: error
     }
@@ -39,33 +39,33 @@ const userDataFetcher = async (swrKey: string) => {
             return doc.data()
         })
 
-    return data;
+    return data as TUserData;
 }
+
 export const useUserData = (uid: string | null | undefined) => {
     const { data, error } = useSWR(uid ? `getuserdata_${uid}` : null, userDataFetcher);
 
     return {
-        userData: data as unknown as TUserData,
+        userData: data,
         isLoading: !error && !data,
         isError: error
     }
 }
 
 const latestUploadsImagesFetcher = async () => {
-    /* With query */
     const q = query(collection(db, "images"), orderBy("uploadDate", "desc"), limit(10));
     const latestUploadsImagesSnapshot = await getDocs(q)
 
     const data = latestUploadsImagesSnapshot.docs.map((doc) => doc.data());
 
-    return data;
+    return data as TImageInfo[];
 }
 
 export const useLatestUploadsImages = () => {
     const { data, error } = useSWR('getlatestuploadsimages', latestUploadsImagesFetcher, { revalidateOnFocus: false });
 
     return {
-        latestUploadsImagesData: data as unknown as TImageInfo[],
+        latestUploadsImagesData: data,
         isLoading: !error && !data,
         isError: error
     }
@@ -77,14 +77,14 @@ const allUserImagesFetcher = async () => {
 
     const data = allUserImagesSnapshot.docs.map((doc) => doc.data());
 
-    return data;
+    return data as TImageInfo[];
 }
 
 export const useAllUserImages = () => {
     const { data, error } = useSWR("getallusersimages", allUserImagesFetcher, { revalidateOnFocus: false });
 
     return {
-        allUsersImagesData: data as unknown as TImageInfo[],
+        allUsersImagesData: data,
         isLoading: !error && !data,
         isError: error
     }
@@ -97,14 +97,14 @@ const currentUserImagesFetcher = async (swrKey: string) => {
 
     const data = currentUserImagesSnapshot.docs.map((doc) => doc.data());
 
-    return data;
+    return data as TImageInfo[];
 }
 
 export const useCurrentUserImages = (uid: string) => {
     const { data, error } = useSWR(`getcurrentuserimages_${uid}`, currentUserImagesFetcher, { revalidateOnFocus: false });
 
     return {
-        currentUserImagesData: data as unknown as TImageInfo[],
+        currentUserImagesData: data,
         isLoading: !error && !data,
         isError: error
     }
@@ -116,16 +116,22 @@ const getAWSImageURLsFetcher = async (swrKey: string) => {
             return res.json();
         })
 
-    return data;
+    return data as string[];
 }
 
 export const useAWSImageURLs = (array: TImageInfo[]) => {
     const imageKeys = convertImageKeysToString(array);
 
-    const { data, error } = useSWR(imageKeys ? `/api/getimages?imageKeys=${encodeURIComponent(imageKeys)}` : null, getAWSImageURLsFetcher, { revalidateOnFocus: false });
+    const { data, error } = useSWR(
+        imageKeys
+            ? `/api/getimages?imageKeys=${encodeURIComponent(imageKeys)}`
+            : null,
+        getAWSImageURLsFetcher,
+        { revalidateOnFocus: false }
+    );
 
     return {
-        imageURLsData: data as unknown as string[],
+        imageURLsData: data,
         isURLsLoading: !error && !data,
         isError: error
     }
@@ -139,14 +145,14 @@ const userLogsFetcher = async () => {
         return doc.data()
     });
 
-    return data;
+    return data as TLogData[];
 }
 
 export const useUserLogs = () => {
     const { data, error } = useSWR("getuserlogs", userLogsFetcher, { revalidateOnFocus: false });
 
     return {
-        userLogsData: data as unknown as TLogData[],
+        userLogsData: data,
         isLoading: !error && !data,
         isError: error
     }

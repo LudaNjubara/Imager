@@ -12,8 +12,8 @@ import styles from "./imagesContainer.module.css";
 
 type TSearchResultsProps = {
   title: string;
-  imagesData: TImageInfo[];
-  imageURLsData: string[];
+  imagesData?: TImageInfo[];
+  imageURLsData?: string[];
   canEdit?: boolean;
 };
 
@@ -41,18 +41,18 @@ function ImagesContainer({ title, imagesData, imageURLsData, canEdit }: TSearchR
   };
 
   useEffect(() => {
-    if (modalImageURL) {
+    if (modalImageURL && imagesData) {
       const imageData = extractImageDataFromURL(modalImageURL, imagesData);
 
       setModalImageData(imageData);
     }
-  }, [modalImageURL]);
+  }, [modalImageURL, imagesData]);
 
   return (
     <section className={styles.imagesContainer__wrapper}>
       <h3 className={styles.imagesContainer__title}>{title}</h3>
       <div className={styles.imagesContainer__container}>
-        {imageURLsData ? (
+        {imageURLsData && imagesData ? (
           imageURLsData.map((url) => (
             <ImageItem
               key={url}

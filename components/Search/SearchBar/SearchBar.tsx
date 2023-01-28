@@ -11,8 +11,26 @@ type TSearchBarProps = {
   setSearchResults: (results: TImageInfo[]) => void;
 };
 
+const isValidQuery = (
+  selectedFilter: TSearchFilter,
+  searchQuery: string,
+  dateSearchInput: { from?: number; to?: number }
+) => {
+  // Date search input is valid if both `from` and `to` are set
+  const dateSearchIsValid = selectedFilter === "date" && dateSearchInput.from && dateSearchInput.to;
+
+  // Size search input is valid if the length of the query is greater than 1 and the query is a number
+  const sizeSearchIsValid =
+    selectedFilter === "size" && searchQuery.length > 1 && !isNaN(Number(searchQuery));
+
+  // All other search inputs are valid if the length of the query is greater than 2
+  const otherSearchIsValid = selectedFilter !== "size" && selectedFilter !== "date" && searchQuery.length > 2;
+
+  return dateSearchIsValid || sizeSearchIsValid || otherSearchIsValid;
+};
+
 function SearchBar({ setSearchResults }: TSearchBarProps) {
-  const [searchText, setSearchText] = useState("");
+  const [searchQuery, setSearchText] = useState("");
   const [dateSearchInput, setDateSearchInput] = useState<{
     from?: number;
     to?: number;
@@ -20,32 +38,35 @@ function SearchBar({ setSearchResults }: TSearchBarProps) {
   const [selectedFilter, setSelectedFilter] = useState<TSearchFilter>("hashtags");
   const filters: TSearchFilter[] = ["date", "size", "author", "hashtags", "extension"];
 
-  const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-    if (selectedFilter !== "date") {
-      if (searchText.length < 2) return;
-    } else {
-      if (!dateSearchInput.from || !dateSearchInput.to) return;
-    }
+    // Validate the search query and date input
+    if (!isValidQuery(selectedFilter, searchQuery, dateSearchInput)) return;
 
-    const results = await searchImages(
-      selectedFilter,
-      searchText,
-      selectedFilter === "date" ? dateSearchInput : undefined
-    );
+    // Search for images using the search query and date input
+    const results = await searchImages(selectedFilter, searchQuery, dateSearchInput);
 
+    // Display the search results
     setSearchResults(results);
   };
 
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!event.currentTarget.value) return;
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.currentTarget.value) return;
 
-    if (event.currentTarget.id === "searchBar__dateFrom") {
-      const startOfDay = new Date(event.currentTarget.valueAsNumber).setHours(0, 0, 0, 0);
+    // get the date value from the DOM element
+    const date = new Date(e.currentTarget.valueAsNumber);
+
+    // if the date is the date FROM input
+    if (e.currentTarget.id === "searchBar__dateFrom") {
+      // set the date to the start of the day
+      const startOfDay = date.setHours(0, 0, 0, 0);
+      // update the dateSearchInput state
       setDateSearchInput({ ...dateSearchInput, from: startOfDay });
     } else {
-      const endOfDay = new Date(event.currentTarget.valueAsNumber).setHours(23, 59, 59, 999);
+      // set the date to the end of the day
+      const endOfDay = date.setHours(23, 59, 59, 999);
+      // update the dateSearchInput state
       setDateSearchInput({ ...dateSearchInput, to: endOfDay });
     }
   };
@@ -129,7 +150,7 @@ function SearchBar({ setSearchResults }: TSearchBarProps) {
                     type="text"
                     id="searchBar__search"
                     className={styles.searchBar__searchInput}
-                    value={searchText}
+                    value={searchQuery}
                     placeholder="Search with selected filter..."
                     onChange={(event) => setSearchText(event.target.value)}
                   />

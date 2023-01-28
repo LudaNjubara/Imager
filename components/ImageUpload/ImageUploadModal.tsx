@@ -27,7 +27,12 @@ function ImageUploadModal() {
   const reduxUser = useAppSelector((state) => state.user);
 
   const checkFormValidity = () => {
-    if (image && imageDesc && imageHashtags.length > 0 && !hasImageHashtagsError) {
+    const imageHashtagsPresent = imageHashtags.length > 0;
+    const imageHashtagsValid = !hasImageHashtagsError;
+    const imagePresent = !!image;
+    const imageDescPresent = !!imageDesc;
+
+    if (imagePresent && imageDescPresent && imageHashtagsPresent && imageHashtagsValid) {
       setIsFormValid(true);
     } else {
       setIsFormValid(false);
@@ -35,22 +40,33 @@ function ImageUploadModal() {
   };
 
   const createImageObjectURL = (image: File) => {
-    const imageObjectURL = encodeURI(URL.createObjectURL(image));
-    return imageObjectURL;
+    // Create an object URL from the image file
+    const objectURL = encodeURI(URL.createObjectURL(image));
+    return objectURL;
   };
 
   const handleImageChange = (e: FormEvent<HTMLInputElement>) => {
+    // If there is an imagePreviewURL, revoke the object URL to prevent memory leaks.
     imagePreviewURL && URL.revokeObjectURL(imagePreviewURL);
+    // Set the imagePreviewURL to null to remove the preview.
     setImagePreviewURL(null);
+    // Set the image to null to remove the image.
     setImage(null);
 
+    // If there is an image file uploaded, create an object URL for the image and
+    // set the image and imagePreviewURL state variables.
     if (e.currentTarget.files && e.currentTarget.files[0]) {
       const image = e.currentTarget.files[0];
       setImage(image);
       setImagePreviewURL(createImageObjectURL(image));
-      blobToBase64(image).then((base64) => {
-        setImageDataURL(base64);
-      });
+      // Convert the image file to a base64 string and set the imageDataURL state variable.
+      blobToBase64(image)
+        .then((base64) => {
+          setImageDataURL(base64);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
   };
 
@@ -59,47 +75,55 @@ function ImageUploadModal() {
   };
 
   const handleImageHashtagsChange = (e: FormEvent<HTMLTextAreaElement>) => {
-    /* if current value contains characters other than -_ and space, lowercase and uppercase letters then return */
+    // Get the value of the text area
+    const imageHashtags = e.currentTarget.value.trim().toLowerCase().split(" ");
+    // Check if the input contains characters other than -_ and space, lowercase and uppercase letters
     if (e.currentTarget.value.length === 0 || e.currentTarget.value.match(/[^a-zA-Z-_ ]/g)) {
       setHasImageHashtagsError(true);
       return;
     }
 
     setHasImageHashtagsError(false);
-    setImageHashtags(e.currentTarget.value.trim().toLowerCase().split(" "));
+    setImageHashtags(imageHashtags);
   };
 
-  const handleImageUpload = (e: MouseEvent<HTMLButtonElement>) => {
-    if (imageDataURL && image) {
-      convertBase64ToImage(imageDataURL)
-        .then(async (convertedImage) => {
-          const height = convertedImage.height;
-          const width = convertedImage.width;
-          const imageExtension = imageDataURL.split(";")[0].split("/")[1];
+  const handleImageUpload = async (e: MouseEvent<HTMLButtonElement>) => {
+    if (!imageDataURL || !image) {
+      return;
+    }
 
-          const res = await uploadImageToAWS(imageDataURL, imageExtension);
+    try {
+      // Convert the base64 data URL to an image.
+      const convertedImage = await convertBase64ToImage(imageDataURL);
+      const height = convertedImage.height;
+      const width = convertedImage.width;
+      const imageExtension = imageDataURL.split(";")[0].split("/")[1];
 
-          if (res.imageKey) {
-            const imageInfo: TImageInfo = {
-              key: res.imageKey,
-              fileType: imageExtension,
-              size: image.size,
-              height: height,
-              width: width,
-              hashtags: imageHashtags,
-              description: imageDesc,
-              uploaderUID: reduxUser.uid,
-              uploaderDisplayName: reduxUser.displayName,
-              uploaderPhotoURL: reduxUser.photoURL ?? null,
-              uploadDate: Timestamp.now().toMillis(),
-            };
+      try {
+        // Upload the image to AWS.
+        const { imageKey } = await uploadImageToAWS(imageDataURL, imageExtension);
 
-            facade.AddImageInfo(imageInfo, reduxUser.uid);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        // Add the image info to the database.
+        const imageInfo: TImageInfo = {
+          key: imageKey,
+          fileType: imageExtension.toUpperCase(),
+          size: image.size,
+          height: height,
+          width: width,
+          hashtags: imageHashtags,
+          description: imageDesc,
+          uploaderUID: reduxUser.uid,
+          uploaderDisplayName: reduxUser.displayName,
+          uploaderPhotoURL: reduxUser.photoURL ?? null,
+          uploadDate: Timestamp.now().toMillis(),
+        };
+
+        facade.AddImageInfo(imageInfo, reduxUser.uid);
+      } catch (error) {
+        console.error(error);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 

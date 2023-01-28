@@ -8,7 +8,25 @@ type TEditUsersDetailsProps = {
   currentUserUsername: string;
 };
 
-/* Create a function that will be used in a javascript sort method that sorts keys of object of type TUserData. Keys such as uploadsUsed, accountRole and accountPlan take presedence over other keys. */
+const listOfKeysToIgnore = [
+  "uid",
+  "photoURL",
+  "password",
+  "accountPlanUpdateDate",
+  "isPendingAccountPlanUpdate",
+];
+
+const getSortedKeys = (user: TUserData) => {
+  return Object.keys(user).sort((a, b) => {
+    if (a === "uploadsUsed" || a === "accountRole" || a === "accountPlan") return 1;
+    if (b === "uploadsUsed" || b === "accountRole" || b === "accountPlan") return -1;
+    return 0;
+  });
+};
+
+const isKeyIgnored = (key: string) => {
+  return listOfKeysToIgnore.includes(key);
+};
 
 function EditUsersDetails({ user, currentUserUsername }: TEditUsersDetailsProps) {
   return (
@@ -29,32 +47,20 @@ function EditUsersDetails({ user, currentUserUsername }: TEditUsersDetailsProps)
 
         <div className={styles.editUsersDetails__container__details}>
           <ul className={styles.editUsersDetails__container__details__list}>
-            {Object.keys(user)
-              .sort(
-                (a, b) =>
-                  (a === "uploadsUsed" || a === "accountRole" || a === "accountPlan" ? 1 : -1) -
-                  (b === "uploadsUsed" || b === "accountRole" || b === "accountPlan" ? 1 : -1)
-              )
-              .map((key) => {
-                if (
-                  key === "uid" ||
-                  key === "photoURL" ||
-                  key === "password" ||
-                  key === "accountPlanUpdateDate"
-                )
-                  return null;
+            {getSortedKeys(user).map((key) => {
+              if (isKeyIgnored(key)) return null;
 
-                return (
-                  <EditUsersDetailsListItem
-                    key={key}
-                    uid={user.uid!}
-                    username={user.username!}
-                    currentUserUsername={currentUserUsername!}
-                    title={key as keyof TUserData}
-                    value={user[key as keyof TUserData]}
-                  />
-                );
-              })}
+              return (
+                <EditUsersDetailsListItem
+                  key={key}
+                  uid={user.uid!}
+                  username={user.username!}
+                  currentUserUsername={currentUserUsername!}
+                  title={key as keyof TUserData}
+                  value={user[key as keyof TUserData]}
+                />
+              );
+            })}
           </ul>
         </div>
       </div>

@@ -38,15 +38,19 @@ function ChangeAccountPlan({ itemTitle, reduxUser, userData, accountPlansData }:
     if (!currentNewAccountPlanName || !userData || userData?.accountPlan === currentNewAccountPlanName)
       return;
 
-    facade.UpdateUserAccountPlan(reduxUser.uid, userData, {
-      plan: currentNewAccountPlanName,
-      fromProfilePage: true,
-    });
+    try {
+      facade.UpdateUserAccountPlan(reduxUser.uid, userData, {
+        plan: currentNewAccountPlanName,
+        fromProfilePage: true,
+      });
 
-    setIsSelectNewPlanButtonChecked(false);
-    setCurrentNewAccountPlanName(undefined);
-    setIsChangePlanButtonChecked(false);
-    setIsEligibleForPlanChange(true);
+      setIsSelectNewPlanButtonChecked(false);
+      setCurrentNewAccountPlanName(undefined);
+      setIsChangePlanButtonChecked(false);
+      setIsEligibleForPlanChange(true);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {

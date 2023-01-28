@@ -14,7 +14,12 @@ export default class RegisterProviderStrategy {
                     displayName: username,
                 })
                     .then(() => {
-                        facade.AddUser(userData, user.uid);
+                        try {
+                            facade.AddUser(userData, user.uid);
+                        }
+                        catch (error) {
+                            console.error(error);
+                        }
                     })
                     .catch((error) => {
                         if (error.code === "auth/invalid-display-name") {
@@ -44,21 +49,27 @@ export default class RegisterProviderStrategy {
                     const { user } = result;
 
                     if (additionalUserInfo?.isNewUser) {
-                        userData.email = user.email!;
-                        userData.username = user?.displayName ?? user.providerData[0]?.displayName!;
-                        userData.photoURL = user?.photoURL ?? user.providerData[0]?.photoURL!;
+                        try {
+                            userData.email = user.email!;
+                            userData.username = user?.displayName ?? user.providerData[0]?.displayName!;
+                            userData.photoURL = user?.photoURL ?? user.providerData[0]?.photoURL!;
 
-                        facade.AddUser(userData, user.uid);
+                            facade.AddUser(userData, user.uid);
+                        }
+                        catch (error) {
+                            console.error(error);
+                        }
+
                     }
                 }).catch((error) => {
-                    console.error("error", error);
+                    console.error(error);
                 });
         } else if (prevUser.isAnonymous) {
             linkWithPopup(prevUser, provider)
                 .catch((error) => {
                     if (error.code === "auth/credential-already-in-use") {
                         linkWithRedirect(prevUser, provider).catch((error) => {
-                            console.error("error", error);
+                            console.error(error);
                         });
                     }
                 });
@@ -78,21 +89,26 @@ export default class RegisterProviderStrategy {
                     const { user } = result;
 
                     if (additionalUserInfo?.isNewUser) {
-                        userData.email = user.email!;
-                        userData.username = user?.displayName ?? user.providerData[0]?.displayName!;
-                        userData.photoURL = user?.photoURL ?? user.providerData[0]?.photoURL!;
+                        try {
+                            userData.email = user.email!;
+                            userData.username = user?.displayName ?? user.providerData[0]?.displayName!;
+                            userData.photoURL = user?.photoURL ?? user.providerData[0]?.photoURL!;
 
-                        facade.AddUser(userData, user.uid);
+                            facade.AddUser(userData, user.uid);
+                        }
+                        catch (error) {
+                            console.error(error);
+                        }
                     }
                 }).catch((error) => {
-                    console.error("error", error);
+                    console.error(error);
                 });
         } else if (prevUser.isAnonymous) {
             linkWithPopup(prevUser, provider)
                 .catch((error) => {
                     if (error.code === "auth/credential-already-in-use") {
                         signInWithRedirect(auth, provider).catch((error) => {
-                            console.error("error", error);
+                            console.error(error);
                         });
                     }
                 });

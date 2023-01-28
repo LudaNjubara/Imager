@@ -9,8 +9,8 @@ import styles from "./editImage.module.css";
 
 function EditImage() {
   const reduxUser: TUser = useAppSelector((state) => state.user);
-  const { currentUserImagesData, isError } = useCurrentUserImages(reduxUser.uid);
-  const { imageURLsData } = useAWSImageURLs(currentUserImagesData);
+  const { currentUserImagesData } = useCurrentUserImages(reduxUser.uid);
+  const { imageURLsData } = useAWSImageURLs(currentUserImagesData ? currentUserImagesData : []);
 
   return (
     <div className={styles.editImageContainer__wrapper}>

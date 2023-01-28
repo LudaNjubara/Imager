@@ -11,18 +11,22 @@ import ViewLogsFilter from "./ViewLogsFilter/ViewLogsFilter";
 import styles from "./viewLogs.module.css";
 
 function ViewLogs() {
-  const { userLogsData, isLoading, isError } = useUserLogs();
+  const { userLogsData, isLoading } = useUserLogs();
   const [filteredLogs, setFilteredLogs] = useState<TLogData[]>([]);
 
   useEffect(() => {
-    setFilteredLogs(userLogsData);
-  }, [userLogsData]);
+    if (!isLoading && userLogsData) setFilteredLogs(userLogsData);
+  }, [userLogsData, isLoading]);
 
   return (
     <div className={styles.editUsersContainer__wrapper}>
       <section className={styles.editUsersContainer__container}>
-        <ViewLogsFilter logs={userLogsData} setFilteredLogs={setFilteredLogs} />
-        <ViewLogsContainer logs={filteredLogs} />
+        {!!userLogsData && (
+          <>
+            <ViewLogsFilter logs={userLogsData} setFilteredLogs={setFilteredLogs} />
+            <ViewLogsContainer logs={filteredLogs} />
+          </>
+        )}
       </section>
     </div>
   );

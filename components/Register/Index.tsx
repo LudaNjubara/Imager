@@ -3,14 +3,13 @@ import { getRedirectResult } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import {
-  emailRegex,
-  MAX_PASSWORD_LENGTH,
-  MIN_PASSWORD_LENGTH,
-  passwordRegex,
-  usernameRegex,
-} from "../../constants/constants";
-import { TAccountPlanName, TUserData, TUserDataError, TRegisterProvider } from "../../types/globals";
-import { getAccountPlanProperty } from "../../utils/register/registerUtils";
+  TAccountPlanName,
+  TUserData,
+  TUserDataError,
+  TRegisterProvider,
+  EAccountPlanName,
+} from "../../types/globals";
+import { getAccountPlanProperty, validatePassword } from "../../utils/register/registerUtils";
 import { useAccountPlans } from "../../hooks/hooks";
 import createAccount from "../../services/Register/CreateAccount.class";
 import observableRegisterProvider, {
@@ -23,6 +22,7 @@ import ChooseAccountPlan from "./ChoosePlan";
 
 import styles from "./register.module.css";
 import LogoutFirst from "../common/LogoutFirst/Index";
+import { validateEmail, validateUsername } from "../../utils/common/utils";
 
 type TActiveFormSteps = "userInfo" | "chooseAccountPlan";
 
@@ -39,7 +39,7 @@ function RegisterForm() {
     username: "",
     email: "",
     password: "",
-    accountPlan: "Bronze",
+    accountPlan: EAccountPlanName.Bronze,
     accountRole: "User",
     uploadsUsed: 0,
   });
@@ -108,70 +108,28 @@ function RegisterForm() {
   const validateForm = () => {
     setFirebaseErrorMessage(undefined);
 
-    if (!userData.username) {
-      setUserDataError({
-        ...userDataError,
-        username: {
-          message: "Username is required",
-        },
-      });
-    } else if (!usernameRegex.test(userData.username)) {
-      setUserDataError({
-        ...userDataError,
-        username: {
-          message: "Username is not valid",
-        },
-      });
-    } else {
-      setUserDataError({
-        ...userDataError,
-        username: {
-          message: "",
-        },
-      });
-    }
+    const usernameCheck = validateUsername(userData);
+    const emailCheck = validateEmail(userData);
+    const passwordCheck = validatePassword(userData);
 
-    if (userData.email.length === 0) {
-      setUserDataError((prev) => {
-        return { ...prev, email: { message: "Email is required" } };
-      });
-    } else if (!emailRegex.test(userData.email)) {
-      setUserDataError((prev) => {
-        return { ...prev, email: { message: "Email is not valid" } };
-      });
-    } else {
-      setUserDataError((prev) => {
-        return {
-          ...prev,
-          email: { message: "" },
-        };
-      });
-    }
-
-    if (userData.password.length === 0) {
-      setUserDataError((prev) => {
-        return { ...prev, password: { message: "Password is required" } };
-      });
-    } else if (!passwordRegex.test(userData.password)) {
-      setUserDataError((prev) => {
-        return {
-          ...prev,
-          password: {
-            message: "Password is not valid",
-            containsEnoughCharacters:
-              userData.password.length >= MIN_PASSWORD_LENGTH &&
-              userData.password.length <= MAX_PASSWORD_LENGTH,
-            containsUpperCaseCharacter: !!userData.password.match(/[A-Z]/),
-            containsLowerCaseCharacter: !!userData.password.match(/[a-z]/),
-            containsNumber: !!userData.password.match(/[0-9]/),
-          },
-        };
-      });
-    } else {
-      setUserDataError((prev) => {
-        return { ...prev, password: { message: "" } };
-      });
-    }
+    setUserDataError((prev) => {
+      return {
+        ...prev,
+        username: {
+          message: usernameCheck.message,
+        },
+        email: {
+          message: emailCheck.message,
+        },
+        password: {
+          message: passwordCheck.message,
+          containsEnoughCharacters: passwordCheck.password.containsEnoughCharacters,
+          containsUpperCaseCharacter: passwordCheck.password.containsUpperCaseCharacter,
+          containsLowerCaseCharacter: passwordCheck.password.containsLowerCaseCharacter,
+          containsNumber: passwordCheck.password.containsNumber,
+        },
+      };
+    });
   };
 
   const handleSignIn = (userData: TUserData) => {
@@ -186,7 +144,7 @@ function RegisterForm() {
   }, [selectedAccountPlanName]);
 
   useEffect(() => {
-    if (!isLoading && !!userData) {
+    if (!isLoading && !!userData && !!accountPlansData) {
       setSelectedAccountPlanName(
         getAccountPlanProperty(
           accountPlansData,
@@ -195,7 +153,7 @@ function RegisterForm() {
         ) as TAccountPlanName
       );
     }
-  }, [isLoading, userData]);
+  }, [isLoading, userData, accountPlansData]);
 
   useEffect(() => {
     getRedirectResult(auth).catch((error) => {

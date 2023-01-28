@@ -7,8 +7,8 @@ import ImagesContainer from "../../common/ImagesContainer/Index";
 import styles from "../EditImage/editImage.module.css";
 
 function EditUserImages() {
-  const { allUsersImagesData, isError } = useAllUserImages();
-  const { imageURLsData } = useAWSImageURLs(allUsersImagesData);
+  const { allUsersImagesData } = useAllUserImages();
+  const { imageURLsData } = useAWSImageURLs(allUsersImagesData ? allUsersImagesData : []);
 
   return (
     <div className={styles.editImageContainer__wrapper}>

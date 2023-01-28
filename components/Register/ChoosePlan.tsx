@@ -65,7 +65,12 @@ function ChooseAccountPlan({
             >
               <div className={styles.accountPlan__detailsHeader}>
                 <h4 className={styles.accountPlan__detailsTitle}>{userData.accountPlan}</h4>
-                <span className={styles.accountPlan__price}>
+                <span
+                  className={
+                    // add isGold class if plan is gold, isBronze if plan is bronze and isPlatinum if plan is platinum
+                    `${styles.accountPlan__price} ${styles["is" + selectedAccountPlanName]}`
+                  }
+                >
                   {getAccountPlanProperty(accountPlans, selectedAccountPlanName, "price")} €
                 </span>
               </div>

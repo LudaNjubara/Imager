@@ -33,8 +33,8 @@ function SaveAsDropdown({ editableImageContainer, setImageDataURL }: TSaveAsDrop
 
         setIsDisabled(false);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        console.error(error);
         setIsDisabled(false);
       });
   };

@@ -3,7 +3,7 @@ import ImagesContainer from "../../common/ImagesContainer/Index";
 
 function LatestUploads() {
   const { latestUploadsImagesData } = useLatestUploadsImages();
-  const { imageURLsData } = useAWSImageURLs(latestUploadsImagesData);
+  const { imageURLsData } = useAWSImageURLs(latestUploadsImagesData ? latestUploadsImagesData : []);
 
   return (
     <ImagesContainer

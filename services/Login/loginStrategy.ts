@@ -7,7 +7,7 @@ import facade from "../facade.class"
 export default class LoginStrategy {
     static Anonymous() {
         signInAnonymously(auth).catch((error) => {
-            console.error("error", error);
+            console.error(error);
         });
     }
 
@@ -33,22 +33,26 @@ export default class LoginStrategy {
                 const { user } = result;
 
                 if (additionalUserInfo?.isNewUser) {
-                    const userData: TUserData = {
-                        email: user?.email!,
-                        password: "",
-                        username: user?.displayName ?? user?.providerData[0]?.displayName!,
-                        photoURL: user?.photoURL ?? user?.providerData[0]?.photoURL ?? null,
-                        accountPlan: EAccountPlanName.Bronze,
-                        accountRole: "User",
-                        uploadsUsed: 0,
+                    try {
+                        const userData: TUserData = {
+                            email: user?.email!,
+                            password: "",
+                            username: user?.displayName ?? user?.providerData[0]?.displayName!,
+                            photoURL: user?.photoURL ?? user?.providerData[0]?.photoURL ?? null,
+                            accountPlan: EAccountPlanName.Bronze,
+                            accountRole: "User",
+                            uploadsUsed: 0,
+                        }
+
+                        facade.AddUser(userData, user.uid);
                     }
-
-                    facade.AddUser(userData, user?.uid!);
-
+                    catch (error) {
+                        console.error(error);
+                    }
                 }
             })
             .catch((error) => {
-                console.error("error", error);
+                console.error(error);
             });
 
     }
@@ -61,24 +65,28 @@ export default class LoginStrategy {
                 const additionalUserInfo = getAdditionalUserInfo(result);
                 const { user } = result;
 
-                if (additionalUserInfo?.isNewUser) {
-                    const userData: TUserData = {
-                        email: user?.email!,
-                        password: "",
-                        username: user?.displayName ?? user?.
-                            providerData[0]?.displayName!,
-                        photoURL: user?.photoURL ?? user?.providerData[0]?.photoURL ?? null,
-                        accountPlan: EAccountPlanName.Bronze,
-                        accountRole: "User",
-                        uploadsUsed: 0,
+                try {
+                    if (additionalUserInfo?.isNewUser) {
+                        const userData: TUserData = {
+                            email: user?.email!,
+                            password: "",
+                            username: user?.displayName ?? user?.
+                                providerData[0]?.displayName!,
+                            photoURL: user?.photoURL ?? user?.providerData[0]?.photoURL ?? null,
+                            accountPlan: EAccountPlanName.Bronze,
+                            accountRole: "User",
+                            uploadsUsed: 0,
+                        }
+
+                        facade.AddUser(userData, user.uid);
                     }
-
-                    facade.AddUser(userData, user?.uid!);
-
+                }
+                catch (error) {
+                    console.error(error);
                 }
             })
             .catch((error) => {
-                console.error("error", error);
+                console.error(error);
             });
     }
 }

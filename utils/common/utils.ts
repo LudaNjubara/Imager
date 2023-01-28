@@ -1,39 +1,37 @@
-import { MutableRefObject, RefObject } from "react";
-
 import { toPng, toJpeg, toSvg } from 'html-to-image';
-import { TImageInfo } from "../../types/globals";
+import { emailRegex, usernameRegex } from '../../constants/constants';
+import { TImageInfo, TUserData } from "../../types/globals";
 
 const detectOS = () => {
     const userAgent = navigator.userAgent;
-    const isWindows = /Windows/.test(userAgent);
-    const isMac = /Mac/.test(userAgent);
-    const isLinux = /Linux/.test(userAgent);
-    const isAndroid = /Android/.test(userAgent);
-    const isiOS = /iPhone|iPad|iPod/.test(userAgent);
 
-    if (isWindows) return "Windows";
-    if (isMac) return "Mac";
-    if (isLinux) return "Linux";
-    if (isAndroid) return "Android";
-    if (isiOS) return "iOS";
+    if (/Windows/.test(userAgent)) return "Windows";
+    if (/Mac/.test(userAgent)) return "Mac";
+    if (/Linux/.test(userAgent)) return "Linux";
+    if (/Android/.test(userAgent)) return "Android";
+    if (/iPhone|iPad|iPod/.test(userAgent)) return "iOS";
 
     return "Unknown";
 }
 
 const detectBrowser = () => {
     const userAgent = navigator.userAgent;
-    const isChrome = /Chrome/.test(userAgent);
-    const isFirefox = /Firefox/.test(userAgent);
-    const isSafari = /Safari/.test(userAgent);
-    const isOpera = /Opera/.test(userAgent);
-    const isIE = /Trident/.test(userAgent);
 
-    if (isChrome) return "Chrome";
-    if (isFirefox) return "Firefox";
-    if (isSafari) return "Safari";
-    if (isOpera) return "Opera";
-    if (isIE) return "IE";
+    // Create an object with the names of the browsers and the regex that will match the user agent
+    const browsers = {
+        Chrome: /Chrome/,
+        Firefox: /Firefox/,
+        Safari: /Safari/,
+        Opera: /Opera/,
+        IE: /Trident/,
+    };
 
+    // Loop through the object and check if the regex matches the user agent
+    for (const [name, regex] of Object.entries(browsers)) {
+        if (regex.test(userAgent)) return name;
+    }
+
+    // If we didn't find any matches, return "Unknown"
     return "Unknown";
 }
 
@@ -55,13 +53,48 @@ const getUserLocation = ():
     });
 }
 
+const validateUsername = (userData: TUserData) => {
+    let message = ""
+    let isValid = false
+
+    if (!userData.username) {
+        message = "Username is required"
+    } else if (!usernameRegex.test(userData.username)) {
+        message = "Username is not valid"
+    } else {
+        isValid = true
+    }
+
+    return {
+        message,
+        isValid
+    }
+};
+
+const validateEmail = (userData: TUserData) => {
+    let message = ""
+    let isValid = false
+
+    if (userData.email.length === 0) {
+        message = "Email is required"
+    } else if (!emailRegex.test(userData.email)) {
+        message = "Email is not valid"
+    } else {
+        isValid = true
+    }
+
+    return {
+        message,
+        isValid
+    }
+};
+
 const getNextDayInMilliseconds = () => {
     const nextDay = new Date();
     nextDay.setDate(nextDay.getDate() + 1);
     nextDay.setHours(0, 0, 0, 0);
-    const nextDayInMilliseconds = nextDay.getTime();
 
-    return nextDayInMilliseconds;
+    return nextDay.getTime();
 }
 
 const setCSSVariable = (name: string, value: string) => {
@@ -69,28 +102,43 @@ const setCSSVariable = (name: string, value: string) => {
 }
 
 const generateRandomId = (numOfCharacters: number = 25) => {
-    // generate random string for id
-    const randomString = [...Array(numOfCharacters)].map(() => Math.random().toString(36)[2]).join('');
-    const id = randomString;
+    if (numOfCharacters < 1) {
+        throw new Error('numOfCharacters must be a positive number');
+    }
+    if (!Number.isInteger(numOfCharacters)) {
+        throw new Error('numOfCharacters must be an integer');
+    }
+    if (numOfCharacters < 25) {
+        throw new Error('numOfCharacters must be at least 25');
+    }
 
-    return id;
+    // generate random string for id
+    const randomId = [...Array(numOfCharacters)].map(() => Math.random().toString(36)[2]).join('');
+
+    return randomId;
 };
 
 const extractImageKeyFromURL = (url: string) => {
+    // Find the image key in the URL
     const regex = /(?<=imager-project-bucket.s3.eu-central-1.amazonaws.com\/)(.*)(?=\?)/g;
     const match = regex.exec(url);
 
+    // If no match is found, throw an error
     if (!match) throw new Error(`No match found in ${url}`);
 
+    // Extract the image key from the match
     const imageKey = match[0];
 
     return imageKey;
 }
 
-const extractImageDataFromURL = (url: string, imagesData: TImageInfo[]) => {
+const extractImageDataFromURL = (url: string, imagesData: TImageInfo[]): TImageInfo => {
     const imageKey = extractImageKeyFromURL(url);
+
+    // Find the image info in the images data array
     const imageInfo = imagesData.find(item => item.key === imageKey);
 
+    // Throw an error if the image info was not found
     if (!imageInfo) throw new Error(`No image found in ${imagesData} with key ${imageKey}`);
 
     return imageInfo;
@@ -98,7 +146,6 @@ const extractImageDataFromURL = (url: string, imagesData: TImageInfo[]) => {
 
 const convertBase64ToImage = (base64Image: string): Promise<HTMLImageElement> => {
     return new Promise((resolve, reject) => {
-
         const img = new Image();
         img.src = base64Image
 
@@ -111,81 +158,125 @@ const convertBase64ToImage = (base64Image: string): Promise<HTMLImageElement> =>
     });
 }
 
-const convertImageKeysToString = (array: TImageInfo[]) => {
-    if (!array || !array.length) return;
-
-    const imageKeys = array.map(item => item.key).join(",")
-
-    return imageKeys
+const convertImageKeysToString = (images: TImageInfo[] | undefined) => {
+    // Map over the array of images and return concatenated image keys
+    return images?.map(image => image.key).join(",");
 }
 
 const downloadImage = (imageURL: string, imageKey: string) => {
-    const link = document.createElement("a");
-    link.href = imageURL;
-    link.setAttribute("download", imageKey);
-    link.setAttribute("href", "");
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode!.removeChild(link);
+    fetch(imageURL, {
+        method: 'GET',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'image/webp',
+        },
+    })
+        .then(res => res.blob())
+        .then(blob => {
+            // TODO: Fix the image download
+            var url = window.URL.createObjectURL(blob);
+            const image = new Image();
+            image.onload = () => {
+                image.height = 100;
+                image.width = 100;
+            };
+            image.src = url;
+
+            document.body.appendChild(image);
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = imageKey.toLowerCase();
+            document.body.appendChild(link);
+
+            setTimeout(
+                () => window.URL.revokeObjectURL(url),
+                60000);
+            link.remove();
+        })
 }
 
 const getEditedImage = (ref: HTMLDivElement, extension: string): Promise<string> => {
     return new Promise((resolve, reject) => {
 
+        // 1. Check what image format the user selected
         switch (extension) {
+
+            // 2. If PNG, convert the image to PNG
             case 'png':
                 toPng(ref)
-                    .then(async (dataUrl) => {
+                    .then((dataUrl) => {
                         resolve(dataUrl)
                     })
-                    .catch((err) => {
-                        reject(err)
+                    .catch((error) => {
+                        reject(error)
                     })
                 break;
 
+            // 3. If JPG, convert the image to JPG
             case 'jpg':
                 toJpeg(ref)
-                    .then(async (dataUrl) => {
+                    .then((dataUrl) => {
                         resolve(dataUrl)
                     })
-                    .catch((err) => {
-                        reject(err)
+                    .catch((error) => {
+                        reject(error)
                     })
                 break;
 
+            // 4. If SVG, convert the image to SVG
             case 'svg':
                 toSvg(ref)
-                    .then(async (dataUrl) => {
+                    .then((dataUrl) => {
                         resolve(dataUrl)
                     })
-                    .catch((err) => {
-                        reject(err)
+                    .catch((error) => {
+                        reject(error)
                     })
                 break;
 
+            // 5. If the image format is not PNG, JPG or SVG, reject the promise
             default:
+                reject('Unsupported image format')
                 break;
         }
     })
 }
 
+const urltoFile = (url: string, filename: string, fileType: string) => {
+    return (fetch(url)
+        .then(function (res) { return res.arrayBuffer(); })
+        .then(function (buf) { return new File([buf], filename, { type: fileType }); })
+    );
+}
+
 const blobToBase64 = (blob: Blob): Promise<string> => {
+    // Create a new promise that will resolve with the base64 string
     return new Promise((resolve, reject) => {
+        // Create a new file reader
         const reader = new FileReader();
-        reader.readAsDataURL(blob);
+        // Set the onloadend handler to convert the file to base64
         reader.onloadend = () => {
+            // The result is a string if the conversion was successful
             const base64data = reader.result;
-            resolve(base64data as string);
+            if (typeof base64data === 'string') {
+                // Resolve the promise with the base64 string
+                resolve(base64data);
+            } else {
+                // Reject the promise with an error
+                reject(new Error('Could not convert Blob to base64'));
+            }
         };
+        // Set the onerror handler to reject the promise with the error
         reader.onerror = (error) => {
             reject(error);
         };
+        // Start reading the blob as a data URL, which will trigger the onloadend handler
+        reader.readAsDataURL(blob);
     });
 }
 
 const convertDatabaseFieldToReadableFormat = (fieldName: string) => {
-    const titleArray = fieldName.split("");
-    const newFieldNameArray = titleArray.map((char) => {
+    const newFieldNameArray = fieldName.split("").map((char) => {
         if (char === char.toUpperCase()) {
             return ` ${char.toLowerCase()}`;
         } else {
@@ -196,4 +287,4 @@ const convertDatabaseFieldToReadableFormat = (fieldName: string) => {
     return newFieldNameArray.join("");
 }
 
-export { detectOS, detectBrowser, getUserLocation, getNextDayInMilliseconds, generateRandomId, setCSSVariable, extractImageDataFromURL, convertBase64ToImage, convertImageKeysToString, downloadImage, getEditedImage, blobToBase64, convertDatabaseFieldToReadableFormat };
+export { detectOS, detectBrowser, getUserLocation, validateEmail, validateUsername, getNextDayInMilliseconds, generateRandomId, setCSSVariable, extractImageDataFromURL, convertBase64ToImage, convertImageKeysToString, downloadImage, getEditedImage, urltoFile, blobToBase64, convertDatabaseFieldToReadableFormat };

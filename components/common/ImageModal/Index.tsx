@@ -54,12 +54,16 @@ function ImageModal({ toggleModal, modalImageURL, modalImageData, canEdit }: Ima
       return;
     }
 
-    facade.UpdateImageInfo(
-      imageDescRef.current.value,
-      imageHashtagsRef.current?.value.split(" "),
-      modalImageData.key,
-      reduxUser.displayName!
-    );
+    try {
+      facade.UpdateImageInfo(
+        imageDescRef.current.value,
+        imageHashtagsRef.current?.value.split(" "),
+        modalImageData.key,
+        reduxUser.displayName!
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleImageHashtagsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

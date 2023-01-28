@@ -6,6 +6,14 @@ import { db } from "../../config/firebaseConfig";
 
 const validateDetailsInput = (title: keyof TUserData, inputValue: string) => {
     switch (title) {
+        case "pendingAccountPlan":
+            if (
+                inputValue !== EAccountPlanName.Bronze &&
+                inputValue !== EAccountPlanName.Gold &&
+                inputValue !== EAccountPlanName.Platinum
+            )
+                return false;
+            return true;
         case "uploadsUsed":
             if (isNaN(parseInt(inputValue))) return false;
             return true;
@@ -47,7 +55,7 @@ const searchUsers = async (searchQuery: string) => {
         data = querySnapshot.docs.map((doc) => doc.data() as TUserData);
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         isError = error;
     }
 
