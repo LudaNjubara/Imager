@@ -164,35 +164,14 @@ const convertImageKeysToString = (images: TImageInfo[] | undefined) => {
 }
 
 const downloadImage = (imageURL: string, imageKey: string) => {
-    fetch(imageURL, {
-        method: 'GET',
-        mode: 'no-cors',
-        headers: {
-            'Content-Type': 'image/webp',
-        },
-    })
-        .then(res => res.blob())
-        .then(blob => {
-            // TODO: Fix the image download
-            var url = window.URL.createObjectURL(blob);
-            const image = new Image();
-            image.onload = () => {
-                image.height = 100;
-                image.width = 100;
-            };
-            image.src = url;
+    const link = document.createElement('a');
 
-            document.body.appendChild(image);
-            var link = document.createElement('a');
-            link.href = url;
-            link.download = imageKey.toLowerCase();
-            document.body.appendChild(link);
+    link.setAttribute('href', imageURL);
+    link.setAttribute('download', imageKey);
 
-            setTimeout(
-                () => window.URL.revokeObjectURL(url),
-                60000);
-            link.remove();
-        })
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 const getEditedImage = (ref: HTMLDivElement, extension: string): Promise<string> => {

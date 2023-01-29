@@ -66,6 +66,7 @@ const uploadImageToS3 = (url: string, fileType: string, image: File): Promise<Re
             method: "PUT",
             headers: {
                 "Content-Type": `image/${fileType}`,
+                "Content-Disposition": "attachment"
             },
             body: image,
         })
