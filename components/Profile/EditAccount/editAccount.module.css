@@ -1,4 +1,6 @@
-/* keyframes that rotates button icon left and right fast */
+/* Animations */
+
+/* Rotates button icon left and right fast */
 @keyframes rotateLeft {
   0% {
     transform: rotateZ(-10deg);

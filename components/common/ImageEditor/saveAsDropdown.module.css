@@ -33,7 +33,7 @@
 
 .saveAsDropdown__list {
   position: absolute;
-  bottom: -100px;
+  bottom: -105px;
   right: 0;
   display: flex;
   flex-direction: column;

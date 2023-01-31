@@ -1,18 +1,19 @@
 import { FormEvent, MouseEvent, useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Timestamp } from "firebase/firestore";
 
 import { imageUpload__modalVariants } from "../../constants/constants";
-
-import ImageEditor from "../common/ImageEditor/Index";
-
-import { MdOutlineImageSearch } from "react-icons/md";
-import styles from "./imageUpload.module.css";
 import { fileToBase64, base64ToImage } from "../../utils/common/utils";
 import { uploadImageToAWS } from "../../utils/imageUpload/imageUploadUtils";
 import facade from "../../services/facade.class";
 import { TAllowedImageExtensions, TImageInfo } from "../../types/globals";
 import { useAppSelector } from "../../hooks/hooks";
-import { Timestamp } from "firebase/firestore";
+
+import ImageEditor from "../common/ImageEditor/Index";
+
+import { AiOutlineInfoCircle } from "react-icons/ai";
+import { MdOutlineImageSearch } from "react-icons/md";
+import styles from "./imageUpload.module.css";
 
 function ImageUploadModal() {
   const [image, setImage] = useState<File | null>(null);
@@ -21,6 +22,7 @@ function ImageUploadModal() {
   const [hasImageHashtagsError, setHasImageHashtagsError] = useState<boolean>(false);
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [imageDataURL, setImageDataURL] = useState<string | null>(null);
+  const [uploadingState, setUploadingState] = useState<"uploading" | "success" | "error">();
 
   const reduxUser = useAppSelector((state) => state.user);
 
@@ -80,6 +82,10 @@ function ImageUploadModal() {
     }
 
     try {
+      // Set the uploading state to uploading.
+      setUploadingState("uploading");
+      let timeout: NodeJS.Timeout;
+
       // Convert the base64 data URL to an image.
       const convertedImage = await base64ToImage(imageDataURL);
       const height = convertedImage.height;
@@ -109,11 +115,21 @@ function ImageUploadModal() {
         };
 
         facade.AddImageInfo(imageInfo, reduxUser.uid);
+
+        // Set the uploading state to success.
+        setUploadingState("success");
       } catch (error) {
         console.error(error);
+        setUploadingState("error");
+      } finally {
+        // Set the uploading state to undefined after 3 seconds.
+        setTimeout(() => {
+          setUploadingState(undefined);
+        }, 3000);
       }
     } catch (error) {
       console.error(error);
+      setUploadingState("error");
     }
   };
 
@@ -169,13 +185,28 @@ function ImageUploadModal() {
             </p>
           </div>
 
+          <span className={styles.imageUploadModal__infoText}>
+            <AiOutlineInfoCircle className={styles.imageUploadModal__infoIcon} />
+            Remember to save the image before uploading if you edited it in the preview on the right.
+          </span>
+
           <button
             type="button"
-            className={styles.imageUploadModal__imageUploadButton}
+            className={`${styles.imageUploadModal__imageUploadButton} 
+            ${uploadingState === "uploading" && styles.uploading}
+            ${uploadingState === "success" && styles.success}
+            ${uploadingState === "error" && styles.error}
+              `}
             onClick={handleImageUpload}
             disabled={!isFormValid}
           >
-            Upload
+            {uploadingState === "uploading"
+              ? "Uploading..."
+              : uploadingState === "success"
+              ? "Success!"
+              : uploadingState === "error"
+              ? "Error"
+              : "Upload"}
           </button>
         </form>
 
