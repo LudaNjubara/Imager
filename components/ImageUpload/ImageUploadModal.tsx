@@ -84,16 +84,12 @@ function ImageUploadModal() {
     try {
       // Set the uploading state to uploading.
       setUploadingState("uploading");
-      let timeout: NodeJS.Timeout;
 
       // Convert the base64 data URL to an image.
       const convertedImage = await base64ToImage(imageDataURL);
       const height = convertedImage.height;
       const width = convertedImage.width;
-      const imageExtension = imageDataURL
-        .split(";")[0]
-        .split("/")[1]
-        .toUpperCase() as TAllowedImageExtensions;
+      const imageExtension = imageDataURL.split(";")[0].split("/")[1] as TAllowedImageExtensions;
 
       try {
         // Upload the image to AWS.
@@ -102,7 +98,7 @@ function ImageUploadModal() {
         // Add the image info to the database.
         const imageInfo: TImageInfo = {
           key: imageKey,
-          extension: imageExtension,
+          extension: imageExtension.toUpperCase() as TAllowedImageExtensions,
           size: image.size,
           height: height,
           width: width,
@@ -130,6 +126,11 @@ function ImageUploadModal() {
     } catch (error) {
       console.error(error);
       setUploadingState("error");
+    } finally {
+      // Set the uploading state to undefined after 3 seconds.
+      setTimeout(() => {
+        setUploadingState(undefined);
+      }, 3000);
     }
   };
 

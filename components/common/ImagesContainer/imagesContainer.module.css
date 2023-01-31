@@ -1,14 +1,24 @@
 .imagesContainer__wrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 30px;
-  background: linear-gradient(-45deg, var(--color-primary-900), var(--color-secondary-900));
+  background: linear-gradient(-25deg, var(--color-primary-900), var(--color-primary-700));
   padding: var(--padding-primary-600) var(--padding-primary-600) var(--padding-primary-700);
   border-radius: var(--border-radius-300);
+  overflow: hidden;
+}
+
+#imagesContainer__svgBackground {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
 }
 
 .imagesContainer__title {
   font-weight: var(--font-weight-700);
+  z-index: 1;
 }
 
 .imagesContainer__noUploadsMessage {
@@ -25,4 +35,5 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 18px;
+  z-index: 1;
 }

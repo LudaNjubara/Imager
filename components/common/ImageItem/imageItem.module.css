@@ -1,15 +1,17 @@
 .imageItem__item {
   position: relative;
   min-height: 200px;
+  border: 2px solid var(--color-primary-hover-800);
   border-radius: var(--border-radius-300);
   overflow: hidden;
-  cursor: pointer;
   transition: box-shadow 0.2s ease-in-out;
-  box-shadow: 0 0 10px var(--color-primary-900);
+  box-shadow: 0 0 6px var(--color-primary-800);
+  backdrop-filter: blur(3px);
+  cursor: pointer;
 }
 
 .imageItem__item:hover {
-  box-shadow: 0 0 12px var(--color-primary-900);
+  box-shadow: 0 0 10px var(--color-primary-800);
 }
 
 .imageItem__item:hover .imageItem__info {

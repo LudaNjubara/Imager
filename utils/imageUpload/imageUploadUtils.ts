@@ -18,6 +18,8 @@ const uploadImageToAWS = (base64Image: string, extension: TAllowedImageExtension
     return new Promise(async (resolve, reject) => {
         if (!base64Image) reject("No image to upload");
 
+        extension = extension.toLowerCase() as TAllowedImageExtensions;
+
         try {
             // Call the API endpoint to get the url to upload to and the image key
             const { url, key: imageKey } = await getUploadURLAndKey(extension);
