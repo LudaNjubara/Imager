@@ -1,6 +1,6 @@
 import { toPng, toJpeg, toSvg } from 'html-to-image';
 import { emailRegex, usernameRegex } from '../../constants/constants';
-import { TImageInfo, TUserData } from "../../types/globals";
+import { TAllowedImageExtensions, TEditedImageExtensions, TImageInfo, TUserData } from "../../types/globals";
 
 const detectOS = () => {
     const userAgent = navigator.userAgent;
@@ -144,19 +144,7 @@ const extractImageDataFromURL = (url: string, imagesData: TImageInfo[]): TImageI
     return imageInfo;
 }
 
-const convertBase64ToImage = (base64Image: string): Promise<HTMLImageElement> => {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.src = base64Image
 
-        img.onload = () => {
-            resolve(img);
-        };
-        img.onerror = (error) => {
-            reject(error);
-        };
-    });
-}
 
 const convertImageKeysToString = (images: TImageInfo[] | undefined) => {
     // Map over the array of images and return concatenated image keys
@@ -174,7 +162,7 @@ const downloadImage = (imageURL: string, imageKey: string) => {
     document.body.removeChild(link);
 }
 
-const getEditedImage = (ref: HTMLDivElement, extension: string): Promise<string> => {
+const getEditedImage = (ref: HTMLDivElement, extension: TEditedImageExtensions): Promise<string> => {
     return new Promise((resolve, reject) => {
 
         // 1. Check what image format the user selected
@@ -221,14 +209,44 @@ const getEditedImage = (ref: HTMLDivElement, extension: string): Promise<string>
     })
 }
 
-const urltoFile = (url: string, filename: string, fileType: string) => {
+const urltoFile = (url: string, filename: string, extension: TAllowedImageExtensions) => {
     return (fetch(url)
-        .then(function (res) { return res.arrayBuffer(); })
-        .then(function (buf) { return new File([buf], filename, { type: fileType }); })
+        .then(res => res.arrayBuffer())
+        .then(buf => new File([buf], filename, { type: extension }))
     );
 }
 
-const blobToBase64 = (blob: Blob): Promise<string> => {
+const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            const { result } = reader;
+            if (typeof result === 'string') {
+                resolve(result);
+            } else {
+                reject(new Error('Could not read file'));
+            }
+        };
+        reader.onerror = error => reject(error);
+    });
+}
+
+const base64ToImage = (base64Image: string): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = base64Image
+
+        img.onload = () => {
+            resolve(img);
+        };
+        img.onerror = (error) => {
+            reject(error);
+        };
+    });
+}
+
+/* const blobToBase64 = (blob: Blob): Promise<string> => {
     // Create a new promise that will resolve with the base64 string
     return new Promise((resolve, reject) => {
         // Create a new file reader
@@ -252,7 +270,7 @@ const blobToBase64 = (blob: Blob): Promise<string> => {
         // Start reading the blob as a data URL, which will trigger the onloadend handler
         reader.readAsDataURL(blob);
     });
-}
+} */
 
 const convertDatabaseFieldToReadableFormat = (fieldName: string) => {
     const newFieldNameArray = fieldName.split("").map((char) => {
@@ -266,4 +284,4 @@ const convertDatabaseFieldToReadableFormat = (fieldName: string) => {
     return newFieldNameArray.join("");
 }
 
-export { detectOS, detectBrowser, getUserLocation, validateEmail, validateUsername, getNextDayInMilliseconds, generateRandomId, setCSSVariable, extractImageDataFromURL, convertBase64ToImage, convertImageKeysToString, downloadImage, getEditedImage, urltoFile, blobToBase64, convertDatabaseFieldToReadableFormat };
+export { detectOS, detectBrowser, getUserLocation, validateEmail, validateUsername, getNextDayInMilliseconds, generateRandomId, setCSSVariable, extractImageDataFromURL, base64ToImage, convertImageKeysToString, downloadImage, getEditedImage, urltoFile, fileToBase64, convertDatabaseFieldToReadableFormat };

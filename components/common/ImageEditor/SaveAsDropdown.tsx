@@ -5,13 +5,14 @@ import { getEditedImage } from "../../../utils/common/utils";
 
 import { BsFillCaretDownFill } from "react-icons/bs";
 import styles from "./saveAsDropdown.module.css";
+import { TEditedImageExtensions } from "../../../types/globals";
 
 type TSaveAsDropdownProps = {
-  editableImageContainer: MutableRefObject<HTMLDivElement | null>;
+  editableImageContainerRef: MutableRefObject<HTMLDivElement | null>;
   setImageDataURL: (imageDataURL: string) => void;
 };
 
-function SaveAsDropdown({ editableImageContainer, setImageDataURL }: TSaveAsDropdownProps) {
+function SaveAsDropdown({ editableImageContainerRef, setImageDataURL }: TSaveAsDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
 
@@ -19,17 +20,15 @@ function SaveAsDropdown({ editableImageContainer, setImageDataURL }: TSaveAsDrop
     setIsOpen(!isOpen);
   };
 
-  const handleImageSave = async (e: MouseEvent<HTMLButtonElement>, extension: string) => {
+  const handleImageSave = async (e: MouseEvent<HTMLButtonElement>, extension: TEditedImageExtensions) => {
     e.preventDefault();
-    if (!editableImageContainer.current) return;
+    if (!editableImageContainerRef.current) return;
 
     setIsDisabled(true);
 
-    getEditedImage(editableImageContainer.current, extension)
+    getEditedImage(editableImageContainerRef.current, extension)
       .then((imageDataURL) => {
-        //TODO: set imageDataURL variable on parent component
         setImageDataURL(imageDataURL);
-        console.log(imageDataURL);
 
         setIsDisabled(false);
       })

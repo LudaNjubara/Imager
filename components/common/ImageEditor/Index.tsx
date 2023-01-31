@@ -1,15 +1,12 @@
-import { useState, MouseEvent, ChangeEvent, useRef, LegacyRef } from "react";
-import { toPng, toJpeg, toSvg } from "html-to-image";
+import { useState, MouseEvent, ChangeEvent, useRef } from "react";
 
 import Slider from "../Slider/Slider";
 
 import styles from "./imageEditor.module.css";
-import { getEditedImage } from "../../../utils/common/utils";
 import SaveAsDropdown from "./SaveAsDropdown";
 
 type TImageEditorProps = {
   imageURL: string | null;
-  containerRef: any;
   setImageDataURL: (imageDataURL: string) => void;
 };
 
@@ -52,8 +49,8 @@ type TBorders = {
   borderColor: string | undefined;
 };
 
-function ImageEditor({ imageURL, containerRef, setImageDataURL }: TImageEditorProps) {
-  const someRef = useRef(null);
+function ImageEditor({ imageURL, setImageDataURL }: TImageEditorProps) {
+  const imageContainerRef = useRef(null);
 
   const [filters, setFilters] = useState<TFilters>({
     brightness: 1,
@@ -342,9 +339,9 @@ function ImageEditor({ imageURL, containerRef, setImageDataURL }: TImageEditorPr
 
   return !!imageURL ? (
     <div className={styles.imageEditor__wrapper}>
-      <SaveAsDropdown editableImageContainer={someRef} setImageDataURL={setImageDataURL} />
+      <SaveAsDropdown editableImageContainerRef={imageContainerRef} setImageDataURL={setImageDataURL} />
 
-      <div className={styles.imageEditor__imageContainer} ref={someRef}>
+      <div className={styles.imageEditor__imageContainer} ref={imageContainerRef}>
         <img
           src={imageURL}
           alt="Editable image"

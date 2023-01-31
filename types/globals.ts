@@ -23,6 +23,8 @@ type TLoginProvider = "Email" | "Google" | "GitHub" | "Anonymous";
 type TAccountPlanName = "Bronze" | "Gold" | "Platinum";
 type TAccountRole = "Admin" | "User";
 type TSearchFilter = "date" | "size" | "author" | "hashtags" | "extension";
+type TEditedImageExtensions = "jpg" | "png" | "svg"
+type TAllowedImageExtensions = "png" | "jpg" | "jpeg" | "gif" | "webp" | "svg" | "tiff" | "bmp" | "avif";
 
 type TUser = {
     readonly uid: string,
@@ -71,7 +73,7 @@ type TUserDataError = {
 
 type TImageInfo = {
     key: string,
-    fileType: string,
+    extension: TAllowedImageExtensions,
     size: number,
     width: number,
     height: number,
@@ -115,4 +117,4 @@ type TLogData = {
 export { EAccountPlanName, EAccountRole };
 
 /* export types  */
-export type { TUser, TUserData, TUserDataError, TImageInfo, TFederalProvider, TRegisterProvider, TLoginProvider, TAccountPlan, TLogAction, TLogData, TAccountPlanName, TSearchFilter };
+export type { TUser, TUserData, TUserDataError, TImageInfo, TFederalProvider, TRegisterProvider, TLoginProvider, TAccountPlan, TLogAction, TLogData, TAccountPlanName, TEditedImageExtensions, TAllowedImageExtensions, TSearchFilter };

@@ -1,4 +1,4 @@
-import { FormEvent, MouseEvent, useState, useEffect, useRef } from "react";
+import { FormEvent, MouseEvent, useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { imageUpload__modalVariants } from "../../constants/constants";
@@ -7,10 +7,10 @@ import ImageEditor from "../common/ImageEditor/Index";
 
 import { MdOutlineImageSearch } from "react-icons/md";
 import styles from "./imageUpload.module.css";
-import { blobToBase64, convertBase64ToImage } from "../../utils/common/utils";
+import { fileToBase64, base64ToImage } from "../../utils/common/utils";
 import { uploadImageToAWS } from "../../utils/imageUpload/imageUploadUtils";
 import facade from "../../services/facade.class";
-import { TImageInfo } from "../../types/globals";
+import { TAllowedImageExtensions, TImageInfo } from "../../types/globals";
 import { useAppSelector } from "../../hooks/hooks";
 import { Timestamp } from "firebase/firestore";
 
@@ -19,8 +19,6 @@ function ImageUploadModal() {
   const [imageDesc, setImageDesc] = useState<string>("");
   const [imageHashtags, setImageHashtags] = useState<string[]>([]);
   const [hasImageHashtagsError, setHasImageHashtagsError] = useState<boolean>(false);
-  const [imagePreviewURL, setImagePreviewURL] = useState<string | null>(null);
-  const editedImageContainerRef = useRef<HTMLDivElement>();
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [imageDataURL, setImageDataURL] = useState<string | null>(null);
 
@@ -39,28 +37,17 @@ function ImageUploadModal() {
     }
   };
 
-  const createImageObjectURL = (image: File) => {
-    // Create an object URL from the image file
-    const objectURL = encodeURI(URL.createObjectURL(image));
-    return objectURL;
-  };
-
   const handleImageChange = (e: FormEvent<HTMLInputElement>) => {
-    // If there is an imagePreviewURL, revoke the object URL to prevent memory leaks.
-    imagePreviewURL && URL.revokeObjectURL(imagePreviewURL);
-    // Set the imagePreviewURL to null to remove the preview.
-    setImagePreviewURL(null);
     // Set the image to null to remove the image.
     setImage(null);
+    setImageDataURL(null);
 
-    // If there is an image file uploaded, create an object URL for the image and
-    // set the image and imagePreviewURL state variables.
+    // If there is an image file uploaded, create an object URL for the image and set the image state variable.
     if (e.currentTarget.files && e.currentTarget.files[0]) {
       const image = e.currentTarget.files[0];
       setImage(image);
-      setImagePreviewURL(createImageObjectURL(image));
       // Convert the image file to a base64 string and set the imageDataURL state variable.
-      blobToBase64(image)
+      fileToBase64(image)
         .then((base64) => {
           setImageDataURL(base64);
         })
@@ -94,10 +81,13 @@ function ImageUploadModal() {
 
     try {
       // Convert the base64 data URL to an image.
-      const convertedImage = await convertBase64ToImage(imageDataURL);
+      const convertedImage = await base64ToImage(imageDataURL);
       const height = convertedImage.height;
       const width = convertedImage.width;
-      const imageExtension = imageDataURL.split(";")[0].split("/")[1];
+      const imageExtension = imageDataURL
+        .split(";")[0]
+        .split("/")[1]
+        .toUpperCase() as TAllowedImageExtensions;
 
       try {
         // Upload the image to AWS.
@@ -106,7 +96,7 @@ function ImageUploadModal() {
         // Add the image info to the database.
         const imageInfo: TImageInfo = {
           key: imageKey,
-          fileType: imageExtension.toUpperCase(),
+          extension: imageExtension,
           size: image.size,
           height: height,
           width: width,
@@ -129,10 +119,6 @@ function ImageUploadModal() {
 
   useEffect(() => {
     checkFormValidity();
-
-    return () => {
-      imagePreviewURL && URL.revokeObjectURL(imagePreviewURL);
-    };
   }, [image, imageDesc, imageHashtags, hasImageHashtagsError]);
 
   return (
@@ -159,7 +145,7 @@ function ImageUploadModal() {
               onChange={handleImageChange}
               type="file"
               name="image"
-              accept="image/*"
+              accept="image/png, image/jpeg, image/jpg, image/gif, image/webp, image/svg+xml, image/tiff, image/bmp, image/avif"
             />
           </label>
 
@@ -194,11 +180,7 @@ function ImageUploadModal() {
         </form>
 
         <div id={styles.imageUploadModal__imagePreviewContainer}>
-          <ImageEditor
-            imageURL={imagePreviewURL}
-            containerRef={editedImageContainerRef}
-            setImageDataURL={setImageDataURL}
-          />
+          <ImageEditor imageURL={imageDataURL} setImageDataURL={setImageDataURL} />
         </div>
       </motion.div>
     </AnimatePresence>

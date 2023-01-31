@@ -196,7 +196,7 @@ function ImageModal({ toggleModal, modalImageURL, modalImageData, canEdit }: Ima
                         styles.imageModal__infoContainer__main__propertiesContainer__properties__property
                       }
                     >
-                      {modalImageData.fileType}
+                      {modalImageData.extension}
                     </span>
                   </div>
                 </div>

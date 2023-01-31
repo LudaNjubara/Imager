@@ -188,7 +188,7 @@ export const searchImages = async (searchFilter: TSearchFilter, searchQuery: str
             break;
         case "extension":
             {
-                const q = query(collection(db, "images"), where("fileType", "==", searchQuery.toUpperCase()));
+                const q = query(collection(db, "images"), where("extension", "==", searchQuery.toUpperCase()));
                 const querySnapshot = await getDocs(q);
                 querySnapshot.forEach((doc) => {
                     results.push(doc.data() as TImageInfo);

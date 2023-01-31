@@ -5,6 +5,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 import s3 from '../../config/s3Config';
 import { generateRandomImageKey } from '../../utils/imageUpload/imageUploadUtils';
+import { TAllowedImageExtensions } from '../../types/globals';
 
 export type TImageUploadAttributes = {
     url: string;
@@ -21,17 +22,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         return
     }
 
-    // Extract the file type from the query string
-    const { fileType } = req.query as { fileType: string };
+    // Extract the extension from the query string
+    const { extension } = req.query as { extension: TAllowedImageExtensions };
 
-    // If no file type was provided, return a 400 response
-    if (!fileType) {
-        res.status(400).json({ body: 'Missing file type' });
+    // If no extension was provided, return a 400 response
+    if (!extension) {
+        res.status(400).json({ body: 'Missing extension' });
         return
     }
 
     // Generate a random file name for the image
-    const randomImageKey = generateRandomImageKey(fileType);
+    const randomImageKey = generateRandomImageKey(extension);
 
     // Define the parameters for the S3 PutObject command
     const putObjectParams = {
