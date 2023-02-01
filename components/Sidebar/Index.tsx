@@ -149,6 +149,7 @@ function Sidebar() {
                       alt="User profile"
                       width={35}
                       height={35}
+                      priority
                     />
                     <span className={styles.userProfile__username}>
                       {userData?.username ?? user.displayName ?? user.providerData[0].displayName}

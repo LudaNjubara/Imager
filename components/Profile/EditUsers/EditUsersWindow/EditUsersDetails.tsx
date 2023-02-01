@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { TUserData } from "../../../../types/globals";
 
 import styles from "./editUsersDetails.module.css";
@@ -36,10 +37,13 @@ function EditUsersDetails({ user, currentUserUsername }: TEditUsersDetailsProps)
       <div className={styles.editUsersDetails__container}>
         <div className={styles.editUsersDetails__container__profile}>
           <span className={styles.editUsersDetails__container__profile__imageContainer}>
-            <img
+            <Image
               src={user.photoURL ? user.photoURL : "/images/imagerLogo2.png"}
               alt="user profile"
               className={styles.editUsersDetails__container__profile__imageContainer__image}
+              width={100}
+              height={100}
+              priority
             />
           </span>
           <h4 className={styles.editUsersDetails__container__profile__name}>{user.username}</h4>

@@ -30,7 +30,6 @@ const uploadImageToAWS = (base64Image: string, extension: TAllowedImageExtension
             try {
                 const res = await uploadImageToS3(url, extension, convertedImage);
                 if (res.ok) {
-                    console.log("Uploaded image successfully!");
                     resolve({ imageKey });
                 } else {
                     reject(res.statusText);

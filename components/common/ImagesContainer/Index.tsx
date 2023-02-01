@@ -66,9 +66,9 @@ function ImagesContainer({ title, imagesData, imageURLsData, canEdit }: TSearchR
             id="ffflurry-grad"
             gradientTransform="rotate(270)"
           >
-            <stop stop-color="" stop-opacity="1" offset="0%"></stop>
-            <stop stop-color="#2a3d54" stop-opacity="0.6" offset="45%"></stop>
-            <stop stop-color="#1c2c3f" stop-opacity="0.8" offset="100%"></stop>
+            <stop stopColor="" stopOpacity="1" offset="0%"></stop>
+            <stop stopColor="#2a3d54" stopOpacity="0.6" offset="45%"></stop>
+            <stop stopColor="#1c2c3f" stopOpacity="0.8" offset="100%"></stop>
           </linearGradient>
         </defs>
 

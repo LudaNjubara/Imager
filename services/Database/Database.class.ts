@@ -140,9 +140,6 @@ class Database implements IDatabase {
         const docRef = collection(db, "logs");
 
         addDoc(docRef, logData)
-            .then((docRef) => {
-                console.log("Log written with ID: ", docRef.id);
-            })
             .catch((error) => {
                 throw new Error(error);
             });

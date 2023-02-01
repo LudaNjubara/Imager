@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import Image from "next/image";
 
 import { Timestamp } from "firebase/firestore";
 import { AnimatePresence, motion } from "framer-motion";
@@ -108,10 +109,12 @@ function ImageModal({ toggleModal, modalImageURL, modalImageData, canEdit }: Ima
               <div className={styles.imageModal__infoContainer__main}>
                 <div className={styles.imageModal__infoContainer__main__info}>
                   <div className={styles.imageModal__infoContainer__main__info__main}>
-                    <img
+                    <Image
                       src={modalImageData.uploaderPhotoURL ?? "/images/imagerLogo2.png"}
                       alt="User Profile"
                       className={styles.imageModal__infoContainer__main__info__main__userImage}
+                      width={40}
+                      height={40}
                     />
 
                     <h4 className={styles.imageModal__infoContainer__main__info__main__title}>
