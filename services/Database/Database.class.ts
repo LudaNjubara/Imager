@@ -1,7 +1,6 @@
 import { collection, doc, addDoc, increment, setDoc, updateDoc } from "firebase/firestore";
 import { TAccountPlanName, TImageInfo, TLogData, TUserData } from "../../types/globals";
 import { db } from "../../config/firebaseConfig";
-import logger from "../Logger/Logger.class";
 import { getNextDayInMilliseconds } from "../../utils/common/utils";
 
 interface IDatabase {
@@ -34,15 +33,6 @@ class Database implements IDatabase {
             uploadsUsed,
             photoURL: photoURL ?? null
         })
-            .then(() => {
-                logger.Log(username!, {
-                    url: window.location.href,
-                    type: "log",
-                    title: "User created",
-                    description: `Created an account with ${accountPlan} account plan`,
-                    data: null
-                });
-            })
             .catch((error) => {
                 throw new Error(error);
             });
@@ -55,15 +45,6 @@ class Database implements IDatabase {
             description,
             hashtags
         })
-            .then(() => {
-                logger.Log(username, {
-                    url: window.location.href,
-                    type: "log",
-                    title: "Image updated",
-                    description: `Updated image information. Image key ${key}`,
-                    data: null
-                });
-            })
             .catch((error) => {
                 throw new Error(error);
             });

@@ -1,4 +1,3 @@
-import { GithubAuthProvider, GoogleAuthProvider } from "firebase/auth";
 import { googleProvider, gitHubProvider } from "../config/firebaseConfig";
 import { TFederalProvider } from "../types/globals";
 
