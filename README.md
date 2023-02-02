@@ -9,6 +9,6 @@ Ovaj projekt izrađen je za predmet `Napredni razvoj aplikacija korištenjem obr
 
 # ENGLESKI/ENGLISH
 
-### App description
+## App description
 
 This project was created for the course `Advanced Application Development Using Forms`. It is used for managing, uploading, downloading images, and managing user accounts. The application is available at [https://imager-project.vercel.app/](https://imager-project.vercel.app/).
