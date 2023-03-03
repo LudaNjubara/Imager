@@ -73,7 +73,7 @@ function LoginForm() {
 
   const handleLogin = (providerId: TLoginProvider) => {
     login.ChangeStrategy(providerId);
-    login.Login();
+    login.Login(userData);
   };
 
   useEffect(() => {

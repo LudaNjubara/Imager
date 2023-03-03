@@ -14,7 +14,7 @@ type TUserInfoProps = {
   handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleProviderInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleFormStepChange: () => void;
-  validateForm: () => void;
+  validateForm: () => boolean;
 };
 
 function UserInfo({
@@ -155,8 +155,9 @@ function UserInfo({
           type="button"
           className={styles.register__ctaButton}
           onClick={() => {
-            if (currentRegisterProvider === "Email") validateForm();
-            handleFormStepChange();
+            if (currentRegisterProvider === "Email") {
+              if (validateForm()) handleFormStepChange();
+            }
           }}
         >
           Continue to next step
