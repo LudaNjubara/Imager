@@ -71,13 +71,13 @@ const validateUsername = (userData: TUserData) => {
     }
 };
 
-const validateEmail = (userData: TUserData) => {
+const validateEmail = (emailToValidate: string) => {
     let message = ""
     let isValid = false
 
-    if (userData.email.length === 0) {
+    if (emailToValidate.length === 0) {
         message = "Email is required"
-    } else if (!emailRegex.test(userData.email)) {
+    } else if (!emailRegex.test(emailToValidate)) {
         message = "Email is not valid"
     } else {
         isValid = true

@@ -58,7 +58,7 @@ const choosePlanVariants = {
     },
 }
 
-const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i;
+const emailRegex = /[a-z0-9][a-z0-9_.]+@[a-z0-9_]+\.(com|[a-z]{2})$/;
 // password regex
 // at least 6 characters
 // at least one uppercase letter

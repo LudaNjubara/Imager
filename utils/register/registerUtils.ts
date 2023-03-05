@@ -1,5 +1,5 @@
 import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH, passwordRegex } from "../../constants/constants";
-import { TAccountPlan, TAccountPlanName, TUserData } from "../../types/globals";
+import { TAccountPlan, TAccountPlanName } from "../../types/globals";
 
 const getAccountPlanProperty = (accountPlans: TAccountPlan[], accountPlanName: TAccountPlanName, property: keyof TAccountPlan) => {
     const accountPlan = accountPlans.find((plan) => plan.name === accountPlanName);
@@ -12,7 +12,7 @@ const getAccountPlanProperty = (accountPlans: TAccountPlan[], accountPlanName: T
     return accountPlan[property];
 }
 
-const validatePassword = (userData: TUserData) => {
+const validatePassword = (passwordToValidate: string) => {
     let message = ""
     let isValid = false
     let password: {
@@ -29,18 +29,18 @@ const validatePassword = (userData: TUserData) => {
         containsNumber: false,
     }
 
-    if (userData.password.length === 0) {
+    if (passwordToValidate.length === 0) {
         message = "Password is required"
-    } else if (!passwordRegex.test(userData.password)) {
+    } else if (!passwordRegex.test(passwordToValidate)) {
         message = "Password is not valid"
         password = {
             message: message,
             containsEnoughCharacters:
-                userData.password.length >= MIN_PASSWORD_LENGTH &&
-                userData.password.length <= MAX_PASSWORD_LENGTH,
-            containsUpperCaseCharacter: !!userData.password.match(/[A-Z]/),
-            containsLowerCaseCharacter: !!userData.password.match(/[a-z]/),
-            containsNumber: !!userData.password.match(/[0-9]/),
+                passwordToValidate.length >= MIN_PASSWORD_LENGTH &&
+                passwordToValidate.length <= MAX_PASSWORD_LENGTH,
+            containsUpperCaseCharacter: !!passwordToValidate.match(/[A-Z]/),
+            containsLowerCaseCharacter: !!passwordToValidate.match(/[a-z]/),
+            containsNumber: !!passwordToValidate.match(/[0-9]/),
         }
     } else {
         isValid = true

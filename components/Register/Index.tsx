@@ -113,8 +113,8 @@ function RegisterForm() {
     setFirebaseErrorMessage(undefined);
 
     const usernameCheck = validateUsername(userData);
-    const emailCheck = validateEmail(userData);
-    const passwordCheck = validatePassword(userData);
+    const emailCheck = validateEmail(userData.email);
+    const passwordCheck = validatePassword(userData.password);
 
     setUserDataError((prev) => {
       return {
