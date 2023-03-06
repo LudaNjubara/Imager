@@ -1,6 +1,6 @@
 import { signInWithPopup, signInWithEmailAndPassword, signInAnonymously, getAdditionalUserInfo } from "firebase/auth";
 import { auth } from "../../config/firebaseConfig";
-import { EAccountPlanName, TUserData } from "../../types/globals";
+import { EAccountPlanName, EAccountRole, TUserData } from "../../types/globals";
 import { authProviderFactory } from "../authProviderFactory";
 import facade from "../facade.class"
 
@@ -37,10 +37,18 @@ export default class LoginStrategy {
                         const userData: TUserData = {
                             email: user?.email!,
                             password: "",
-                            username: user?.displayName ?? user?.providerData[0]?.displayName!,
-                            photoURL: user?.photoURL ?? user?.providerData[0]?.photoURL ?? null,
+                            username:
+                                user.displayName ??
+                                user.providerData[0]?.displayName ??
+                                user.providerData[1]?.displayName ??
+                                undefined,
+                            photoURL:
+                                user?.photoURL ??
+                                user?.providerData[0]?.photoURL ??
+                                user.providerData[1]?.displayName ??
+                                null,
                             accountPlan: EAccountPlanName.Bronze,
-                            accountRole: "User",
+                            accountRole: EAccountRole.User,
                             uploadsUsed: 0,
                         }
 
@@ -70,11 +78,18 @@ export default class LoginStrategy {
                         const userData: TUserData = {
                             email: user?.email!,
                             password: "",
-                            username: user?.displayName ?? user?.
-                                providerData[0]?.displayName!,
-                            photoURL: user?.photoURL ?? user?.providerData[0]?.photoURL ?? null,
+                            username:
+                                user.displayName ??
+                                user.providerData[0]?.displayName ??
+                                user.providerData[1]?.displayName ??
+                                undefined,
+                            photoURL:
+                                user?.photoURL ??
+                                user?.providerData[0]?.photoURL ??
+                                user.providerData[1]?.displayName ??
+                                null,
                             accountPlan: EAccountPlanName.Bronze,
-                            accountRole: "User",
+                            accountRole: EAccountRole.User,
                             uploadsUsed: 0,
                         }
 

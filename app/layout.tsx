@@ -38,11 +38,11 @@ function RootLayoutInner({ children }: { children: React.ReactNode }) {
           uid: user.uid,
           isAnonymous: user.isAnonymous,
           email: user.email,
-          displayName: !!userData?.username
-            ? userData.username
-            : user.displayName
-            ? user.displayName
-            : user.providerData[0]?.displayName,
+          displayName:
+            userData?.username ??
+            user.displayName ??
+            user.providerData[0]?.displayName ??
+            user.providerData[1]?.displayName,
           photoURL: user?.photoURL ?? user.providerData[0]?.photoURL ?? undefined,
           emailVerified: user.emailVerified,
           phoneNumber: user.phoneNumber,

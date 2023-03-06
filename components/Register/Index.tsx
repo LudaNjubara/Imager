@@ -8,6 +8,7 @@ import {
   TUserDataError,
   TRegisterProvider,
   EAccountPlanName,
+  EAccountRole,
 } from "../../types/globals";
 import { getAccountPlanProperty, validatePassword } from "../../utils/register/registerUtils";
 import { useAccountPlans } from "../../hooks/hooks";
@@ -40,7 +41,7 @@ function RegisterForm() {
     email: "",
     password: "",
     accountPlan: EAccountPlanName.Bronze,
-    accountRole: "User",
+    accountRole: EAccountRole.User,
     uploadsUsed: 0,
   });
 
