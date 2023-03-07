@@ -1,132 +1,66 @@
-import { collection, doc, addDoc, increment, setDoc, updateDoc } from "firebase/firestore";
-import { TAccountPlanName, TImageInfo, TLogData, TUserData } from "../../types/globals";
-import { db } from "../../config/firebaseConfig";
-import { getNextDayInMilliseconds } from "../../utils/common/utils";
+import { IUserDatabase, UserDatabase } from "./UserDatabase.class";
+import { IImagesDatabase, ImagesDatabase } from "./ImagesDatabase.class";
+import { ILoggingDatabase, LoggingDatabase } from "./LoggingDatabase.class";
+import { IAccountPlansDatabase, AccountPlansDatabase } from "./AccountPlansDatabase.class";
 
-interface IDatabase {
-    AddUser: (userData: TUserData, uid: string) => void;
-    UpdateImageInfo: (description: string, hashtags: string[], key: string, username: string) => void;
-    UpdateUserUploadsUsed: (value: "increment" | "decrement", uid: string) => void;
-    UpdateUserAccountPlan: (uid: string, userData: TUserData, { plan, fromProfilePage }: { plan?: TAccountPlanName, fromProfilePage: boolean }) => void;
-    AddImageInfo: (imageInfo: TImageInfo) => void;
-    UpdateUserField: (uid: string, fieldName: keyof TUserData, value: string | number | boolean | null) => void;
-}
+import { TAccountPlanName, TImageInfo, TLogData, TUserData } from "../../types/globals";
+
+// join all interfaces into one interface called IDatabase
+interface IDatabase extends IUserDatabase, IAccountPlansDatabase, IImagesDatabase, ILoggingDatabase { }
 
 class Database implements IDatabase {
+    private readonly userDatabase: IUserDatabase;
+    private readonly accountPlansDatabase: IAccountPlansDatabase;
+    private readonly imagesDatabase: IImagesDatabase;
+    private readonly loggingDatabase: ILoggingDatabase;
+
+    constructor(userDatabase: IUserDatabase, accountPlansDatabase: IAccountPlansDatabase, imagesDatabase: IImagesDatabase, loggingDatabase: ILoggingDatabase) {
+        this.userDatabase = userDatabase;
+        this.accountPlansDatabase = accountPlansDatabase;
+        this.imagesDatabase = imagesDatabase;
+        this.loggingDatabase = loggingDatabase;
+    }
+
     AddUser(userData: TUserData, uid: string) {
-        const {
-            email,
-            username,
-            accountRole,
-            accountPlan,
-            uploadsUsed,
-            photoURL
-        } = userData
-
-        const userRef = doc(db, "users", uid);
-        setDoc(userRef, {
-            uid,
-            email,
-            username,
-            accountRole,
-            accountPlan,
-            uploadsUsed,
-            photoURL: photoURL ?? null
-        })
-            .catch((error) => {
-                throw new Error(error);
-            });
+        this.userDatabase.AddUser(userData, uid);
     }
 
-    UpdateImageInfo(description: string, hashtags: string[], key: string, username: string) {
-        const docRef = doc(db, `images/${key}`);
-
-        updateDoc(docRef, {
-            description,
-            hashtags
-        })
-            .catch((error) => {
-                throw new Error(error);
-            });
+    UpdateUserField(uid: string, fieldName: keyof TUserData, value: string | number | boolean | null) {
+        this.userDatabase.UpdateUserField(uid, fieldName, value);
     }
-
 
     UpdateUserUploadsUsed(value: "increment" | "decrement", uid: string) {
-        const userRef = doc(db, "users", uid);
-
-        if (value === "increment") {
-            return updateDoc(userRef, {
-                uploadsUsed: increment(1)
-            }).catch((error) => {
-                throw new Error(error);
-            });;
-        } else if (value === "decrement") {
-            return updateDoc(userRef, {
-                uploadsUsed: increment(-1)
-            }).catch((error) => {
-                throw new Error(error);
-            });
-        }
+        this.userDatabase.UpdateUserUploadsUsed(value, uid);
     }
 
-    UpdateUserAccountPlan(uid: string, userData: TUserData) {
-        const userRef = doc(db, "users", uid);
-
-        setDoc(userRef, {
-            accountPlan: userData.pendingAccountPlan,
-            isPendingAccountPlanUpdate: false,
-            pendingAccountPlan: null,
-            uploadsUsed: 0,
-            accountPlanUpdateDate: null,
-        }, { merge: true })
-            .catch(() => {
-                throw new Error("Error updating to new account plan");
-            })
-    }
-
-    SetPendingUserAccountPlan(uid: string, { plan, fromProfilePage }: { plan?: TAccountPlanName, fromProfilePage: boolean }) {
-        const userRef = doc(db, "users", uid);
-
-        setDoc(userRef, {
-            accountPlanUpdateDate: getNextDayInMilliseconds(),
-            isPendingAccountPlanUpdate: true,
-            pendingAccountPlan: plan,
-        }, { merge: true })
-            .catch(() => {
-                throw new Error("Error setting pending account plan");
-            })
+    UpdateImageInfo(description: string, hashtags: string[], key: string) {
+        this.imagesDatabase.UpdateImageInfo(description, hashtags, key);
     }
 
     AddImageInfo(imageInfo: TImageInfo) {
-        const docRef = doc(db, `images/${imageInfo.key}`);
-
-        setDoc(docRef, imageInfo)
-            .catch((error) => {
-                throw new Error(error);
-            });
+        this.imagesDatabase.AddImageInfo(imageInfo);
     }
 
-    UpdateUserField(uid: string, fieldName: keyof TUserData, value: string | number | boolean | null,) {
-        const userRef = doc(db, "users", uid);
+    UpdateUserAccountPlan(uid: string, userData: TUserData) {
+        this.accountPlansDatabase.UpdateUserAccountPlan(uid, userData);
+    }
 
-        updateDoc(userRef, {
-            [fieldName]: value
-        })
-            .catch((error) => {
-                throw new Error(error);
-            });
+    SetPendingUserAccountPlan(uid: string, plan?: TAccountPlanName) {
+        this.accountPlansDatabase.SetPendingUserAccountPlan(uid, plan);
     }
 
     LogUserAction(logData: TLogData) {
-        const docRef = collection(db, "logs");
-
-        addDoc(docRef, logData)
-            .catch((error) => {
-                throw new Error(error);
-            });
+        this.loggingDatabase.LogUserAction(logData);
     }
 }
 
-const database = Object.freeze(new Database);
+const database = Object.freeze(
+    new Database(
+        new UserDatabase(),
+        new AccountPlansDatabase(),
+        new ImagesDatabase(),
+        new LoggingDatabase()
+    )
+);
 
 export default database;

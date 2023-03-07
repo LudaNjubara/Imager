@@ -28,7 +28,7 @@ class Facade implements IFacade {
     }
 
     UpdateImageInfo(description: string, hashtags: string[], key: string, username: string) {
-        database.UpdateImageInfo(description, hashtags, key, username);
+        database.UpdateImageInfo(description, hashtags, key);
 
         logger.Log(username, {
             url: window.location.href,
@@ -56,7 +56,7 @@ class Facade implements IFacade {
         } else {
             if (!fromProfilePage) return;
 
-            database.SetPendingUserAccountPlan(uid, { plan, fromProfilePage });
+            database.SetPendingUserAccountPlan(uid, plan);
 
             logger.Log(userData.username!, {
                 url: window.location.href,
