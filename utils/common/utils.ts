@@ -246,32 +246,6 @@ const base64ToImage = (base64Image: string): Promise<HTMLImageElement> => {
     });
 }
 
-/* const blobToBase64 = (blob: Blob): Promise<string> => {
-    // Create a new promise that will resolve with the base64 string
-    return new Promise((resolve, reject) => {
-        // Create a new file reader
-        const reader = new FileReader();
-        // Set the onloadend handler to convert the file to base64
-        reader.onloadend = () => {
-            // The result is a string if the conversion was successful
-            const base64data = reader.result;
-            if (typeof base64data === 'string') {
-                // Resolve the promise with the base64 string
-                resolve(base64data);
-            } else {
-                // Reject the promise with an error
-                reject(new Error('Could not convert Blob to base64'));
-            }
-        };
-        // Set the onerror handler to reject the promise with the error
-        reader.onerror = (error) => {
-            reject(error);
-        };
-        // Start reading the blob as a data URL, which will trigger the onloadend handler
-        reader.readAsDataURL(blob);
-    });
-} */
-
 const convertDatabaseFieldToReadableFormat = (fieldName: string) => {
     const newFieldNameArray = fieldName.split("").map((char) => {
         if (char === char.toUpperCase()) {
