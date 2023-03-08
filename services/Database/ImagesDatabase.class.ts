@@ -7,7 +7,7 @@ export interface IImagesDatabase {
     AddImageInfo: (imageInfo: TImageInfo) => void;
 }
 
-export class ImagesDatabase implements IImagesDatabase {
+class ImagesDatabase implements IImagesDatabase {
     UpdateImageInfo(description: string, hashtags: string[], key: string) {
         const docRef = doc(db, `images/${key}`);
 
@@ -29,3 +29,6 @@ export class ImagesDatabase implements IImagesDatabase {
             });
     }
 }
+
+const imagesDatabase = Object.freeze(new ImagesDatabase());
+export default imagesDatabase;

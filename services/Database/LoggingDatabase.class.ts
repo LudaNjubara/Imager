@@ -6,7 +6,7 @@ export interface ILoggingDatabase {
     LogUserAction: (logData: TLogData) => void;
 }
 
-export class LoggingDatabase implements ILoggingDatabase {
+class LoggingDatabase implements ILoggingDatabase {
     LogUserAction(logData: TLogData) {
         const docRef = collection(db, "logs");
 
@@ -16,3 +16,6 @@ export class LoggingDatabase implements ILoggingDatabase {
             });
     }
 }
+
+const loggingDatabase = Object.freeze(new LoggingDatabase());
+export default loggingDatabase;
