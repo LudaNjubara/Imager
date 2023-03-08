@@ -50,11 +50,11 @@ class Facade implements IFacade {
                 url: window.location.href,
                 type: "log",
                 title: "Account plan updated",
-                description: `Updated account plan to ${plan}`,
+                description: `Updated account plan to ${userData.pendingAccountPlan}`,
                 data: null
             });
         } else {
-            if (!fromProfilePage) return;
+            if (!fromProfilePage || !plan) return;
 
             database.SetPendingUserAccountPlan(uid, plan);
 
