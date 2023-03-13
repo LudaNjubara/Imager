@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import { useRouter, usePathname } from "next/navigation";
 import { Provider, useDispatch } from "react-redux";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -90,6 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Provider store={store}>
           <RootLayoutInner children={children} />
         </Provider>
+        <Analytics />
       </body>
     </html>
   );
