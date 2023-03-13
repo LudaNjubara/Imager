@@ -89,22 +89,8 @@ function RegisterForm() {
 
   const handleFormStepChange = () => {
     if (activeFormStep === "userInfo") {
-      console.log("Step 1");
-      if (createAccount.currentRegisterProvider !== "Email") {
-        console.log("Step 2");
-        setActiveFormStep("chooseAccountPlan");
-      } else {
-        console.log("Step 3");
-        if (
-          userDataError.username &&
-          (userDataError.username.message === "" || userDataError.username.message === undefined) &&
-          (userDataError.email.message === "" || userDataError.email.message === undefined) &&
-          (userDataError.password.message === "" || userDataError.password.message === undefined)
-        ) {
-          console.log("Step 4");
-          setActiveFormStep("chooseAccountPlan");
-        }
-      }
+      const isValid = validateForm();
+      isValid && setActiveFormStep("chooseAccountPlan");
     } else {
       setActiveFormStep("userInfo");
     }
@@ -186,7 +172,6 @@ function RegisterForm() {
               handleInputChange={handleInputChange}
               handleProviderInputChange={handleProviderInputChange}
               handleFormStepChange={handleFormStepChange}
-              validateForm={validateForm}
             />
           ) : (
             <ChooseAccountPlan

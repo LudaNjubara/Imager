@@ -14,7 +14,6 @@ type TUserInfoProps = {
   handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleProviderInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleFormStepChange: () => void;
-  validateForm: () => boolean;
 };
 
 function UserInfo({
@@ -24,7 +23,6 @@ function UserInfo({
   handleInputChange,
   handleProviderInputChange,
   handleFormStepChange,
-  validateForm,
 }: TUserInfoProps) {
   return (
     <div className={styles.userInfo__formContainer}>
@@ -151,15 +149,7 @@ function UserInfo({
           </AnimatePresence>
         )}
 
-        <button
-          type="button"
-          className={styles.register__ctaButton}
-          onClick={() => {
-            if (currentRegisterProvider === "Email") {
-              if (validateForm()) handleFormStepChange();
-            }
-          }}
-        >
+        <button type="button" className={styles.register__ctaButton} onClick={handleFormStepChange}>
           Continue to next step
         </button>
       </form>
