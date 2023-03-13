@@ -34,7 +34,7 @@ function RootLayoutInner({ children }: { children: React.ReactNode }) {
       if (pathname !== "/login" && pathname !== "/register") router.push("/login");
       dispatch(logout());
     } else if (!loading && user) {
-      if (user.isAnonymous) return;
+      if (reduxUser.isAnonymous) return;
 
       dispatch(
         login({
