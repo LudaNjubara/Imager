@@ -89,8 +89,8 @@ function RegisterForm() {
 
   const handleFormStepChange = () => {
     if (activeFormStep === "userInfo") {
-      const isValid = validateForm();
-      isValid && setActiveFormStep("chooseAccountPlan");
+      if (currentRegisterProvider === "Email") validateForm() && setActiveFormStep("chooseAccountPlan");
+      else setActiveFormStep("chooseAccountPlan");
     } else {
       setActiveFormStep("userInfo");
     }
