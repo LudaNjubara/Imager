@@ -15,9 +15,9 @@ function Search() {
   return (
     <>
       <SearchBar setSearchResults={setSearchResults} />
-      <main style={{ marginTop: 100 }}>
+      <div style={{ marginTop: 100 }}>
         <ImagesContainer title="Search Results" imagesData={searchResults} imageURLsData={imageURLsData} />
-      </main>
+      </div>
     </>
   );
 }
