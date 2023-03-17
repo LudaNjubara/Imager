@@ -2,8 +2,8 @@
 
 import LoginForm from "../../components/Login/Index";
 
-function Login() {
+function LoginPage() {
   return <LoginForm />;
 }
 
-export default Login;
+export default LoginPage;

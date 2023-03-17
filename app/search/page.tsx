@@ -1,7 +1,7 @@
 import Search from "../../components/Search/Index";
 
-function About() {
+function SearchPage() {
   return <Search />;
 }
 
-export default About;
+export default SearchPage;

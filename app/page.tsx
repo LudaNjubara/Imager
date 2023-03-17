@@ -1,5 +1,7 @@
 import Main from "../components/Main/Index";
 
-export default function Home() {
+function HomePage() {
   return <Main />;
 }
+
+export default HomePage;
