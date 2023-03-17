@@ -9,6 +9,7 @@ import Logo from "../Logo/Index";
 import { auth } from "../../config/firebaseConfig";
 
 import { BsHouse, BsSearch, BsBoxArrowLeft } from "react-icons/bs";
+import { VscGraphLine } from "react-icons/vsc";
 import styles from "./sidebar.module.css";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useAccountPlans, useUserData } from "../../hooks/hooks";
@@ -81,6 +82,16 @@ function Sidebar() {
                     >
                       <BsSearch className={styles.navItem__icon} />
                       <span className={styles.navItem__text}>Search</span>
+                    </Link>
+                  </li>
+
+                  <li className={styles.navItem}>
+                    <Link
+                      href="/statistics"
+                      className={`${styles.navItem__link} ${activeLink === "statistics" && styles.active}`}
+                    >
+                      <VscGraphLine className={styles.navItem__icon} />
+                      <span className={styles.navItem__text}>Statistics</span>
                     </Link>
                   </li>
                 </ul>

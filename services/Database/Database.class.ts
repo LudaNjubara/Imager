@@ -1,10 +1,11 @@
 import userDatabase, { IUserDatabase } from "./UserDatabase.class";
 import imagesDatabase, { IImagesDatabase } from "./ImagesDatabase.class";
 import loggingDatabase, { ILoggingDatabase } from "./LoggingDatabase.class";
+import statisticsDatabase, { IStatisticsDatabase } from "./statisticsDatabase";
 
-import { TAccountPlanName, TImageInfo, TLogData, TUserData } from "../../types/globals";
+import { TAccountPlanName, TImageInfo, TLogData, TStatisticTypes, TUserData } from "../../types/globals";
 
-interface IDatabase extends IUserDatabase, IImagesDatabase, ILoggingDatabase { }
+interface IDatabase extends IUserDatabase, IImagesDatabase, ILoggingDatabase, IStatisticsDatabase { }
 
 class Database implements IDatabase {
 
@@ -12,6 +13,7 @@ class Database implements IDatabase {
         private readonly userDatabase: IUserDatabase,
         private readonly imagesDatabase: IImagesDatabase,
         private readonly loggingDatabase: ILoggingDatabase,
+        private readonly statisticsDatabase: IStatisticsDatabase,
     ) { }
 
     AddUser(userData: TUserData, uid: string) {
@@ -45,6 +47,10 @@ class Database implements IDatabase {
     LogUserAction(logData: TLogData) {
         this.loggingDatabase.LogUserAction(logData);
     }
+
+    UpdateStatistic(statisticType: TStatisticTypes) {
+        this.statisticsDatabase.UpdateStatistic(statisticType);
+    }
 }
 
 const database = Object.freeze(
@@ -52,6 +58,7 @@ const database = Object.freeze(
         userDatabase,
         imagesDatabase,
         loggingDatabase,
+        statisticsDatabase,
     )
 );
 

@@ -25,6 +25,7 @@ type TAccountRole = "Admin" | "User";
 type TSearchFilter = "date" | "size" | "author" | "hashtags" | "extension";
 type TEditedImageExtensions = "jpg" | "png" | "svg"
 type TAllowedImageExtensions = "png" | "jpg" | "jpeg" | "gif" | "webp" | "svg" | "tiff" | "bmp" | "avif";
+type TStatisticTypes = "imageUploads"
 
 type TUser = {
     readonly uid: string,
@@ -113,8 +114,15 @@ type TLogData = {
     action: TLogAction;
 }
 
+type TStatisticsData = {
+    imageUploads?: {
+        title: string;
+        value?: number;
+    }
+}
+
 /* export enums  */
 export { EAccountPlanName, EAccountRole };
 
 /* export types  */
-export type { TUser, TUserData, TUserDataError, TImageInfo, TFederalProvider, TRegisterProvider, TLoginProvider, TAccountPlan, TLogAction, TLogData, TAccountPlanName, TEditedImageExtensions, TAllowedImageExtensions, TSearchFilter };
+export type { TUser, TUserData, TUserDataError, TImageInfo, TFederalProvider, TRegisterProvider, TLoginProvider, TAccountPlan, TLogAction, TLogData, TStatisticsData, TAccountPlanName, TEditedImageExtensions, TAllowedImageExtensions, TStatisticTypes, TSearchFilter };

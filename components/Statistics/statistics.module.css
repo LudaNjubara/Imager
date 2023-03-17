@@ -1,0 +1,15 @@
+.statisticsContainer__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background: linear-gradient(-25deg, var(--color-primary-900), var(--color-primary-700));
+  padding: var(--padding-primary-600) var(--padding-primary-600) var(--padding-primary-700);
+  border-radius: var(--border-radius-300);
+}
+
+.statisticsContainer__graphsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  z-index: 0;
+}

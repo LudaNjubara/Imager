@@ -5,7 +5,7 @@ import { collection, doc, getDoc, getDocs, limit, orderBy, query, where } from '
 
 import type { RootState, AppDispatch } from '../redux/store'
 import { db } from '../config/firebaseConfig'
-import { TAccountPlan, TImageInfo, TLogData, TSearchFilter, TUserData } from '../types/globals'
+import { TAccountPlan, TImageInfo, TLogData, TSearchFilter, TStatisticsData, TUserData } from '../types/globals'
 import { convertImageKeysToString } from '../utils/common/utils'
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
@@ -153,6 +153,23 @@ export const useUserLogs = () => {
 
     return {
         userLogsData: data,
+        isLoading: !error && !data,
+        isError: error
+    }
+}
+
+const appStatisticsFetcher = async () => {
+    const docRef = doc(db, "statistics", "statisticsData");
+    const appStatistics = (await getDoc(docRef)).data();
+
+    return appStatistics as TStatisticsData;
+}
+
+export const useAppStatistics = () => {
+    const { data, error } = useSWR('getappstatistics', appStatisticsFetcher, { revalidateOnFocus: false });
+
+    return {
+        appStatisticsData: data,
         isLoading: !error && !data,
         isError: error
     }

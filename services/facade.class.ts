@@ -71,6 +71,7 @@ class Facade implements IFacade {
     AddImageInfo(imageInfo: TImageInfo, uid: string) {
         database.AddImageInfo(imageInfo);
         database.UpdateUserUploadsUsed("increment", uid);
+        database.UpdateStatistic("imageUploads");
 
         logger.Log(imageInfo.uploaderDisplayName!, {
             url: window.location.href,
