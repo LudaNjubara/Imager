@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Analytics } from "@vercel/analytics/react";
 import { useRouter, usePathname } from "next/navigation";
 import { Provider, useDispatch } from "react-redux";
@@ -22,19 +22,29 @@ import facade from "../services/facade.class";
 import "../styles/globals.css";
 
 function RootLayoutInner({ children }: { children: React.ReactNode }) {
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
   const reduxUser = useAppSelector((state) => state.user);
   const { userData } = useUserData(reduxUser.uid);
+  const [hasPreviouslyLoggedInAsAnonymous, setHasPreviouslyLoggedInAsAnonymous] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
       if (pathname !== "/login" && pathname !== "/register") router.push("/login");
       dispatch(logout());
+      setHasPreviouslyLoggedInAsAnonymous(false);
     } else if (!loading && user) {
-      if (reduxUser.isAnonymous && pathname !== "/login" && pathname !== "/register") return;
+      if (user.isAnonymous && !hasPreviouslyLoggedInAsAnonymous) {
+        setHasPreviouslyLoggedInAsAnonymous(true);
+        return;
+      }
+
+      if (!user.isAnonymous && hasPreviouslyLoggedInAsAnonymous) {
+        setHasPreviouslyLoggedInAsAnonymous(false);
+        return;
+      }
 
       dispatch(
         login({
@@ -57,9 +67,11 @@ function RootLayoutInner({ children }: { children: React.ReactNode }) {
         })
       );
 
-      if (pathname === "/login" || pathname === "/register") router.push("/");
+      if (pathname === "/login" || pathname === "/register") {
+        router.push("/");
+      }
     }
-  }, [user, loading, error]);
+  }, [user, loading, hasPreviouslyLoggedInAsAnonymous]);
 
   useEffect(() => {
     if (user && !!userData) {
