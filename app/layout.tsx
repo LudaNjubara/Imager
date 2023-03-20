@@ -101,7 +101,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
       <body className={poppins.className}>
         <Provider store={store}>
-          <RootLayoutInner children={children} />
+          <RootLayoutInner>{children}</RootLayoutInner>
         </Provider>
         <Analytics />
       </body>
