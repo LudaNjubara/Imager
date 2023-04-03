@@ -230,3 +230,45 @@
 .loginOrRegister__link:focus {
   background: var(--color-primary-hover-200);
 }
+
+/* Responsive styles - mobile */
+@media only screen and (max-width: 768px) {
+  #sidebar {
+    position: fixed;
+    top: unset;
+    bottom: -190px;
+    flex-basis: unset;
+    flex-shrink: unset;
+    width: 100%;
+    height: auto;
+    z-index: 9999;
+    padding-top: var(--padding-primary-300);
+  }
+
+  .logoWrapper {
+    display: none;
+  }
+
+  .navList {
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+
+  .navItem__link {
+    column-gap: 10px;
+    padding: var(--padding-secondary-200) var(--padding-secondary-400);
+    font-size: var(--font-size-100);
+  }
+
+  .navItem__icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  .userProfileWrapper {
+    margin-top: var(--padding-primary-500);
+  }
+
+  /* Other styles */
+}

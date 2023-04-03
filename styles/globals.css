@@ -79,6 +79,13 @@ h6 {
   overflow-y: auto;
 }
 
+@media only screen and (max-width: 768px) {
+  #main {
+    padding: var(--padding-primary-300);
+    margin-bottom: calc(var(--padding-primary-600) * 2);
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     /* Colors */

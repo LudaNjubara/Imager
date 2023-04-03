@@ -1,4 +1,4 @@
-import React from "react";
+import { memo } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -18,4 +18,4 @@ function Logo({ isSmall }: { isSmall?: boolean }) {
   );
 }
 
-export default Logo;
+export default memo(Logo);

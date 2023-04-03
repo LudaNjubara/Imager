@@ -1,46 +1,49 @@
+"use client";
+
 import { useEffect, useState } from "react";
 
+import { useAuthState } from "react-firebase-hooks/auth";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
+import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 
 import Logo from "../Logo/Index";
 
 import { auth } from "../../config/firebaseConfig";
+import { useAccountPlans, useUserData } from "../../hooks/hooks";
+import { setCSSVariable } from "../../utils/common/utils";
+import { TAccountPlan } from "../../types/globals";
 
 import { BsHouse, BsSearch, BsBoxArrowLeft } from "react-icons/bs";
 import { VscGraphLine } from "react-icons/vsc";
 import styles from "./sidebar.module.css";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useAccountPlans, useUserData } from "../../hooks/hooks";
-import { setCSSVariable } from "../../utils/common/utils";
-import { TAccountPlan } from "../../types/globals";
 
 function Sidebar() {
   const [user, loading, error] = useAuthState(auth);
   const pathname = usePathname();
   const { userData } = useUserData(user?.uid);
   const { accountPlansData, isError } = useAccountPlans();
-  const [activeLink, setActiveLink] = useState<string>(pathname?.split("/")[1] ?? "");
   const [userAccountPlan, setUserAccountPlan] = useState<TAccountPlan>();
+  const [isMobile, setIsMobile] = useState(false);
 
-  const handleActiveLinkChange = (page: string) => {
-    setActiveLink(page);
-  };
-
-  useEffect(() => {
-    handleActiveLinkChange(pathname?.split("/")[1] ?? "");
-
-    return () => {
-      setActiveLink(pathname?.split("/")[1] ?? "");
-    };
-  }, [pathname]);
+  let activeLink: string = pathname?.split("/")[1] ?? "";
 
   useEffect(() => {
-    if (userData && accountPlansData) {
-      setUserAccountPlan(accountPlansData.find((plan) => plan.name === userData.accountPlan));
+    function updateSize() {
+      setIsMobile(window.innerWidth <= 768);
     }
-  }, [userData, accountPlansData]);
+
+    window.addEventListener("resize", updateSize);
+
+    updateSize();
+
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
+
+  useEffect(() => {
+    setUserAccountPlan(accountPlansData?.find((plan) => plan.name === userData?.accountPlan));
+  }, [userData?.accountPlan, accountPlansData]);
 
   useEffect(() => {
     if (userData && userAccountPlan) {
@@ -49,10 +52,17 @@ function Sidebar() {
         `${(userData.uploadsUsed! / userAccountPlan.maxUploadLimit) * 93}%`
       );
     }
-  }, [userData, userAccountPlan]);
+  }, [userData?.uploadsUsed, userAccountPlan?.maxUploadLimit]);
 
   return (
-    <aside id={styles.sidebar}>
+    <motion.aside
+      id={styles.sidebar}
+      drag={isMobile ? "y" : false}
+      dragConstraints={{ bottom: 0, top: -190 }}
+      dragElastic={0.05}
+      dragMomentum={true}
+      dragSnapToOrigin={false}
+    >
       <div>{loading && "Loading"}</div>
 
       {!loading && (
@@ -176,7 +186,7 @@ function Sidebar() {
           )}
         </>
       )}
-    </aside>
+    </motion.aside>
   );
 }
 
