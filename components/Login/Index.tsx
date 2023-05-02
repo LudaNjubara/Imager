@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 
 import { TLoginProvider, TUserData, TUserDataError } from "../../types/globals";
-import { emailRegex, loginAndRegister__messageVariants } from "../../constants/constants";
+import { loginAndRegister__messageVariants } from "../../constants/constants";
 import { auth } from "../../config/firebaseConfig";
 import login from "../../services/Login/Login.class";
 
