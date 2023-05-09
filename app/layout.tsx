@@ -71,7 +71,7 @@ function RootLayoutInner({ children }: { children: React.ReactNode }) {
         router.push("/");
       }
     }
-  }, [user, loading, userData, hasPreviouslyLoggedInAsAnonymous]);
+  }, [user, loading, userData?.username, hasPreviouslyLoggedInAsAnonymous]);
 
   useEffect(() => {
     if (user && !!userData) {
