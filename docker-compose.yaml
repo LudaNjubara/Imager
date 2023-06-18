@@ -1,18 +1,4 @@
 version: "3.8"
-
-# COPY app ./app
-#COPY components ./components
-#COPY config ./config
-#COPY constants ./constants
-#COPY hooks ./hooks
-#COPY pages ./pages
-#COPY public ./public
-#COPY redux ./redux
-#COPY services ./services
-#COPY styles ./styles
-#COPY types ./types
-#COPY utils ./utils
-
 services:
   app:
     image: "docker-nextjs-dev"
