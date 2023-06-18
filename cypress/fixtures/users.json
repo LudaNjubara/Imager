@@ -1,0 +1,14 @@
+[
+  {
+    "username": "cytest",
+    "email": "cytest@gmail.com",
+    "password": "T3$tT3$t",
+    "imageUrl": "/_next/image?url=%2Fimages%2FimagerLogo_small.png&w=96&q=75"
+  },
+  {
+    "username": "regtest",
+    "email": "regtest@gmail.com",
+    "password": "T3$tT3$t",
+    "imageUrl": "/_next/image?url=%2Fimages%2FimagerLogo_small.png&w=96&q=75"
+  }
+]

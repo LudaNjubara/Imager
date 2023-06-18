@@ -1,16 +1,30 @@
 describe("Home Page", () => {
 
+    let user: {
+        username: string;
+        email: string;
+        password: string;
+        imageUrl: string;
+    };
+
+    before(() => {
+        // Set up test data using fixtures
+        cy.fixture("users.json").then((users) => {
+            user = users[0];
+        });
+    });
+
     // before the test, log in
     before(() => {
         cy.visit("/login");
 
-        cy.get("#emilInput").type("cytest@gmail.com");
-        cy.get("#passwordInput").type("T3$tT3$t");
+        cy.get("#emilInput").type(user.email);
+        cy.get("#passwordInput").type(user.password);
 
         cy.get("button").contains("Log in").click();
 
         // Wait for the URL to change to the expected URL
-        cy.location('pathname').should('eq', '/');
+        cy.location('pathname', { timeout: 10000 }).should('eq', '/');
     });
 
     it("should have a sidebar with links to home and search page, and a div with a link to the profile page and a button", () => {

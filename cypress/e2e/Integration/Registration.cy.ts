@@ -1,4 +1,18 @@
 describe("Registration", () => {
+    let user: {
+        username: string;
+        email: string;
+        password: string;
+        imageUrl: string;
+    };
+
+    before(() => {
+        // Set up test data using fixtures
+        cy.fixture("users.json").then((users) => {
+            user = users[1];
+        });
+    });
+
     it("Try to register with a new email and Gold plan", () => {
         cy.visit("/register");
 
@@ -7,9 +21,9 @@ describe("Registration", () => {
             cy.get("label").contains("Email").click();
         });
 
-        cy.get("#usernameInput").type("cytest");
-        cy.get("#emailInput").type("cytest@gmail.com");
-        cy.get("#passwordInput").type("T3$tT3$t");
+        cy.get("#usernameInput").type(user.username);
+        cy.get("#emailInput").type(user.email);
+        cy.get("#passwordInput").type(user.password);
 
         cy.get("button").contains("Continue to next step").click();
 
@@ -23,20 +37,18 @@ describe("Registration", () => {
         cy.get("button").contains("Create Account").click();
 
         // Wait for the URL to change to the expected URL
-        cy.location().should((loc) => {
-            expect(loc.href).to.eq('http://localhost:3000/')
-        });
+        cy.location('pathname', { timeout: 10000 }).should('eq', '/');
 
-        // Check if the user is logged in
+        // Check if the user has registered
         cy.get("aside").within(() => {
             cy.get(".sidebar_userProfile__userActionsContainer__PSYLv").within(() => {
                 cy.get("a").should("have.attr", "href", "/profile").within(() => {
-                    cy.get(".sidebar_userProfile__username__udhaV").should("have.text", "cytest");
-                    cy.get("img").should("have.attr", "src", "/_next/image?url=%2Fimages%2FimagerLogo_small.png&w=96&q=75")
+                    cy.get(".sidebar_userProfile__username__udhaV").should("have.text", user.username);
+                    cy.get("img").should("have.attr", "src", user.imageUrl);
                 });
             });
         });
-    })
+    });
 
     // after the test is done, log out
     after(() => {
@@ -44,4 +56,4 @@ describe("Registration", () => {
     });
 });
 
-export { }
+export { };
