@@ -75,9 +75,9 @@ describe('Search', () => {
     });
 
     // after the test is done, log out
-    /*     after(() => {
-            cy.get(".sidebar_logoutButton__tyerN").click();
-        }); */
+    after(() => {
+        cy.get(".sidebar_logoutButton__tyerN").click();
+    });
 });
 
 export { }
